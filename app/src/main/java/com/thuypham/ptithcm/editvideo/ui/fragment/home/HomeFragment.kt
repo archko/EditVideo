@@ -1,6 +1,8 @@
 package com.thuypham.ptithcm.editvideo.ui.fragment.home
 
 import android.annotation.SuppressLint
+import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.os.Handler
 import android.util.Log
 import androidx.core.os.bundleOf
@@ -14,6 +16,7 @@ import com.google.android.material.slider.RangeSlider
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.base.BaseFragment
 import com.thuypham.ptithcm.editvideo.databinding.FragmentHomeBinding
+import com.thuypham.ptithcm.editvideo.extension.getPath
 import com.thuypham.ptithcm.editvideo.extension.gone
 import com.thuypham.ptithcm.editvideo.extension.navigateTo
 import com.thuypham.ptithcm.editvideo.extension.setOnSingleClickListener
@@ -22,15 +25,14 @@ import com.thuypham.ptithcm.editvideo.model.MediaFile
 import com.thuypham.ptithcm.editvideo.model.Menu
 import com.thuypham.ptithcm.editvideo.model.ResponseHandler
 import com.thuypham.ptithcm.editvideo.ui.dialog.ConfirmDialog
-import com.thuypham.ptithcm.editvideo.ui.fragment.media.MediaFragment
 import com.thuypham.ptithcm.editvideo.viewmodel.MediaViewModel
 import org.koin.android.viewmodel.ext.android.sharedViewModel
-
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
 
     companion object {
         const val RESULT_PATH = "RESULT_PATH"
+        const val REQUEST_SAF_FFMPEG = 12
     }
 
     private val mediaViewModel: MediaViewModel by sharedViewModel()
@@ -134,12 +136,21 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
 
     private fun setupEvent() {
         binding.btnUploadVideo.setOnSingleClickListener {
-            navigateTo(
+            /*navigateTo(
                 R.id.media,
                 bundleOf(
                     MediaFragment.MEDIA_TYPE to MediaFile.MEDIA_TYPE_VIDEO,
                     MediaFragment.MAX_SELECTED_COUNT to 1
                 )
+            )*/
+
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+                .setType("*/*")
+                .putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "video/*", "audio/*"))
+                .addCategory(Intent.CATEGORY_OPENABLE)
+            startActivityForResult(
+                intent,
+                REQUEST_SAF_FFMPEG
             )
         }
     }
@@ -152,6 +163,18 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         binding.apply {
             rvMenu.adapter = menuAdapter
             menuAdapter.submitList(MenuAdapter.listMenu)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_SAF_FFMPEG && resultCode == RESULT_OK && data != null && data.data != null) {
+            binding.apply {
+                layoutEmptyVideo.gone()
+                currentMediaFile = MediaFile()
+                currentMediaFile!!.getPath(requireActivity(), data.data!!)
+                setMediaItem()
+            }
         }
     }
 
@@ -235,9 +258,23 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     }
 
     private fun setMediaItem() {
+        Log.d(this::class.java.name, "changed $currentMediaFile")
         mediaItem = currentMediaFile?.path?.let { MediaItem.fromUri(it) }
         player?.setMediaItem(mediaItem!!)
         player?.prepare()
+        setSlider()
+
+        runnable = Runnable {
+            if (player?.currentPosition ?: 0 >= endTime) {
+                player?.seekTo(startTime.toLong())
+            }
+            runnable.let { handler.postDelayed(it, 1000) }
+        }
+        handler = Handler()
+        handler.postDelayed(runnable, 1000)
+    }
+
+    private fun setSlider() {
         binding.apply {
             videoView.hideController()
             try {
@@ -256,15 +293,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                 ex.printStackTrace()
             }
         }
-
-        runnable = Runnable {
-            if (player?.currentPosition ?: 0 >= endTime) {
-                player?.seekTo(startTime.toLong())
-            }
-            runnable.let { handler.postDelayed(it, 1000) }
-        }
-        handler = Handler()
-        handler.postDelayed(runnable, 1000)
     }
 
     private fun initializePlayer() {
@@ -308,5 +336,24 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             }
             Log.d(this::class.java.name, "changed state to $stateString")
         }
+
+        /**
+         * 每次重新定位就会触发该方法
+         */
+        override fun onRenderedFirstFrame() {
+            super.onRenderedFirstFrame()
+            Log.d(
+                this::class.java.name,
+                "changed onRenderedFirstFrame ${currentMediaFile?.duration}"
+            )
+            //系统文件管理器,有可能获取不到,它是xx/primary/下面的,只有路径,默认设置了10毫秒,所以需要更新.
+            currentMediaFile?.let {
+                if (null != it.duration && it.duration!! <= 10) {
+                    it.duration = player?.duration
+                    setSlider()
+                }
+            }
+        }
     }
 }
+

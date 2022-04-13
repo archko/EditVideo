@@ -1,5 +1,6 @@
 package com.thuypham.ptithcm.editvideo.model
 
+import android.net.Uri
 import com.google.gson.annotations.SerializedName
 
 data class MediaFile(
@@ -33,6 +34,9 @@ data class MediaFile(
     @field:SerializedName("date_string")
     var dateString: String? = null,
 
+    @field:SerializedName("uri")
+    var uri: Uri? = null,
+
     var isSelected: Boolean? = false,
 
     ) {
@@ -49,4 +53,10 @@ data class MediaFile(
     var isImage = mediaType == MEDIA_TYPE_IMAGE
 
     var isAudio = mediaType == MEDIA_TYPE_AUDIO
+    override fun toString(): String {
+        return "MediaFile(path=$path, duration=$duration, displayName=$displayName, dateString=$dateString, uri=$uri)"
+    }
+
+
 }
+
