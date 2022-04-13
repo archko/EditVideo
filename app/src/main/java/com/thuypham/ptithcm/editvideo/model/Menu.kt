@@ -12,5 +12,6 @@ data class Menu(
         const val MENU_REVERSE_VIDEO = 4
         const val MENU_CONVERT_TO_GIF = 5
         const val MENU_SPLIT_VIDEO = 6
+        const val MENU_MERGE_VIDEO = 7
     }
 }

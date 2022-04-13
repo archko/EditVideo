@@ -22,6 +22,7 @@ import com.thuypham.ptithcm.editvideo.extension.toTimeAsHHmmSSS
 import com.thuypham.ptithcm.editvideo.model.MediaFile
 import com.thuypham.ptithcm.editvideo.model.Menu
 import com.thuypham.ptithcm.editvideo.model.ResponseHandler
+import com.thuypham.ptithcm.editvideo.ui.activity.MergeActivity
 import com.thuypham.ptithcm.editvideo.ui.activity.ResultActivity
 import com.thuypham.ptithcm.editvideo.ui.dialog.ConfirmDialog
 import com.thuypham.ptithcm.editvideo.viewmodel.MediaViewModel
@@ -57,6 +58,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     private var shouldNavigateToResultFragment = false
 
     private fun onMenuClick(menu: Menu) {
+        if (menu.id == Menu.MENU_MERGE_VIDEO) {
+            val intent = Intent(requireActivity(), MergeActivity::class.java)
+            startActivity(intent)
+            return
+        }
         if (currentMediaFile == null) {
             showSnackBar(R.string.empty_file_msg)
             return
@@ -86,6 +92,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             }
             Menu.MENU_SPLIT_VIDEO -> {
 
+            }
+            Menu.MENU_MERGE_VIDEO -> {
+                val intent = Intent(requireActivity(), MergeActivity::class.java)
+                startActivity(intent)
             }
             else -> {
 

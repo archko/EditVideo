@@ -28,7 +28,7 @@ class MenuAdapter(
                     Menu.MENU_EXTRACT_IMAGES,
                     MainApplication.instance.getString(R.string.menu_extract_images)
                 ),
-                Menu(
+                /*Menu(
                     Menu.MENU_EXTRACT_AUDIO,
                     MainApplication.instance.getString(R.string.menu_extract_audio)
                 ),
@@ -43,6 +43,11 @@ class MenuAdapter(
                 Menu(
                     Menu.MENU_SPLIT_VIDEO,
                     MainApplication.instance.getString(R.string.menu_split_video)
+                ),*/
+
+                Menu(
+                    Menu.MENU_MERGE_VIDEO,
+                    MainApplication.instance.getString(R.string.menu_merge_video)
                 ),
             )
         }

@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EditVideo">
 
-        <activity
+        <!--<activity
             android:name=".ui.activity.SplashActivity"
             android:exported="true"
             android:screenOrientation="portrait"
@@ -29,10 +29,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-        </activity>
+        </activity>-->
 
         <activity
             android:name=".ui.activity.ResultActivity"
+            android:exported="true"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="sensor"
+            tools:ignore="LockedOrientationActivity"></activity>
+        <activity
+            android:name=".ui.activity.MergeActivity"
             android:exported="true"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="sensor"
@@ -45,10 +51,10 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
-            <!--            <intent-filter>-->
-            <!--                <action android:name="android.intent.action.MAIN" />-->
-            <!--                <category android:name="android.intent.category.LAUNCHER" />-->
-            <!--            </intent-filter>-->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
 
         </activity>
         <provider
