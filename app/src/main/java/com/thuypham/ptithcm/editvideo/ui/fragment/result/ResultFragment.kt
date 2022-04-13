@@ -14,6 +14,7 @@ import com.thuypham.ptithcm.editvideo.base.BaseFragment
 import com.thuypham.ptithcm.editvideo.databinding.FragmentResultBinding
 import com.thuypham.ptithcm.editvideo.extension.goBack
 import com.thuypham.ptithcm.editvideo.extension.shareImageToOtherApp
+import com.thuypham.ptithcm.editvideo.model.ResponseHandler
 import com.thuypham.ptithcm.editvideo.ui.dialog.ConfirmDialog
 import com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment
 import com.thuypham.ptithcm.editvideo.viewmodel.ResultViewModel
@@ -38,6 +39,23 @@ class ResultFragment : BaseFragment<FragmentResultBinding>(R.layout.fragment_res
     override fun setupView() {
         setupToolbar()
         binding.tvOutputPath.text = resultUrl
+    }
+
+    override fun setupDataObserver() {
+        super.setupDataObserver()
+        resultViewModel.deleteFileResponse.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is ResponseHandler.Success -> {
+                    requireActivity().finish()
+                }
+                is ResponseHandler.Loading -> {
+                }
+                is ResponseHandler.Failure -> {
+                }
+                else -> {
+                }
+            }
+        }
     }
 
     private fun setupToolbar() {
