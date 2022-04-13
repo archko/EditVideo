@@ -18,12 +18,12 @@ class ResultViewModel(
     fun deleteFile(url: String) = viewModelScope.launch {
         deleteFileResponse.value = ResponseHandler.Loading
 
-        val file = File(url)
-        file.run {
-            if (exists()) {
-                delete()
-                deleteFileResponse.value = ResponseHandler.Success(true)
-            }
+        val flag = fileHelper.deleteFile(url)
+
+        if (flag) {
+            deleteFileResponse.value = ResponseHandler.Success(true)
+        } else {
+            deleteFileResponse.value = ResponseHandler.Failure()
         }
     }
 }
