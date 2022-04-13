@@ -1,10 +1,13 @@
 package com.thuypham.ptithcm.editvideo.ui.fragment.result
 
+import android.content.res.Configuration
 import android.util.Log
+import android.view.View
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.util.Util
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.base.BaseFragment
@@ -17,8 +20,6 @@ import com.thuypham.ptithcm.editvideo.viewmodel.ResultViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class ResultFragment : BaseFragment<FragmentResultBinding>(R.layout.fragment_result) {
-
-
 
     private val resultViewModel: ResultViewModel by viewModel()
 
@@ -134,5 +135,24 @@ class ResultFragment : BaseFragment<FragmentResultBinding>(R.layout.fragment_res
         }
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        when (newConfig.orientation) {
+            Configuration.ORIENTATION_PORTRAIT -> portrait()
+            Configuration.ORIENTATION_LANDSCAPE -> landscape()
+            else -> {
+                portrait()
+            }
+        }
+    }
 
+    private fun portrait() {
+        binding.tvOutputPath.visibility = View.VISIBLE
+        binding.videoView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH
+    }
+
+    private fun landscape() {
+        binding.tvOutputPath.visibility = View.GONE
+        binding.videoView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT
+    }
 }

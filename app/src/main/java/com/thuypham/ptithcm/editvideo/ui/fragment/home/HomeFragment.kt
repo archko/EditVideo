@@ -5,7 +5,6 @@ import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Handler
 import android.util.Log
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -18,12 +17,12 @@ import com.thuypham.ptithcm.editvideo.base.BaseFragment
 import com.thuypham.ptithcm.editvideo.databinding.FragmentHomeBinding
 import com.thuypham.ptithcm.editvideo.extension.getPath
 import com.thuypham.ptithcm.editvideo.extension.gone
-import com.thuypham.ptithcm.editvideo.extension.navigateTo
 import com.thuypham.ptithcm.editvideo.extension.setOnSingleClickListener
 import com.thuypham.ptithcm.editvideo.extension.toTimeAsHHmmSSS
 import com.thuypham.ptithcm.editvideo.model.MediaFile
 import com.thuypham.ptithcm.editvideo.model.Menu
 import com.thuypham.ptithcm.editvideo.model.ResponseHandler
+import com.thuypham.ptithcm.editvideo.ui.activity.ResultActivity
 import com.thuypham.ptithcm.editvideo.ui.dialog.ConfirmDialog
 import com.thuypham.ptithcm.editvideo.viewmodel.MediaViewModel
 import org.koin.android.viewmodel.ext.android.sharedViewModel
@@ -219,7 +218,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                 else -> R.id.homeToResult
             }
             shouldNavigateToResultFragment = false
-            navigateTo(destinationId, bundleOf(RESULT_PATH to resultPath))
+            //navigateTo(destinationId, bundleOf(RESULT_PATH to resultPath))
+
+            val intent = Intent(requireActivity(), ResultActivity::class.java)
+            intent.putExtra(RESULT_PATH, resultPath)
+            startActivity(intent)
         }
     }
 
