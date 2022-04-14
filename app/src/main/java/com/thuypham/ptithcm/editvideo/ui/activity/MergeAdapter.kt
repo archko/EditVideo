@@ -11,7 +11,7 @@ import com.thuypham.ptithcm.editvideo.ui.adapter.BaseViewHolder
 
 class MergeAdapter(
     context: Context,
-    private val onItemSelected: ((item: MediaFile, pos: Int) -> Unit)? = null,
+    private val onItemDeleted: ((item: MediaFile, pos: Int) -> Unit)? = null,
 ) : BaseRecyclerAdapter<MediaFile>(context) {
 
     class MergeViewHolder(
@@ -34,7 +34,7 @@ class MergeAdapter(
             ItemMediaFileBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MergeViewHolder(binding).apply {
             binding.delete.setOnSingleClickListener {
-                onItemSelected?.invoke(
+                onItemDeleted?.invoke(
                     currentList[absoluteAdapterPosition],
                     absoluteAdapterPosition
                 )
