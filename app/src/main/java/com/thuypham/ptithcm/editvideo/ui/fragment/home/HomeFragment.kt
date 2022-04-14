@@ -70,12 +70,18 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         currentMenuId = menu.id
         shouldNavigateToResultFragment = true
         when (menu.id) {
-            Menu.MENU_CUT_VID -> {
+            Menu.MENU_SPLIT_VIDEO -> {
                 if (startTime == 0f && endTime == currentMediaFile?.duration?.toFloat()) {
                     showDialogCutVideoConfirm()
                 } else {
                     player?.stop()
-                    currentMediaFile?.path?.let { mediaViewModel.cutVideo(startTime, endTime, it) }
+                    currentMediaFile?.path?.let {
+                        mediaViewModel.splitVideo(
+                            startTime,
+                            endTime,
+                            it
+                        )
+                    }
                 }
             }
             Menu.MENU_EXTRACT_IMAGES -> {
@@ -90,7 +96,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             Menu.MENU_CONVERT_TO_GIF -> {
 
             }
-            Menu.MENU_SPLIT_VIDEO -> {
+            Menu.MENU_CUT_VID -> {
 
             }
             Menu.MENU_MERGE_VIDEO -> {
@@ -271,7 +277,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     }
 
     private fun setMediaItem() {
-        Log.d(this::class.java.name, "changed $currentMediaFile")
+        Log.d(this::class.java.name, "setMediaItem $currentMediaFile")
         mediaItem = currentMediaFile?.path?.let { MediaItem.fromUri(it) }
         player?.setMediaItem(mediaItem!!)
         player?.prepare()

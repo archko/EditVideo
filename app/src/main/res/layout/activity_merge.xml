@@ -11,17 +11,15 @@
             layout="@layout/layout_toolbar" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnUploadVideo"
+            android:id="@+id/btnAddVideo"
             style="@style/Theme.EditVideo.Button"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="@string/upload_video"
+            android:text="@string/add_video"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.06"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
-            app:layout_constraintWidth_percent="0.8" />
+            app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
@@ -29,7 +27,8 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintTop_toBottomOf="@id/btnUploadVideo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnAddVideo"
             tools:itemCount="6"
             tools:listitem="@layout/item_menu" />
 

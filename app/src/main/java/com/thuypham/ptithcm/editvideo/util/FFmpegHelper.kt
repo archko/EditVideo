@@ -34,7 +34,7 @@ class FFmpegHelper constructor(
         const val TAG = "FFmpegHelper"
     }
 
-    suspend fun cutVideo(
+    suspend fun splitVideo(
         startMs: Int, endMs: Int, filePath: String,
         onSuccess: ((outputPath: String) -> Unit?)?,
         onFail: ((String?) -> Unit?)?
@@ -64,13 +64,12 @@ class FFmpegHelper constructor(
                 outputPath
             )
             val complexCommand1 = arrayOf(
-                "-y",
-                "-i",
-                filePath,
                 "-ss",
                 "" + startMs / 1000,
                 "-t",
                 "" + (endMs - startMs) / 1000,
+                "-i",
+                filePath,
                 "-c",
                 "copy",
                 "-preset",
@@ -79,6 +78,33 @@ class FFmpegHelper constructor(
             )
 
             executeCommand(complexCommand1, {
+                onSuccess?.invoke(outputPath)
+            }, onFail)
+        }
+    }
+
+    suspend fun cutVideo(
+        width: Int, height: Int, left: Int, top: Int, filePath: String,
+        onSuccess: ((outputPath: String) -> Unit?)?,
+        onFail: ((String?) -> Unit?)?
+    ) {
+        withContext(Dispatchers.IO) {
+            val outputPath = getOutputVideoPath("cut_video")
+            val complexCommand = arrayOf(
+                "-i",
+                filePath,
+                "-strict",
+                "-2",
+                "-vf",
+                "crop=$width:$height:$left:$top",
+                "-c copy",
+                "-copyts",
+                "-preset",
+                "ultrafast",
+                outputPath
+            )
+
+            executeCommand(complexCommand, {
                 onSuccess?.invoke(outputPath)
             }, onFail)
         }
@@ -546,6 +572,49 @@ class FFmpegHelper constructor(
     ) {
         try {
             FFmpegKit.executeWithArgumentsAsync(command,
+                { session ->
+                    Log.d(TAG, "FFmpeg process exited with state $session")
+                    when {
+                        ReturnCode.isSuccess(session.returnCode) -> {
+                            Log.d(TAG, "onSuccess")
+                            onSuccess?.invoke()
+                        }
+                        ReturnCode.isCancel(session.returnCode) -> {
+                            Log.e(TAG, " executeCommand is cancel:${session.failStackTrace}")
+                            onFail?.invoke(session.failStackTrace)
+                        }
+                        session.returnCode != ReturnCode(ReturnCode.CANCEL) ||
+                                session.returnCode != ReturnCode(ReturnCode.SUCCESS) -> {
+                            Log.e(TAG, " executeCommand fail: ${session.failStackTrace}")
+                            val error =
+                                if (session.failStackTrace != null) session.failStackTrace else "Some error occur!"
+                            onFail?.invoke(error)
+                        }
+                        else -> {
+                            Log.e(TAG, " executeCommand fail:${session.failStackTrace}")
+                        }
+                    }
+                }, {
+                    Log.d(TAG, " onProgress $it")
+                }, {
+                    Log.d(TAG, "onStatistics $it")
+                })
+        } catch (ex: Error) {
+            Log.e(TAG, " executeCommand error:${ex.printStackTrace()}")
+            onFail?.invoke(ex.message ?: "")
+        } catch (ex: Exception) {
+            Log.e(TAG, "execute error: ${ex.printStackTrace()}")
+            onFail?.invoke(ex.message ?: "")
+        }
+    }
+
+    fun executeCommandString(
+        command: String,
+        onSuccess: (() -> Unit?)? = null,
+        onFail: ((String?) -> Unit?)? = null,
+    ) {
+        try {
+            FFmpegKit.executeAsync(command,
                 { session ->
                     Log.d(TAG, "FFmpeg process exited with state $session")
                     when {

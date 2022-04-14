@@ -57,9 +57,9 @@ class MediaViewModel(
         }
     }
 
-    fun cutVideo(startTime: Float, endTime: Float, filePath: String) = viewModelScope.launch {
+    fun splitVideo(startTime: Float, endTime: Float, filePath: String) = viewModelScope.launch {
         editVideoResponse.value = ResponseHandler.Loading
-        fFmpegHelper.cutVideo(startTime.toInt(), endTime.toInt(), filePath, onSuccess = {
+        fFmpegHelper.splitVideo(startTime.toInt(), endTime.toInt(), filePath, onSuccess = {
             editVideoResponse.postValue(ResponseHandler.Success(it))
             null
         }, onFail = {

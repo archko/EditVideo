@@ -21,8 +21,8 @@ class MenuAdapter(
         private fun getMenu(): ArrayList<Menu> {
             return arrayListOf(
                 Menu(
-                    Menu.MENU_CUT_VID,
-                    MainApplication.instance.getString(R.string.menu_cut_video)
+                    Menu.MENU_SPLIT_VIDEO,
+                    MainApplication.instance.getString(R.string.menu_split_video)
                 ),
                 Menu(
                     Menu.MENU_EXTRACT_IMAGES,
@@ -41,8 +41,8 @@ class MenuAdapter(
                     MainApplication.instance.getString(R.string.menu_convert_to_gif)
                 ),
                 Menu(
-                    Menu.MENU_SPLIT_VIDEO,
-                    MainApplication.instance.getString(R.string.menu_split_video)
+                    Menu.MENU_CUT_VID,
+                    MainApplication.instance.getString(R.string.menu_cut_video)
                 ),*/
 
                 Menu(
