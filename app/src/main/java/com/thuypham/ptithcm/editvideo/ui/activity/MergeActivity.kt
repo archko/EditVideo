@@ -1,25 +1,46 @@
 package com.thuypham.ptithcm.editvideo.ui.activity
 
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.recyclerview.widget.ItemTouchHelper
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.base.BaseActivity
 import com.thuypham.ptithcm.editvideo.databinding.ActivityMergeBinding
 import com.thuypham.ptithcm.editvideo.extension.setOnSingleClickListener
 import com.thuypham.ptithcm.editvideo.extension.show
-import com.thuypham.ptithcm.editvideo.model.Menu
-import com.thuypham.ptithcm.editvideo.ui.fragment.home.MenuAdapter
+import com.thuypham.ptithcm.editvideo.util.ItemTouchCallback
 
 class MergeActivity : BaseActivity<ActivityMergeBinding>(R.layout.activity_merge) {
 
-    private val menuAdapter: MenuAdapter by lazy {
-        MenuAdapter { menu -> onMenuClick(menu) }
-    }
-
-    private fun onMenuClick(menu: Menu) {
-        if (menu.id == Menu.MENU_MERGE_VIDEO) {
-
-            return
-        }
+    private val data: List<String> = listOf(
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "O",
+        "P",
+        "Q",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z"
+    )
+    private val menuAdapter: MergeAdapter by lazy {
+        MergeAdapter(this)
     }
 
     override fun setupView() {
@@ -38,7 +59,14 @@ class MergeActivity : BaseActivity<ActivityMergeBinding>(R.layout.activity_merge
     private fun setupRecyclerView() {
         binding.apply {
             recyclerView.adapter = menuAdapter
-            menuAdapter.submitList(MenuAdapter.listMenu)
+            menuAdapter.data = data
         }
+
+        val helper = ItemTouchHelper(
+            ItemTouchCallback(
+                menuAdapter
+            )
+        )
+        helper.attachToRecyclerView(binding.recyclerView)
     }
 }

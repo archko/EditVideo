@@ -41,7 +41,7 @@
             android:name=".ui.activity.MergeActivity"
             android:exported="true"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="sensor"
+            android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"></activity>
 
         <activity
