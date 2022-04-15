@@ -16,18 +16,16 @@ class MergeViewModel(
 
     private val fFmpegHelper by lazy { FFmpegHelper(MainApplication.instance) }
 
-    val mediaFiles = MutableLiveData<ResponseHandler<ArrayList<MediaFile>>>()
-    val mediaSelected = MutableLiveData<ArrayList<MediaFile>>()
-    val currentMedia = MutableLiveData<MediaFile>()
-
     val editVideoResponse = MutableLiveData<ResponseHandler<String>?>()
 
-    fun clearResponse() {
-        editVideoResponse.value = null
+    fun mergeVideo(mediaFileList: ArrayList<MediaFile>) = viewModelScope.launch {
+        editVideoResponse.value = ResponseHandler.Loading
+        fFmpegHelper.executeMergeVideos(mediaFileList, onSuccess = {
+            editVideoResponse.postValue(ResponseHandler.Success(it.toString()))
+            null
+        }, onFail = {
+            editVideoResponse.postValue(ResponseHandler.Failure(extra = it))
+            null
+        })
     }
-
-    fun addVideo() {
-
-    }
-
 }

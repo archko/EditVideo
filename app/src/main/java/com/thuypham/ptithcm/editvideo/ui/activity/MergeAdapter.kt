@@ -20,7 +20,7 @@ class MergeAdapter(
         override fun onBind(data: MediaFile?, position: Int) {
             if (data != null) {
                 binding.apply {
-                    tvMenu.text = data.displayName
+                    tvMenu.text = data.path
                 }
             }
         }

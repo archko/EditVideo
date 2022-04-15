@@ -195,7 +195,7 @@ class FFmpegHelper constructor(
         )
     }
 
-    private fun getOutputVideoPath(fileName: String): String {
+    public fun getOutputVideoPath(fileName: String): String {
         val file = File(outputDir, "${fileName}_${System.currentTimeMillis()}.mp4")
         return file.absolutePath
     }
@@ -563,6 +563,73 @@ class FFmpegHelper constructor(
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
+    suspend fun executeMergeVideos(
+        mediaFiles: ArrayList<MediaFile>,
+        onSuccess: ((MediaFile?) -> Unit?)? = null,
+        onFail: ((String?) -> Unit?)? = null,
+    ) {
+        withContext(Dispatchers.IO) {
+            val outputPath = getOutputVideoPath("cut_video")
+
+            val inputs: ArrayList<String> = ArrayList()
+            var query: String? = ""
+            var queryAudio: String? = ""
+            var index = 0
+            mediaFiles.forEach { mediaFile ->
+                if (mediaFile.mediaType == MediaFile.MEDIA_TYPE_VIDEO) {
+                    inputs.add("-i")
+                    inputs.add(mediaFile.path ?: "")
+
+                    query += "[" + index + ":v]" +
+                            //"scale=$videoWidth:$videoHeight:force_original_aspect_ratio=decrease,pad=$videoWidth:$videoHeight:(ow-iw)/2:(oh-ih)/2,"
+//                        "scale=(iw*sar)*max($videoWidth/(iw*sar)\\,$videoHeight/ih):ih*max($videoWidth/(iw*sar)\\,$videoHeight/ih)," +
+//                        "crop=$videoWidth:$videoHeight," +
+                            //"trim=0:$secondPerVideo," +
+                            "fps=24,setpts=PTS-STARTPTS[v$index];"
+
+                    queryAudio += "[v$index]"
+                    index++
+                }
+            }
+
+            inputs.apply {
+                add("-y")
+                add("-f")
+                add("lavfi")
+                add("-t")
+                add("0.1")
+                add("-i")
+                add("anullsrc")
+                add("-filter_complex")
+                add("$query $queryAudio concat=n=$index:v=1:a=0")
+                add("-an")
+                add("-preset")
+                add("ultrafast")
+                add(outputPath)
+            }
+            val cmdMergeVideo: Array<String> = inputs.toArray(arrayOfNulls<String>(inputs.size))
+
+            executeCommand(cmdMergeVideo, onSuccess = {
+                // Get info of video created --> cast to MediaFile
+                // Todo: Update: get media video info by path
+                val currentMillis = System.currentTimeMillis()
+                val mediaFile = MediaFile(
+                    id = currentMillis,
+                    path = outputPath,
+                    dateAdded = currentMillis,
+                    duration = 0,
+                    mediaType = MediaFile.MEDIA_TYPE_VIDEO,
+                    displayName = outputPath,
+                )
+                onSuccess?.invoke(mediaFile)
+            }, onFail = {
+                val fileImageVideo = File(outputPath)
+                if (fileImageVideo.exists()) fileImageVideo.delete()
+                onFail?.invoke(it)
+            })
+        }
+    }
+
 
     /* Execute command*/
     fun executeCommand(
@@ -571,7 +638,8 @@ class FFmpegHelper constructor(
         onFail: ((String?) -> Unit?)? = null,
     ) {
         try {
-            FFmpegKit.executeWithArgumentsAsync(command,
+            FFmpegKit.executeWithArgumentsAsync(
+                command,
                 { session ->
                     Log.d(TAG, "FFmpeg process exited with state $session")
                     when {

@@ -10,6 +10,7 @@
     <string name="empty_video_msg">Empty video, please upload a video to edit</string>
     <string name="upload_video">Upload Video</string>
     <string name="add_video">Add Video</string>
+    <string name="merge_video">Merge Video</string>
     <string name="empty_media">Empty media</string>
 
     <string name="title_media_video">Select videos</string>
