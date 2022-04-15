@@ -112,8 +112,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
 
     private fun showDialogCutVideoConfirm() {
         ConfirmDialog(
-            title = getString(R.string.dialog_cut_video_title),
-            msg = getString(R.string.dialog_cut_video_description),
+            title = getString(R.string.dialog_split_video_title),
+            msg = getString(R.string.dialog_split_video_description),
             okMsg = getString(R.string.dialog_ok),
         ).show(parentFragmentManager, ConfirmDialog.TAG)
     }

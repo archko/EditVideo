@@ -3,7 +3,6 @@ package com.thuypham.ptithcm.editvideo.ui.activity
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
-import android.util.Log
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat

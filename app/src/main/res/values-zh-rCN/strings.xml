@@ -1,0 +1,46 @@
+<resources>
+    <string name="menu_cut_video">裁剪视频</string>
+    <string name="menu_extract_images">导出图片</string>
+    <string name="menu_extract_audio">导出音频</string>
+    <string name="menu_reverse_video">Reverse Video</string>
+    <string name="menu_convert_to_gif">Convert to Gif</string>
+    <string name="menu_split_video">切割视频</string>
+    <string name="menu_merge_video">合并视频</string>
+    <string name="empty_video_msg">没有视频,请先上传视频</string>
+    <string name="upload_video">上传视频</string>
+    <string name="add_video">添加视频</string>
+    <string name="merge_video">合并视频</string>
+    <string name="empty_media">无媒体</string>
+
+    <string name="title_media_video">Select videos</string>
+    <string name="title_media_image">Select images</string>
+    <string name="title_media_audio">Select audios</string>
+
+    <string name="video_selected">1 video selected</string>
+    <string name="image_selected">1 image selected</string>
+    <string name="audio_selected">1 audio selected</string>
+    <string name="videos_selected">%1d videos selected</string>
+    <string name="images_selected">%1d images selected</string>
+    <string name="audios_selected">%1d audios selected</string>
+
+
+    <string name="result">处理结果</string>
+
+
+    <string name="dialog_cancel">取消</string>
+    <string name="dialog_confirm">确认</string>
+    <string name="dialog_msg_delete_title">删除文件?</string>
+    <string name="dialog_msg_delete_project">确定要删除这个文件?</string>
+
+
+    <string name="dialog_ok">好的</string>
+    <string name="dialog_split_video_title">提示</string>
+    <string name="dialog_split_video_description">请先点击进度条选择开始与结束时间!</string>
+
+
+    <string name="empty_file_msg">请先上传视频!</string>
+
+    <string name="external_permission_denied">该特性需要存储权限支持,当前程度没有存储权限!</string>
+    <string name="load_image_error_msg">出现错误了,无法加载媒体!</string>
+    <string name="extract_image_title">导出的图片</string>
+</resources>

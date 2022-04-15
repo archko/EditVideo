@@ -35,8 +35,8 @@
 
 
     <string name="dialog_ok">OK</string>
-    <string name="dialog_cut_video_title">Message</string>
-    <string name="dialog_cut_video_description">Please change the start and end time by changing seekbar!</string>
+    <string name="dialog_split_video_title">Message</string>
+    <string name="dialog_split_video_description">Please change the start and end time by changing seekbar!</string>
 
 
     <string name="empty_file_msg">Please upload a video first!</string>

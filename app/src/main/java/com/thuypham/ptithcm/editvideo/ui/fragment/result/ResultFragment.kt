@@ -165,11 +165,13 @@ class ResultFragment : BaseFragment<FragmentResultBinding>(R.layout.fragment_res
     }
 
     private fun portrait() {
+        binding.toolbar.toolbarContainer.visibility = View.VISIBLE
         binding.tvOutputPath.visibility = View.VISIBLE
         binding.videoView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH
     }
 
     private fun landscape() {
+        binding.toolbar.toolbarContainer.visibility = View.GONE
         binding.tvOutputPath.visibility = View.GONE
         binding.videoView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT
     }
