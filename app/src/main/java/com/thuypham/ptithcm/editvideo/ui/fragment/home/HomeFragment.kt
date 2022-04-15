@@ -17,12 +17,13 @@ import com.thuypham.ptithcm.editvideo.base.BaseFragment
 import com.thuypham.ptithcm.editvideo.databinding.FragmentHomeBinding
 import com.thuypham.ptithcm.editvideo.extension.getPath
 import com.thuypham.ptithcm.editvideo.extension.gone
+import com.thuypham.ptithcm.editvideo.extension.navigateTo
 import com.thuypham.ptithcm.editvideo.extension.setOnSingleClickListener
 import com.thuypham.ptithcm.editvideo.extension.toTimeAsHHmmSSS
 import com.thuypham.ptithcm.editvideo.model.MediaFile
 import com.thuypham.ptithcm.editvideo.model.Menu
 import com.thuypham.ptithcm.editvideo.model.ResponseHandler
-import com.thuypham.ptithcm.editvideo.ui.activity.MergeActivity
+import com.thuypham.ptithcm.editvideo.ui.activity.MergeFragment
 import com.thuypham.ptithcm.editvideo.ui.activity.ResultActivity
 import com.thuypham.ptithcm.editvideo.ui.dialog.ConfirmDialog
 import com.thuypham.ptithcm.editvideo.viewmodel.MediaViewModel
@@ -59,8 +60,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
 
     private fun onMenuClick(menu: Menu) {
         if (menu.id == Menu.MENU_MERGE_VIDEO) {
-            val intent = Intent(requireActivity(), MergeActivity::class.java)
-            startActivity(intent)
+            navigateTo(R.id.mergeVideo)
             return
         }
         if (currentMediaFile == null) {
@@ -100,7 +100,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
 
             }
             Menu.MENU_MERGE_VIDEO -> {
-                val intent = Intent(requireActivity(), MergeActivity::class.java)
+                val intent = Intent(requireActivity(), MergeFragment::class.java)
                 startActivity(intent)
             }
             else -> {

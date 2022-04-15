@@ -1,29 +1,28 @@
 package com.thuypham.ptithcm.editvideo.ui.activity
 
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.util.Log
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.ItemTouchHelper
-import com.google.android.material.snackbar.Snackbar
 import com.thuypham.ptithcm.editvideo.R
-import com.thuypham.ptithcm.editvideo.base.BaseActivity
+import com.thuypham.ptithcm.editvideo.base.BaseFragment
 import com.thuypham.ptithcm.editvideo.databinding.ActivityMergeBinding
 import com.thuypham.ptithcm.editvideo.extension.getPath
+import com.thuypham.ptithcm.editvideo.extension.goBack
 import com.thuypham.ptithcm.editvideo.extension.setOnSingleClickListener
-import com.thuypham.ptithcm.editvideo.extension.show
 import com.thuypham.ptithcm.editvideo.model.MediaFile
 import com.thuypham.ptithcm.editvideo.model.ResponseHandler
 import com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment
 import com.thuypham.ptithcm.editvideo.util.ItemTouchCallback
 import com.thuypham.ptithcm.editvideo.viewmodel.MergeViewModel
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.android.viewmodel.ext.android.sharedViewModel
 
-class MergeActivity : BaseActivity<ActivityMergeBinding>(R.layout.activity_merge) {
+class MergeFragment : BaseFragment<ActivityMergeBinding>(R.layout.activity_merge) {
 
-    private val mergeViewModel: MergeViewModel by viewModel()
+    private val mergeViewModel: MergeViewModel by sharedViewModel()
     private val mediaFileList: ArrayList<MediaFile> = ArrayList()
     private val mergeAdapter: MergeAdapter by lazy {
-        MergeAdapter(this) { mediaFile, pos -> onMediaClick(mediaFile, pos) }
+        MergeAdapter(requireContext()) { mediaFile, pos -> onMediaClick(mediaFile, pos) }
     }
 
     private fun onMediaClick(mediaFile: MediaFile, pos: Int) {
@@ -39,10 +38,18 @@ class MergeActivity : BaseActivity<ActivityMergeBinding>(R.layout.activity_merge
     }
 
     private fun setupToolbar() {
-        binding.root.findViewById<AppCompatTextView>(R.id.tvTitle).apply {
-            show()
-            text = title
-            setOnSingleClickListener { finish() }
+        setToolbarTitle(getString(R.string.result))
+        setRightBtn(R.drawable.ic_delete) {
+
+        }
+        setLeftBtn(R.drawable.ic_back) {
+            goBack()
+        }
+        setSubRightBtn(R.drawable.ic_share) {
+
+        }
+        setSubRight2Btn(R.drawable.ic_edit) {
+
         }
     }
 
@@ -115,21 +122,11 @@ class MergeActivity : BaseActivity<ActivityMergeBinding>(R.layout.activity_merge
         if (requestCode == HomeFragment.REQUEST_SAF_FFMPEG && resultCode == RESULT_OK && data != null && data.data != null) {
             binding.apply {
                 val mediaFile = MediaFile()
-                mediaFile.getPath(this@MergeActivity, data.data!!)
+                mediaFile.getPath(requireContext(), data.data!!)
                 val count = mergeAdapter.itemCount
                 mediaFileList.add(mediaFile)
                 mergeAdapter.notifyItemInserted(count)
             }
         }
-    }
-
-    fun showSnackBar(message: String?) {
-        runOnUiThread(Runnable {
-            val snackBar = Snackbar.make(
-                binding.recyclerView ?: return@Runnable, message
-                    ?: return@Runnable, Snackbar.LENGTH_SHORT
-            )
-            snackBar.show()
-        })
     }
 }

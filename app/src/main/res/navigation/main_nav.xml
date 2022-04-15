@@ -28,6 +28,11 @@
             android:id="@+id/home_to_extractImages"
             app:destination="@id/extractImages"
             app:popUpTo="@id/home" />
+
+        <action
+            android:id="@+id/home_to_Merge"
+            app:destination="@id/mergeVideo"
+            app:popUpTo="@id/home" />
     </fragment>
 
     <fragment
@@ -37,10 +42,15 @@
         tools:layout="@layout/fragment_media" />
 
     <fragment
+        android:id="@+id/mergeVideo"
+        android:name="com.thuypham.ptithcm.editvideo.ui.activity.MergeFragment"
+        android:label="MergeFragment"
+        tools:layout="@layout/activity_merge" />
+
+    <fragment
         android:id="@+id/extractImages"
         android:name="com.thuypham.ptithcm.editvideo.ui.fragment.extractimage.ExtractImageResultFragment"
         android:label="ExtractImageFragment"
-        tools:layout="@layout/fragment_extract_image_result">
-    </fragment>
+        tools:layout="@layout/fragment_extract_image_result"></fragment>
 
 </navigation>
