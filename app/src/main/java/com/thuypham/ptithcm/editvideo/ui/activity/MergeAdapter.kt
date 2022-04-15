@@ -35,7 +35,7 @@ class MergeAdapter(
         return MergeViewHolder(binding).apply {
             binding.delete.setOnSingleClickListener {
                 onItemDeleted?.invoke(
-                    currentList[absoluteAdapterPosition],
+                    getItemData(absoluteAdapterPosition),
                     absoluteAdapterPosition
                 )
             }
