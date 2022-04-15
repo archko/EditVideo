@@ -6,27 +6,26 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.base.BaseActivity
 import com.thuypham.ptithcm.editvideo.databinding.ActivityMainBinding
+import com.thuypham.ptithcm.editvideo.ui.fragment.extractimage.ExtractImageResultFragment
+import com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment.Companion.RESULT_DESTINATION_ID
 import com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment.Companion.RESULT_PATH
 import com.thuypham.ptithcm.editvideo.ui.fragment.result.ResultFragment
 
-class ResultActivity : AppCompatActivity() {
-
+class ResultActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_result) {
 
     companion object {
         @JvmStatic
-        fun start(context: Context, resultPath: String) {
+        fun start(context: Context, resultPath: String, destinationId: Int) {
             val intent = Intent(context, ResultActivity::class.java)
             intent.putExtra(RESULT_PATH, resultPath)
+            intent.putExtra(RESULT_DESTINATION_ID, destinationId)
             context.startActivity(intent)
         }
     }
@@ -44,16 +43,32 @@ class ResultActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
 
-        val resultFragment = ResultFragment()
-        resultFragment.arguments = bundleOf(
+        val destinationId = intent.getIntExtra(RESULT_DESTINATION_ID, 0)
+        val bundle = bundleOf(
             RESULT_PATH to intent.getStringExtra(RESULT_PATH)
         )
-        supportFragmentManager
-            .beginTransaction()
-            .add(
-                android.R.id.content,
-                resultFragment
-            ).commit()
+        if (destinationId == R.id.home_to_extractImages) {
+            val resultFragment = ExtractImageResultFragment()
+            resultFragment.arguments = bundle
+            supportFragmentManager
+                .beginTransaction()
+                .add(
+                    R.id.container,
+                    resultFragment
+                ).commit()
+        } else {
+            val resultFragment = ResultFragment()
+            resultFragment.arguments = bundle
+            supportFragmentManager
+                .beginTransaction()
+                .add(
+                    R.id.container,
+                    resultFragment
+                ).commit()
+        }
+    }
+
+    override fun setupView() {
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

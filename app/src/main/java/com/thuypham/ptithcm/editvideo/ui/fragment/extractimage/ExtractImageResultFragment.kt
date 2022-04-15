@@ -1,11 +1,12 @@
 package com.thuypham.ptithcm.editvideo.ui.fragment.extractimage
 
+import android.util.Log
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.base.BaseFragment
 import com.thuypham.ptithcm.editvideo.databinding.FragmentExtractImageResultBinding
-import com.thuypham.ptithcm.editvideo.extension.goBack
 import com.thuypham.ptithcm.editvideo.extension.gone
 import com.thuypham.ptithcm.editvideo.extension.show
+import com.thuypham.ptithcm.editvideo.model.MediaFile
 import com.thuypham.ptithcm.editvideo.model.ResponseHandler
 import com.thuypham.ptithcm.editvideo.ui.dialog.ConfirmDialog
 import com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment
@@ -26,8 +27,13 @@ class ExtractImageResultFragment :
         }
     }
 
-    private fun onImageItemAdapterClick(imagePath: String) {
-        ImageDetailDialogFragment(imagePath).show(parentFragmentManager, ConfirmDialog.TAG)
+    private fun onImageItemAdapterClick(mediaFile: MediaFile) {
+        mediaFile.path?.let {
+            ImageDetailDialogFragment(it).show(
+                parentFragmentManager,
+                ConfirmDialog.TAG
+            )
+        }
     }
 
     override fun setupLogic() {
@@ -53,9 +59,14 @@ class ExtractImageResultFragment :
         setLeftBtn(R.drawable.ic_back) {
             goBack()
         }
-        setSubRightBtn(R.drawable.ic_delete){
-
+        setSubRightBtn(R.drawable.ic_delete) {
+            extractImageViewModel.deleteImage(folderPath)
+            null
         }
+    }
+
+    private fun goBack() {
+        requireActivity().finish()
     }
 
     private fun setupRecyclerView() {
@@ -72,6 +83,10 @@ class ExtractImageResultFragment :
                 is ResponseHandler.Success -> {
                     hideLoading1()
                     val data = response.data
+                    Log.d(
+                        this::class.java.name,
+                        "ImageResultFragment, resultPath:$folderPath, $data"
+                    )
                     if (data.isNullOrEmpty()) {
                         binding.layoutEmpty.root.show()
                     } else {
@@ -90,6 +105,24 @@ class ExtractImageResultFragment :
                 }
                 else -> {
                     hideLoading1()
+                }
+            }
+        }
+        extractImageViewModel.deleteImagesResponse.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is ResponseHandler.Success -> {
+                    hideLoading()
+                    goBack()
+                }
+                is ResponseHandler.Loading -> {
+                    showLoading()
+                }
+                is ResponseHandler.Failure -> {
+                    hideLoading()
+                    showSnackBar("Delete image failed.")
+                }
+                else -> {
+                    hideLoading()
                 }
             }
         }

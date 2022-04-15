@@ -86,13 +86,14 @@ class MergeFragment : BaseFragment<ActivityMergeBinding>(R.layout.activity_merge
                     Log.d("merge", response.data)
                     hideLoading()
 
-                    ResultActivity.start(requireContext(), response.data)
+                    ResultActivity.start(requireContext(), response.data, 0)
                 }
                 is ResponseHandler.Loading -> {
                     showLoading()
                 }
                 is ResponseHandler.Failure -> {
                     hideLoading()
+                    showSnackBar("merge video error!")
                 }
                 else -> {
                     hideLoading()

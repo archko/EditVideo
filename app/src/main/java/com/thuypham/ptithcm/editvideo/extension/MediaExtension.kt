@@ -11,6 +11,7 @@ import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.util.Log
 import com.thuypham.ptithcm.editvideo.model.MediaFile
+import java.io.File
 
 fun MediaFile.getPath(context: Context, data: Uri) {
     val path: String? = getFilePathByUri(context, data, this)
@@ -157,3 +158,32 @@ private fun isDownloadsDocument(uri: Uri): Boolean {
 private fun isMediaDocument(uri: Uri): Boolean {
     return "com.android.providers.media.documents" == uri.authority
 }
+
+/**
+ * 递归删除文件夹
+ *
+ * @param dirPath
+ * @return
+ */
+fun deleteDir(dirPath: String?): Boolean {
+    var success = false
+    if (dirPath.isNullOrEmpty()) {
+        return success
+    }
+    val dir = File(dirPath)
+    return if (dir.isDirectory) {
+        val files = dir.listFiles()
+        for (i in files.indices) {
+            if (files[i].isDirectory) {
+                deleteDir(files[i].absolutePath)
+            } else {
+                success = success and files[i].delete()
+            }
+        }
+        success = success and dir.delete()
+        success
+    } else {
+        success
+    }
+}
+

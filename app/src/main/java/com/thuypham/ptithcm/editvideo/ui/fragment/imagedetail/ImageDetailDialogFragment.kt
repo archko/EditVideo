@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.view.Window
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.base.BaseDialogFragment
 import com.thuypham.ptithcm.editvideo.databinding.FragmentDetailImageBinding
@@ -42,10 +43,21 @@ class ImageDetailDialogFragment(
 
     override fun setupView() {
         binding.apply {
-            Glide.with(root.context)
-                .load(File(imagePath))
-                .placeholder(R.drawable.ic_image_placeholder)
-                .into(ivZoomImage)
+            if (!imagePath.isNullOrEmpty()) {
+                if (imagePath.startsWith("/storage")) {
+                    Glide.with(root.context)
+                        .load(File(imagePath))
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .placeholder(R.drawable.ic_image_placeholder)
+                        .into(ivZoomImage)
+                } else {
+                    Glide.with(root.context)
+                        .load(File(imagePath))
+                        .placeholder(R.drawable.ic_image_placeholder)
+                        .into(ivZoomImage)
+                }
+            }
+
             ivZoomImage.setImageListener(this@ImageDetailDialogFragment)
             ivClose.setOnSingleClickListener {
                 dismiss()

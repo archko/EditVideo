@@ -33,6 +33,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
 
     companion object {
         const val RESULT_PATH = "RESULT_PATH"
+        const val RESULT_DESTINATION_ID = "result_destination_id"
         const val REQUEST_SAF_FFMPEG = 12
     }
 
@@ -235,11 +236,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             }
             shouldNavigateToResultFragment = false
             //navigateTo(destinationId, bundleOf(RESULT_PATH to resultPath))
+            Log.d(
+                this::class.java.name,
+                "navigateToResultFragment $currentMediaFile, resultPath:$resultPath"
+            )
 
-            ResultActivity.start(requireContext(), resultPath)
+            ResultActivity.start(requireContext(), resultPath, destinationId)
         }
     }
-
 
     override fun onStart() {
         super.onStart()
@@ -359,10 +363,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
          */
         override fun onRenderedFirstFrame() {
             super.onRenderedFirstFrame()
-            Log.d(
+            /*Log.d(
                 this::class.java.name,
                 "changed onRenderedFirstFrame ${currentMediaFile?.duration}"
-            )
+            )*/
             //系统文件管理器,有可能获取不到,它是xx/primary/下面的,只有路径,默认设置了10毫秒,所以需要更新.
             currentMediaFile?.let {
                 if (null != it.duration && it.duration!! <= 10) {
