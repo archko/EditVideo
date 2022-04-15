@@ -20,7 +20,7 @@ class MergeViewModel(
 
     fun mergeVideo(mediaFileList: ArrayList<MediaFile>) = viewModelScope.launch {
         editVideoResponse.value = ResponseHandler.Loading
-        fFmpegHelper.executeMergeVideos(mediaFileList, onSuccess = {
+        fFmpegHelper.executeMergeVideosWithFile(mediaFileList, onSuccess = {
             editVideoResponse.postValue(ResponseHandler.Success(it.toString()))
             null
         }, onFail = {

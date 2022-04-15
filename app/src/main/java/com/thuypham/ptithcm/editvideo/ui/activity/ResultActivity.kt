@@ -1,6 +1,8 @@
 package com.thuypham.ptithcm.editvideo.ui.activity
 
 import android.annotation.TargetApi
+import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
@@ -18,6 +20,16 @@ import com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment.Companion.RE
 import com.thuypham.ptithcm.editvideo.ui.fragment.result.ResultFragment
 
 class ResultActivity : AppCompatActivity() {
+
+
+    companion object {
+        @JvmStatic
+        fun start(context: Context, resultPath: String) {
+            val intent = Intent(context, ResultActivity::class.java)
+            intent.putExtra(RESULT_PATH, resultPath)
+            context.startActivity(intent)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -68,6 +68,7 @@ class FFmpegHelper constructor(
                 "" + startMs / 1000,
                 "-t",
                 "" + (endMs - startMs) / 1000,
+                "-accurate_seek",
                 "-i",
                 filePath,
                 "-c",
@@ -566,6 +567,7 @@ class FFmpegHelper constructor(
     /**
      * ffmpeg -i 1.mp4 -i 2.mp4 -i 3.mp4 -filter_complex "[0:v] [0:a] [1:v] [1:a] [2:v] [2:a] concat=n=3:v=1:a=1 [vv] [aa]" -map "[vv]" -map "[aa]" mergedVideo.mp4
      * 需要视频的音轨一样,不一样的情况还不知道如何处理.
+     * 经常是用上面切割,再到这里合并会失败,流异常,因为有可能切割的时候有黑屏
      */
     suspend fun executeMergeVideos(
         mediaFiles: ArrayList<MediaFile>,
@@ -596,6 +598,8 @@ class FFmpegHelper constructor(
             inputs.add("\"[vv]\"")
             inputs.add("-map")
             inputs.add("\"[aa]\"")
+            inputs.add("-c")
+            inputs.add("copy")
             inputs.add("-preset")
             inputs.add("ultrafast")
             inputs.add(outputPath)
@@ -634,6 +638,97 @@ class FFmpegHelper constructor(
             }, onFail = {
                 val fileImageVideo = File(outputPath)
                 if (fileImageVideo.exists()) fileImageVideo.delete()
+                onFail?.invoke(it)
+            })
+        }
+    }
+
+    /**
+     * 没有权限写入sdcard要注意
+     */
+    private fun writeFile(file: File, content: String) {
+        var writer: BufferedWriter? = null
+        try {
+            file.createNewFile()
+            writer =
+                BufferedWriter(FileWriter(file))
+            writer.write(content)
+            writer.flush()
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        } finally {
+            if (null != writer) {
+                writer.close()
+            }
+        }
+    }
+
+    /**
+     * -f concat -safe 0 -i file.txt -c copy mergedVideo.mp4
+     * 生成文件,然后输出
+     */
+    suspend fun executeMergeVideosWithFile(
+        mediaFiles: ArrayList<MediaFile>,
+        onSuccess: ((String?) -> Unit?)? = null,
+        onFail: ((String?) -> Unit?)? = null,
+    ) {
+        withContext(Dispatchers.IO) {
+            val outputFile = File(
+                context.externalCacheDir,
+                "out_${System.currentTimeMillis()}.txt"
+            )
+            val outputPath = getOutputVideoPath("merge_video")
+
+            val inputs: ArrayList<String> = ArrayList()
+            var content = java.lang.StringBuilder()
+            mediaFiles.forEach { mediaFile ->
+                content.append("file")
+                content.append(" '")
+                content.append(mediaFile.path)
+                content.append("'\n")
+            }
+
+            writeFile(outputFile, content.toString())
+
+            inputs.add("-f")
+            inputs.add("concat")
+            inputs.add("-safe")
+            inputs.add("0")
+            inputs.add("-i")
+            inputs.add(outputFile.absolutePath)
+            inputs.add("-c")
+            inputs.add("copy")
+            inputs.add("-preset")
+            inputs.add("ultrafast")
+            inputs.add(outputPath)
+
+            val str = inputs.joinToString(" ")
+            Log.d("str", str)
+
+            //val cmdMergeVideo: Array<String> = inputs.toArray(arrayOfNulls<String>(inputs.size))
+
+            executeCommandString(str, onSuccess = {
+                val currentMillis = System.currentTimeMillis()
+                val mediaFile = MediaFile(
+                    id = currentMillis,
+                    path = outputPath,
+                    dateAdded = currentMillis,
+                    duration = 0,
+                    mediaType = MediaFile.MEDIA_TYPE_VIDEO,
+                    displayName = outputPath,
+                )
+                if (outputFile.exists()) {
+                    outputFile.delete()
+                }
+                onSuccess?.invoke(outputPath)
+            }, onFail = {
+                val fileImageVideo = File(outputPath)
+                if (fileImageVideo.exists()) {
+                    fileImageVideo.delete()
+                }
+                if (outputFile.exists()) {
+                    outputFile.delete()
+                }
                 onFail?.invoke(it)
             })
         }

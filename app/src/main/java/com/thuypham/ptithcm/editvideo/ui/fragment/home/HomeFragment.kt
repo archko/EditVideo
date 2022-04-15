@@ -236,9 +236,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             shouldNavigateToResultFragment = false
             //navigateTo(destinationId, bundleOf(RESULT_PATH to resultPath))
 
-            val intent = Intent(requireActivity(), ResultActivity::class.java)
-            intent.putExtra(RESULT_PATH, resultPath)
-            startActivity(intent)
+            ResultActivity.start(requireContext(), resultPath)
         }
     }
 
