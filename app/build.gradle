@@ -92,7 +92,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.4.1'
 
     /* ffmpeg */
-    implementation 'com.arthenica:ffmpeg-kit-full:4.5.1.LTS'
+    implementation 'com.arthenica:ffmpeg-kit-full:4.5.1-1.LTS'
 
     /* Gson */
     implementation 'com.google.code.gson:gson:2.9.0'
