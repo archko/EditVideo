@@ -84,6 +84,7 @@ class MergeFragment : BaseFragment<ActivityMergeBinding>(R.layout.activity_merge
             when (response) {
                 is ResponseHandler.Success -> {
                     Log.d("merge", response.data)
+                    hideLoading()
                 }
                 is ResponseHandler.Loading -> {
                     showLoading()

@@ -563,36 +563,46 @@ class FFmpegHelper constructor(
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
+    /**
+     * ffmpeg -i 1.mp4 -i 2.mp4 -i 3.mp4 -filter_complex "[0:v] [0:a] [1:v] [1:a] [2:v] [2:a] concat=n=3:v=1:a=1 [vv] [aa]" -map "[vv]" -map "[aa]" mergedVideo.mp4
+     * 需要视频的音轨一样,不一样的情况还不知道如何处理.
+     */
     suspend fun executeMergeVideos(
         mediaFiles: ArrayList<MediaFile>,
         onSuccess: ((MediaFile?) -> Unit?)? = null,
         onFail: ((String?) -> Unit?)? = null,
     ) {
         withContext(Dispatchers.IO) {
-            val outputPath = getOutputVideoPath("cut_video")
+            val outputPath = getOutputVideoPath("merge_video")
 
             val inputs: ArrayList<String> = ArrayList()
-            var query: String? = ""
-            var queryAudio: String? = ""
             var index = 0
             mediaFiles.forEach { mediaFile ->
-                if (mediaFile.mediaType == MediaFile.MEDIA_TYPE_VIDEO) {
-                    inputs.add("-i")
-                    inputs.add(mediaFile.path ?: "")
-
-                    query += "[" + index + ":v]" +
-                            //"scale=$videoWidth:$videoHeight:force_original_aspect_ratio=decrease,pad=$videoWidth:$videoHeight:(ow-iw)/2:(oh-ih)/2,"
-//                        "scale=(iw*sar)*max($videoWidth/(iw*sar)\\,$videoHeight/ih):ih*max($videoWidth/(iw*sar)\\,$videoHeight/ih)," +
-//                        "crop=$videoWidth:$videoHeight," +
-                            //"trim=0:$secondPerVideo," +
-                            "fps=24,setpts=PTS-STARTPTS[v$index];"
-
-                    queryAudio += "[v$index]"
-                    index++
-                }
+                inputs.add("-i")
+                inputs.add(mediaFile.path ?: "")
+                index++
             }
+            inputs.add("-filter_complex \"")
+            index = 0
+            mediaFiles.forEach { mediaFile ->
+                inputs.add("[$index:v]")
+                inputs.add("[$index:a]")
+                index++
+            }
+            inputs.add("concat=n=$index:v=1:a=1")
+            inputs.add("[vv]")
+            inputs.add("[aa] \"")
+            inputs.add("-map")
+            inputs.add("\"[vv]\"")
+            inputs.add("-map")
+            inputs.add("\"[aa]\"")
+            inputs.add("-preset")
+            inputs.add("ultrafast")
+            inputs.add(outputPath)
 
-            inputs.apply {
+            val str = inputs.joinToString(" ")
+            Log.d("str", str)
+            /*inputs.apply {
                 add("-y")
                 add("-f")
                 add("lavfi")
@@ -601,15 +611,14 @@ class FFmpegHelper constructor(
                 add("-i")
                 add("anullsrc")
                 add("-filter_complex")
-                add("$query $queryAudio concat=n=$index:v=1:a=0")
                 add("-an")
                 add("-preset")
                 add("ultrafast")
                 add(outputPath)
-            }
-            val cmdMergeVideo: Array<String> = inputs.toArray(arrayOfNulls<String>(inputs.size))
+            }*/
+            //val cmdMergeVideo: Array<String> = inputs.toArray(arrayOfNulls<String>(inputs.size))
 
-            executeCommand(cmdMergeVideo, onSuccess = {
+            executeCommandString(str, onSuccess = {
                 // Get info of video created --> cast to MediaFile
                 // Todo: Update: get media video info by path
                 val currentMillis = System.currentTimeMillis()
