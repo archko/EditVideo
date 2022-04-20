@@ -60,6 +60,7 @@ fun getFilePathByUri(context: Context, uri: Uri, mediaFile: MediaFile): String? 
                 val split = docId.split(":").toTypedArray()
                 val type = split[0]
                 if ("primary".equals(type, ignoreCase = true)) {
+                    //这种的是拿文件,没有DURATION
                     path = Environment.getExternalStorageDirectory().toString() + "/" + split[1]
                     mediaFile.path = path
                     mediaFile.duration = 10
@@ -99,6 +100,7 @@ fun getFilePathByUri(context: Context, uri: Uri, mediaFile: MediaFile): String? 
     return null
 }
 
+//由系统文件管理器选择的是,content://com.android.fileexplorer.myprovider/external_files/DCIM/Camera/VID_20211029_091852.mp4 这种的DURATION是没有的
 fun getRealPathFromURI(context: Context, contentUri: Uri?, mediaFile: MediaFile): String? {
     var cursor: Cursor? = null
     try {
@@ -107,10 +109,12 @@ fun getRealPathFromURI(context: Context, contentUri: Uri?, mediaFile: MediaFile)
         val column_index = cursor!!.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
         cursor.moveToFirst()
         val path = cursor.getString(column_index)
-        val columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION)
+        val columnIndex = cursor.getColumnIndex(MediaStore.Video.Media.DURATION)
+        mediaFile.path = path
         if (columnIndex > -1) {
-            mediaFile.path = path
             mediaFile.duration = cursor.getLong(columnIndex)
+        } else {
+            mediaFile.duration = 10
         }
         return path
     } catch (e: java.lang.Exception) {
