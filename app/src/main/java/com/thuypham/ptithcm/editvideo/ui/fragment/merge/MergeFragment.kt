@@ -1,4 +1,4 @@
-package com.thuypham.ptithcm.editvideo.ui.activity
+package com.thuypham.ptithcm.editvideo.ui.fragment.merge
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
@@ -12,6 +12,8 @@ import com.thuypham.ptithcm.editvideo.extension.goBack
 import com.thuypham.ptithcm.editvideo.extension.setOnSingleClickListener
 import com.thuypham.ptithcm.editvideo.model.MediaFile
 import com.thuypham.ptithcm.editvideo.model.ResponseHandler
+import com.thuypham.ptithcm.editvideo.ui.activity.ResultActivity
+import com.thuypham.ptithcm.editvideo.ui.dialog.ConfirmDialog
 import com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment
 import com.thuypham.ptithcm.editvideo.util.ItemTouchCallback
 import com.thuypham.ptithcm.editvideo.viewmodel.MergeViewModel
@@ -22,13 +24,32 @@ class MergeFragment : BaseFragment<ActivityMergeBinding>(R.layout.activity_merge
     private val mergeViewModel: MergeViewModel by sharedViewModel()
     private val mediaFileList: ArrayList<MediaFile> = ArrayList()
     private val mergeAdapter: MergeAdapter by lazy {
-        MergeAdapter(requireContext()) { mediaFile, pos -> onMediaClick(mediaFile, pos) }
+        MergeAdapter(requireContext(),
+            object : MergeAdapter.ItemListener {
+                override fun onDelete(item: MediaFile, pos: Int) {
+                    this@MergeFragment.onDelete(item, pos)
+                }
+
+                override fun onPlay(item: MediaFile, pos: Int) {
+                    this@MergeFragment.onClick(item, pos)
+                }
+            }
+        )
     }
 
-    private fun onMediaClick(mediaFile: MediaFile, pos: Int) {
+    private fun onDelete(mediaFile: MediaFile, pos: Int) {
         mediaFileList.remove(mediaFile)
         mergeAdapter.data = mediaFileList
         mergeAdapter.notifyDataSetChanged()
+    }
+
+    private fun onClick(mediaFile: MediaFile, pos: Int) {
+        mediaFile.path?.let {
+            PlayerFragment(it).show(
+                parentFragmentManager,
+                ConfirmDialog.TAG
+            )
+        }
     }
 
     override fun setupView() {
@@ -39,17 +60,8 @@ class MergeFragment : BaseFragment<ActivityMergeBinding>(R.layout.activity_merge
 
     private fun setupToolbar() {
         setToolbarTitle(getString(R.string.result))
-        setRightBtn(R.drawable.ic_delete) {
-
-        }
         setLeftBtn(R.drawable.ic_back) {
             goBack()
-        }
-        setSubRightBtn(R.drawable.ic_share) {
-
-        }
-        setSubRight2Btn(R.drawable.ic_edit) {
-
         }
     }
 

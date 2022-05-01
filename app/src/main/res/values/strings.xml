@@ -44,4 +44,6 @@
     <string name="external_permission_denied">Storage permission is denied. This permission is required to use this feature</string>
     <string name="load_image_error_msg">Some errors occur. Can\'t load image!</string>
     <string name="extract_image_title">Extract image result</string>
+
+    <string name="merge_video_tip">only support videos with same bit,width and height.eg. splited video from last page</string>
 </resources>

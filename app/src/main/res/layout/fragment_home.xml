@@ -20,7 +20,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbar"
-            app:resize_mode="fixed_height"
+            app:resize_mode="fit"
             app:surface_type="texture_view" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -93,7 +93,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.5" />
+            app:layout_constraintGuide_percent="0.60" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvMenu"

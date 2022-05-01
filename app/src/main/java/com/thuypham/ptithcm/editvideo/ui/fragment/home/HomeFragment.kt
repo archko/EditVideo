@@ -23,7 +23,7 @@ import com.thuypham.ptithcm.editvideo.extension.toTimeAsHHmmSSS
 import com.thuypham.ptithcm.editvideo.model.MediaFile
 import com.thuypham.ptithcm.editvideo.model.Menu
 import com.thuypham.ptithcm.editvideo.model.ResponseHandler
-import com.thuypham.ptithcm.editvideo.ui.activity.MergeFragment
+import com.thuypham.ptithcm.editvideo.ui.fragment.merge.MergeFragment
 import com.thuypham.ptithcm.editvideo.ui.activity.ResultActivity
 import com.thuypham.ptithcm.editvideo.ui.dialog.ConfirmDialog
 import com.thuypham.ptithcm.editvideo.viewmodel.MediaViewModel
@@ -123,6 +123,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         setupRecyclerView()
         setupEvent()
         setupRangeSlider()
+        binding.layoutEmptyVideo.setOnClickListener {
+            selectMedia()
+        }
     }
 
     private fun setupRangeSlider() {
@@ -152,23 +155,26 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
 
     private fun setupEvent() {
         binding.btnUploadVideo.setOnSingleClickListener {
-            /*navigateTo(
-                R.id.media,
-                bundleOf(
-                    MediaFragment.MEDIA_TYPE to MediaFile.MEDIA_TYPE_VIDEO,
-                    MediaFragment.MAX_SELECTED_COUNT to 1
-                )
-            )*/
-
-            val intent = Intent(Intent.ACTION_GET_CONTENT)
-                .setType("*/*")
-                .putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "video/*", "audio/*"))
-                .addCategory(Intent.CATEGORY_OPENABLE)
-            startActivityForResult(
-                intent,
-                REQUEST_SAF_FFMPEG
-            )
+            selectMedia()
         }
+    }
+
+    private fun selectMedia() {
+        /*navigateTo(
+            R.id.media,
+            bundleOf(
+                MediaFragment.MEDIA_TYPE to MediaFile.MEDIA_TYPE_VIDEO,
+                MediaFragment.MAX_SELECTED_COUNT to 1
+            )
+        )*/
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+            .setType("*/*")
+            .putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "video/*", "audio/*"))
+            .addCategory(Intent.CATEGORY_OPENABLE)
+        startActivityForResult(
+            intent,
+            REQUEST_SAF_FFMPEG
+        )
     }
 
     private fun setupToolbar() {

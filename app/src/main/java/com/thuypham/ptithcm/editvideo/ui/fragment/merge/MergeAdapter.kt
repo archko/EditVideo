@@ -1,4 +1,4 @@
-package com.thuypham.ptithcm.editvideo.ui.activity
+package com.thuypham.ptithcm.editvideo.ui.fragment.merge
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -11,16 +11,27 @@ import com.thuypham.ptithcm.editvideo.ui.adapter.BaseViewHolder
 
 class MergeAdapter(
     context: Context,
-    private val onItemDeleted: ((item: MediaFile, pos: Int) -> Unit)? = null,
+    private val itemListener: ItemListener? = null,
 ) : BaseRecyclerAdapter<MediaFile>(context) {
 
-    class MergeViewHolder(
+    interface ItemListener {
+        fun onDelete(item: MediaFile, pos: Int)
+        fun onPlay(item: MediaFile, pos: Int)
+    }
+
+    inner class MergeViewHolder(
         private val binding: ItemMediaFileBinding,
     ) : BaseViewHolder<MediaFile>(binding.root) {
         override fun onBind(data: MediaFile?, position: Int) {
             if (data != null) {
                 binding.apply {
                     tvMenu.text = data.path
+                }
+                binding.play.setOnSingleClickListener {
+                    itemListener?.onPlay(data, position)
+                }
+                binding.delete.setOnClickListener {
+                    itemListener?.onDelete(data, position)
                 }
             }
         }
@@ -32,13 +43,6 @@ class MergeAdapter(
     ): MergeViewHolder {
         val binding =
             ItemMediaFileBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return MergeViewHolder(binding).apply {
-            binding.delete.setOnSingleClickListener {
-                onItemDeleted?.invoke(
-                    getItemData(absoluteAdapterPosition),
-                    absoluteAdapterPosition
-                )
-            }
-        }
+        return MergeViewHolder(binding)
     }
 }

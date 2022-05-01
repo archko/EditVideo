@@ -10,6 +10,17 @@
             android:id="@+id/toolbar"
             layout="@layout/layout_toolbar" />
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvMerge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:text="@string/merge_video_tip"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAddVideo"
             style="@style/Theme.EditVideo.Button"
@@ -22,7 +33,7 @@
             app:layout_constraintEnd_toStartOf="@id/btnMergeVideo"
             app:layout_constraintHeight_percent="0.06"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar" />
+            app:layout_constraintTop_toBottomOf="@id/tvMerge" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnMergeVideo"
@@ -36,7 +47,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent="0.06"
             app:layout_constraintStart_toEndOf="@id/btnAddVideo"
-            app:layout_constraintTop_toBottomOf="@id/toolbar" />
+            app:layout_constraintTop_toBottomOf="@id/tvMerge" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
@@ -48,7 +59,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btnAddVideo"
-            app:spanCount="3"
             tools:itemCount="6"
             tools:listitem="@layout/item_media_file" />
 
