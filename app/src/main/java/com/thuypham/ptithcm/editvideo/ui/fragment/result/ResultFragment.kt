@@ -69,9 +69,6 @@ class ResultFragment : BaseFragment<FragmentResultBinding>(R.layout.fragment_res
         setSubRightBtn(R.drawable.ic_share) {
             resultUrl?.let { it1 -> shareImageToOtherApp(it1) }
         }
-        setSubRight2Btn(R.drawable.ic_edit) {
-
-        }
     }
 
     private fun showDialogDeleteConfirm() {

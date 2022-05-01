@@ -126,8 +126,8 @@ class MergeFragment : BaseFragment<ActivityMergeBinding>(R.layout.activity_merge
     }
 
     private fun mergeVideo() {
-        if (mediaFileList.size < 1) {
-            showSnackBar("Please add video!")
+        if (mediaFileList.size <= 1) {
+            showSnackBar("Please add more video!")
             return
         }
         mergeViewModel.mergeVideo(mediaFileList)
