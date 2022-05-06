@@ -32,6 +32,9 @@ class CutFragment : BaseFragment<FragmentCutBinding>(R.layout.fragment_cut) {
 
     override fun setupView() {
         setupToolbar()
+        binding.cropImageView.setOnBoxChangedListener {
+            binding.tvCropRect.text = "BOX:[${it.left},${it.top}],[${it.right},${it.bottom}]"
+        }
     }
 
     private fun setupToolbar() {

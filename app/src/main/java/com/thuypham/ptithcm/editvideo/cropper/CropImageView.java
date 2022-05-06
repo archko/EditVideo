@@ -83,6 +83,11 @@ public class CropImageView extends ImageView {
 
     // Mode indicating how/whether to show the guidelines; must be one of GUIDELINES_OFF, GUIDELINES_ON_TOUCH, GUIDELINES_ON.
     private int mGuidelinesMode = 1;
+    private OnBoxChangedListener onBoxChangedListener;
+
+    public void setOnBoxChangedListener(OnBoxChangedListener listener) {
+        this.onBoxChangedListener = listener;
+    }
 
     // Constructors ////////////////////////////////////////////////////////////////////////////////
 
@@ -151,7 +156,6 @@ public class CropImageView extends ImageView {
         }
 
         switch (event.getAction()) {
-
             case MotionEvent.ACTION_DOWN:
                 onActionDown(event.getX(), event.getY());
                 return true;
@@ -486,6 +490,46 @@ public class CropImageView extends ImageView {
         }
     }
 
+    public Rect getCroppedRect() {
+        // Implementation reference: http://stackoverflow.com/a/26930938/1068656
+
+        final Drawable drawable = getDrawable();
+        if (drawable == null || !(drawable instanceof BitmapDrawable)) {
+            return null;
+        }
+
+        // Get image matrix values and place them in an array.
+        final float[] matrixValues = new float[9];
+        getImageMatrix().getValues(matrixValues);
+
+        // Extract the scale and translation values. Note, we currently do not handle any other transformations (e.g. skew).
+        final float scaleX = matrixValues[Matrix.MSCALE_X];
+        final float scaleY = matrixValues[Matrix.MSCALE_Y];
+        final float transX = matrixValues[Matrix.MTRANS_X];
+        final float transY = matrixValues[Matrix.MTRANS_Y];
+
+        // Ensure that the left and top edges are not outside of the ImageView bounds.
+        final float bitmapLeft = (transX < 0) ? Math.abs(transX) : 0;
+        final float bitmapTop = (transY < 0) ? Math.abs(transY) : 0;
+
+        // Calculate the top-left corner of the crop window relative to the ~original~ bitmap size.
+        final float cropX = (bitmapLeft + Edge.LEFT.getCoordinate()) / scaleX;
+        final float cropY = (bitmapTop + Edge.TOP.getCoordinate()) / scaleY;
+
+        final Bitmap originalBitmap = ((BitmapDrawable) drawable).getBitmap();
+
+        // Calculate the crop window size relative to the ~original~ bitmap size.
+        // Make sure the right and bottom edges are not outside the ImageView bounds (this is just to address rounding discrepancies).
+        final float cropWidth = Math.min(Edge.getWidth() / scaleX, originalBitmap.getWidth() - cropX);
+        final float cropHeight = Math.min(Edge.getHeight() / scaleY, originalBitmap.getHeight() - cropY);
+
+        // Crop the subset from the original Bitmap.
+        return new Rect((int) cropX,
+                (int) cropY,
+                (int) cropWidth,
+                (int) cropHeight);
+    }
+
     /**
      * Handles a {@link MotionEvent#ACTION_MOVE} event.
      *
@@ -509,6 +553,10 @@ public class CropImageView extends ImageView {
             mPressedHandle.updateCropWindow(x, y, mBitmapRect, mSnapRadius);
         }
         invalidate();
+
+        if (null != onBoxChangedListener) {
+            onBoxChangedListener.onChanged(getCroppedRect());
+        }
     }
 
 }
