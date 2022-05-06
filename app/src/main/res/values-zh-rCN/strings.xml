@@ -25,6 +25,7 @@
 
 
     <string name="result">处理结果</string>
+    <string name="title_cut_video">裁剪视频</string>
 
 
     <string name="dialog_cancel">取消</string>

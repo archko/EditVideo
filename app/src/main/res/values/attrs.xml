@@ -2,15 +2,89 @@
 <resources>
     <declare-styleable name="ZoomImageView">
         <attr name="zoomImage_zoomable" format="boolean" />
-        <attr name="zoomImage_translatable" format="boolean" />
-        <attr name="zoomImage_restrictBounds" format="boolean" />
-        <attr name="zoomImage_animateOnReset" format="boolean" />
-        <attr name="zoomImage_doubleTapToZoom" format="boolean" />
-        <attr name="zoomImage_doubleTapToZoomScaleFactor" format="float" />
-        <attr name="zoomImage_autoCenter" format="boolean" />
-        <attr name="zoomImage_minScale" format="float" />
-        <attr name="zoomImage_maxScale" format="float" />
+        <attr name="zoomImage_translatable" format="boolean"/>
+        <attr name="zoomImage_restrictBounds" format="boolean"/>
+        <attr name="zoomImage_animateOnReset" format="boolean"/>
+        <attr name="zoomImage_doubleTapToZoom" format="boolean"/>
+        <attr name="zoomImage_doubleTapToZoomScaleFactor" format="float"/>
+        <attr name="zoomImage_autoCenter" format="boolean"/>
+        <attr name="zoomImage_minScale" format="float"/>
+        <attr name="zoomImage_maxScale" format="float"/>
     </declare-styleable>
 
+    <attr name="crop_line_color" format="color"/>
+    <attr name="crop_shadow_color" format="color"/>
+    <attr name="crop_corner_color" format="color"/>
+    <attr name="crop_dot_color" format="color"/>
 
+    <attr name="crop_line_width" format="dimension"/>
+    <attr name="crop_corner_length" format="dimension"/>
+    <attr name="crop_corner_width" format="dimension"/>
+    <attr name="crop_min_length" format="dimension"/>
+
+    <declare-styleable name="CropLayout">
+        <attr name="crop_line_color"/>
+        <attr name="crop_shadow_color"/>
+        <attr name="crop_corner_color"/>
+        <attr name="crop_dot_color"/>
+        <attr name="crop_line_width"/>
+        <attr name="crop_corner_length"/>
+        <attr name="crop_corner_width"/>
+        <attr name="crop_min_length"/>
+    </declare-styleable>
+
+    <declare-styleable name="scv_CropImageView">
+        <attr format="reference" name="scv_img_src"/>
+        <attr name="scv_crop_mode">
+            <enum name="fit_image" value="0"/>
+            <enum name="ratio_4_3" value="1"/>
+            <enum name="ratio_3_4" value="2"/>
+            <enum name="square" value="3"/>
+            <enum name="ratio_16_9" value="4"/>
+            <enum name="ratio_9_16" value="5"/>
+            <enum name="free" value="6"/>
+            <enum name="custom" value="7"/>
+            <enum name="circle" value="8"/>
+            <enum name="circle_square" value="9"/>
+        </attr>
+        <attr format="reference|color" name="scv_background_color"/>
+        <attr format="reference|color" name="scv_overlay_color"/>
+        <attr format="reference|color" name="scv_frame_color"/>
+        <attr format="reference|color" name="scv_handle_color"/>
+        <attr format="reference|color" name="scv_guide_color"/>
+        <attr name="scv_guide_show_mode">
+            <enum name="show_always" value="1"/>
+            <enum name="show_on_touch" value="2"/>
+            <enum name="not_show" value="3"/>
+        </attr>
+        <attr name="scv_handle_show_mode">
+            <enum name="show_always" value="1"/>
+            <enum name="show_on_touch" value="2"/>
+            <enum name="not_show" value="3"/>
+        </attr>
+        <attr format="dimension" name="scv_handle_size"/>
+        <attr format="dimension" name="scv_touch_padding"/>
+        <attr format="dimension" name="scv_min_frame_size"/>
+        <attr format="dimension" name="scv_frame_stroke_weight"/>
+        <attr format="dimension" name="scv_guide_stroke_weight"/>
+        <attr format="boolean" name="scv_crop_enabled"/>
+        <attr format="float" name="scv_initial_frame_scale"/>
+        <attr format="boolean" name="scv_animation_enabled"/>
+        <attr format="integer" name="scv_animation_duration"/>
+        <attr format="boolean" name="scv_handle_shadow_enabled"/>
+    </declare-styleable>
+
+    <declare-styleable name="CropImageView">
+
+        <attr name="guidelines">
+            <enum name="off" value="0"/>
+            <enum name="onTouch" value="1"/>
+            <enum name="on" value="2"/>
+        </attr>
+
+        <attr name="fixAspectRatio" format="boolean"/>
+        <attr name="aspectRatioX" format="integer"/>
+        <attr name="aspectRatioY" format="integer"/>
+
+    </declare-styleable>
 </resources>

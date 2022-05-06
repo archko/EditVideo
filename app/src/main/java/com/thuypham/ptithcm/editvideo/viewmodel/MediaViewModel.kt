@@ -90,6 +90,17 @@ class MediaViewModel(
         })
     }
 
+    fun extractOneImage(startTime: Int, filePath: String) = viewModelScope.launch {
+        editVideoResponse.value = ResponseHandler.Loading
+        fFmpegHelper.extractOneImage(startTime, filePath, onSuccess = {
+            editVideoResponse.postValue(ResponseHandler.Success(it))
+            null
+        }, onFail = {
+            editVideoResponse.postValue(ResponseHandler.Failure(extra = it))
+            null
+        })
+    }
+
     fun clearResponse() {
         editVideoResponse.value = null
     }

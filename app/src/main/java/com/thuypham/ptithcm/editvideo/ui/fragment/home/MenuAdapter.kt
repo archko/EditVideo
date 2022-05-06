@@ -39,11 +39,11 @@ class MenuAdapter(
                 Menu(
                     Menu.MENU_CONVERT_TO_GIF,
                     MainApplication.instance.getString(R.string.menu_convert_to_gif)
-                ),
+                ),*/
                 Menu(
                     Menu.MENU_CUT_VID,
                     MainApplication.instance.getString(R.string.menu_cut_video)
-                ),*/
+                ),
 
                 Menu(
                     Menu.MENU_MERGE_VIDEO,

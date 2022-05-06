@@ -27,25 +27,36 @@
         <action
             android:id="@+id/home_to_extractImages"
             app:destination="@id/extractImages"
-            app:popUpTo="@id/home" />
+            app:popUpTo="@id/home"/>
 
         <action
             android:id="@+id/home_to_Merge"
             app:destination="@id/mergeVideo"
-            app:popUpTo="@id/home" />
+            app:popUpTo="@id/home"/>
+
+        <action
+            android:id="@+id/home_to_Cut"
+            app:destination="@id/cutVideo"
+            app:popUpTo="@id/home"/>
     </fragment>
 
     <fragment
         android:id="@+id/media"
         android:name="com.thuypham.ptithcm.editvideo.ui.fragment.media.MediaFragment"
         android:label="MediaFragment"
-        tools:layout="@layout/fragment_media" />
+        tools:layout="@layout/fragment_media"/>
 
     <fragment
         android:id="@+id/mergeVideo"
         android:name="com.thuypham.ptithcm.editvideo.ui.fragment.merge.MergeFragment"
         android:label="MergeFragment"
-        tools:layout="@layout/activity_merge" />
+        tools:layout="@layout/activity_merge"/>
+
+    <fragment
+        android:id="@+id/cutVideo"
+        android:name="com.thuypham.ptithcm.editvideo.ui.fragment.cut.CutFragment"
+        android:label="MergeFragment"
+        tools:layout="@layout/fragment_cut"/>
 
     <fragment
         android:id="@+id/extractImages"

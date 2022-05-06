@@ -23,9 +23,9 @@ import com.thuypham.ptithcm.editvideo.extension.toTimeAsHHmmSSS
 import com.thuypham.ptithcm.editvideo.model.MediaFile
 import com.thuypham.ptithcm.editvideo.model.Menu
 import com.thuypham.ptithcm.editvideo.model.ResponseHandler
-import com.thuypham.ptithcm.editvideo.ui.fragment.merge.MergeFragment
 import com.thuypham.ptithcm.editvideo.ui.activity.ResultActivity
 import com.thuypham.ptithcm.editvideo.ui.dialog.ConfirmDialog
+import com.thuypham.ptithcm.editvideo.ui.fragment.merge.MergeFragment
 import com.thuypham.ptithcm.editvideo.viewmodel.MediaViewModel
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 
@@ -86,6 +86,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                 }
             }
             Menu.MENU_EXTRACT_IMAGES -> {
+                player?.stop()
                 currentMediaFile?.path?.let { mediaViewModel.extractImages(startTime, endTime, it) }
             }
             Menu.MENU_EXTRACT_AUDIO -> {
@@ -98,7 +99,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
 
             }
             Menu.MENU_CUT_VID -> {
-
+                player?.pause()
+                currentMediaFile?.path?.let {
+                    player?.currentPosition?.toInt()
+                        ?.let { it1 -> mediaViewModel.extractOneImage(it1, it) }
+                }
             }
             Menu.MENU_MERGE_VIDEO -> {
                 val intent = Intent(requireActivity(), MergeFragment::class.java)
@@ -232,7 +237,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     private fun navigateToResultFragment(resultPath: String) {
         if (shouldNavigateToResultFragment) {
             val destinationId = when (currentMenuId) {
-                Menu.MENU_CUT_VID -> R.id.homeToResult
+                Menu.MENU_CUT_VID -> R.id.home_to_Cut
                 Menu.MENU_EXTRACT_IMAGES -> R.id.home_to_extractImages
                 Menu.MENU_EXTRACT_AUDIO -> R.id.homeToResult
                 Menu.MENU_REVERSE_VIDEO -> R.id.homeToResult

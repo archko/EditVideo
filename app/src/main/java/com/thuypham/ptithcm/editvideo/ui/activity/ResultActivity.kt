@@ -13,6 +13,7 @@ import androidx.core.os.bundleOf
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.base.BaseActivity
 import com.thuypham.ptithcm.editvideo.databinding.ActivityMainBinding
+import com.thuypham.ptithcm.editvideo.ui.fragment.cut.CutFragment
 import com.thuypham.ptithcm.editvideo.ui.fragment.extractimage.ExtractImageResultFragment
 import com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment.Companion.RESULT_DESTINATION_ID
 import com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment.Companion.RESULT_PATH
@@ -49,6 +50,15 @@ class ResultActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_resul
         )
         if (destinationId == R.id.home_to_extractImages) {
             val resultFragment = ExtractImageResultFragment()
+            resultFragment.arguments = bundle
+            supportFragmentManager
+                .beginTransaction()
+                .add(
+                    R.id.container,
+                    resultFragment
+                ).commit()
+        } else if (destinationId == R.id.home_to_Cut) {
+            val resultFragment = CutFragment()
             resultFragment.arguments = bundle
             supportFragmentManager
                 .beginTransaction()

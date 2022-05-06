@@ -172,6 +172,41 @@ class FFmpegHelper constructor(
         }
     }
 
+    suspend fun extractOneImage(
+        startMs: Int, filePath: String,
+        onSuccess: ((outputPath: String) -> Unit?)?,
+        onFail: ((String?) -> Unit?)?
+    ) {
+        withContext(Dispatchers.IO) {
+            var outputFolder = File(outputDir, "extract_images")
+            var fileNo = 0
+            while (outputFolder.exists()) {
+                fileNo++
+                outputFolder = File(outputDir, "extract_images_$fileNo")
+            }
+            outputFolder.mkdir()
+            val imageFile = File(outputFolder, "extract_images_%03d.jpg")
+            val complexCommand = arrayOf(
+                "-y",
+                "-i",
+                filePath,
+                "-an",
+                "-r",
+                "1",
+                "-ss",
+                "" + startMs / 1000,
+                "-t",
+                "1",
+                //"" + (endMs - startMs) / 1000,
+                imageFile.absolutePath
+            )
+
+            executeCommand(complexCommand, {
+                onSuccess?.invoke(outputFolder.absolutePath)
+            }, onFail)
+        }
+    }
+
     fun getCommandAddAudioToVideo(
         videoPath: String,
         audioPath: String,
