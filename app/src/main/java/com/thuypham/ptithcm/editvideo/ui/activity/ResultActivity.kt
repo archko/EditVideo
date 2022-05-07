@@ -40,11 +40,6 @@ class ResultActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_resul
             return
         }
 
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        )
-
         val destinationId = intent.getIntExtra(RESULT_DESTINATION_ID, 0)
         val bundle = bundleOf(
             RESULT_PATH to intent.getStringExtra(RESULT_PATH)

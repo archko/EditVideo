@@ -18,14 +18,15 @@
             android:breakStrategy="high_quality"
             android:gravity="top|left"
             android:hint="enter command"
-            android:inputType="text"
-            android:longClickable="true"
-            android:maxLines="4"
-            android:minLines="2"
+            android:inputType="textMultiLine"
+            android:maxLines="5"
+            android:minLines="3"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:text="-ss 00:00 -i /sdcard/DCIM/aa.mp4 -t 60 -c copy -preset ultrafast /sdcard/DCIM/o.mp4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbar" />
-
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -33,7 +34,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingHorizontal="16dp"
-            android:weightSum="2"
+            android:paddingBottom="2dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/edit_cmd">
@@ -64,19 +65,17 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/colorOnPrimary"
-            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/linearLayout"
-            tools:visibility="visible">
+            app:layout_constraintTop_toBottomOf="@id/linearLayout">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvOutput"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:padding="8dp"
                 android:textColor="@color/black"
-                tools:text="test test test " />
+                tools:text="test test test" />
         </ScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
