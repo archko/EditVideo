@@ -24,6 +24,7 @@ import com.thuypham.ptithcm.editvideo.model.Menu
 import com.thuypham.ptithcm.editvideo.model.ResponseHandler
 import com.thuypham.ptithcm.editvideo.ui.activity.ResultActivity
 import com.thuypham.ptithcm.editvideo.ui.dialog.ConfirmDialog
+import com.thuypham.ptithcm.editvideo.ui.fragment.cmd.CmdDialogFragment
 import com.thuypham.ptithcm.editvideo.viewmodel.MediaViewModel
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 
@@ -59,15 +60,22 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
 
     private fun onMenuClick(menu: Menu) {
         currentMenuId = menu.id
+        shouldNavigateToResultFragment = true
         if (menu.id == Menu.MENU_MERGE_VIDEO) {
             navigateToResultFragment("merge")
+            return
+        }
+        if (menu.id == Menu.MENU_RUN_CMD) {
+            CmdDialogFragment().show(
+                parentFragmentManager,
+                ConfirmDialog.TAG
+            )
             return
         }
         if (currentMediaFile == null) {
             showSnackBar(R.string.empty_file_msg)
             return
         }
-        shouldNavigateToResultFragment = true
         when (menu.id) {
             Menu.MENU_SPLIT_VIDEO -> {
                 if (startTime == 0f && endTime == currentMediaFile?.duration?.toFloat()) {

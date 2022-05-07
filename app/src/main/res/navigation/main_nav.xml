@@ -50,7 +50,7 @@
         android:id="@+id/mergeVideo"
         android:name="com.thuypham.ptithcm.editvideo.ui.fragment.merge.MergeFragment"
         android:label="MergeFragment"
-        tools:layout="@layout/activity_merge"/>
+        tools:layout="@layout/fragment_merge" />
 
     <fragment
         android:id="@+id/cutVideo"

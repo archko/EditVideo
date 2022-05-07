@@ -1,11 +1,10 @@
 package com.thuypham.ptithcm.editvideo.base
 
-import android.app.Dialog
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
@@ -23,7 +22,7 @@ abstract class BaseDialogFragment<T : ViewDataBinding>(private val layoutId: Int
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (isFullScreen) {
-            setStyle(STYLE_NORMAL, android.R.style.Theme_Translucent_NoTitleBar)
+            setStyle(STYLE_NORMAL, android.R.style.Theme_Material_Light_NoActionBar)
         }
     }
 

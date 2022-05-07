@@ -21,7 +21,6 @@ import com.google.android.exoplayer2.util.Util
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.base.BaseDialogFragment
 import com.thuypham.ptithcm.editvideo.databinding.FragmentPlayerBinding
-import com.thuypham.ptithcm.editvideo.extension.goBack
 import com.thuypham.ptithcm.editvideo.extension.setOnSingleClickListener
 import com.thuypham.ptithcm.editvideo.extension.show
 
@@ -61,7 +60,7 @@ class PlayerFragment(
         binding.root.findViewById<AppCompatImageView>(R.id.ivLeft).apply {
             show()
             setImageResource(R.drawable.ic_back)
-            setOnSingleClickListener { goBack() }
+            setOnSingleClickListener { dismiss() }
         }
     }
 

@@ -6,6 +6,7 @@
     <string name="menu_convert_to_gif">Convert to Gif</string>
     <string name="menu_split_video">切割视频</string>
     <string name="menu_merge_video">合并视频</string>
+    <string name="menu_run_cmd">运行命令</string>
     <string name="empty_video_msg">没有视频,请先上传视频</string>
     <string name="upload_video">上传视频</string>
     <string name="add_video">添加视频</string>

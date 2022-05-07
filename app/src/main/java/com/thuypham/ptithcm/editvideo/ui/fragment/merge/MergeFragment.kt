@@ -6,7 +6,7 @@ import android.util.Log
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.base.BaseFragment
-import com.thuypham.ptithcm.editvideo.databinding.ActivityMergeBinding
+import com.thuypham.ptithcm.editvideo.databinding.FragmentMergeBinding
 import com.thuypham.ptithcm.editvideo.extension.getPath
 import com.thuypham.ptithcm.editvideo.extension.goBack
 import com.thuypham.ptithcm.editvideo.extension.setOnSingleClickListener
@@ -19,12 +19,13 @@ import com.thuypham.ptithcm.editvideo.util.ItemTouchCallback
 import com.thuypham.ptithcm.editvideo.viewmodel.MergeViewModel
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 
-class MergeFragment : BaseFragment<ActivityMergeBinding>(R.layout.activity_merge) {
+class MergeFragment : BaseFragment<FragmentMergeBinding>(R.layout.fragment_merge) {
 
     private val mergeViewModel: MergeViewModel by sharedViewModel()
     private val mediaFileList: ArrayList<MediaFile> = ArrayList()
     private val mergeAdapter: MergeAdapter by lazy {
-        MergeAdapter(requireContext(),
+        MergeAdapter(
+            requireContext(),
             object : MergeAdapter.ItemListener {
                 override fun onDelete(item: MediaFile, pos: Int) {
                     this@MergeFragment.onDelete(item, pos)

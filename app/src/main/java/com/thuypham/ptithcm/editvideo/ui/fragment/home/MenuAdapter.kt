@@ -49,6 +49,10 @@ class MenuAdapter(
                     Menu.MENU_MERGE_VIDEO,
                     MainApplication.instance.getString(R.string.menu_merge_video)
                 ),
+                Menu(
+                    Menu.MENU_RUN_CMD,
+                    MainApplication.instance.getString(R.string.menu_run_cmd)
+                ),
             )
         }
     }
