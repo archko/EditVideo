@@ -16,6 +16,7 @@ import net.alee.videcrop.cropview.util.HandleUtil;
 import net.alee.videcrop.cropview.util.PaintUtil;
 import net.alee.videcrop.cropview.window.edge.Edge;
 import net.alee.videcrop.cropview.window.handle.Handle;
+import net.alee.videcrop.cropview.window.handle.OnBoxChangedListener;
 
 public class CropView extends View {
     private static final int SNAP_RADIUS_DP = 6;
@@ -46,6 +47,7 @@ public class CropView extends View {
     private float mCornerExtension;
     private float mCornerOffset;
     private float mCornerLength;
+    private OnBoxChangedListener onBoxChangedListener;
 
     public CropView(Context context) {
         super(context);
@@ -59,6 +61,10 @@ public class CropView extends View {
         mTargetAspectRatio = (float) mAspectRatioX / (float) mAspectRatioY;
         initializedCropWindow = false;
         init(context);
+    }
+
+    public void setOnBoxChangedListener(OnBoxChangedListener onBoxChangedListener) {
+        this.onBoxChangedListener = onBoxChangedListener;
     }
 
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -116,7 +122,6 @@ public class CropView extends View {
             initCropWindow(mBitmapRect);
             invalidate();
         }
-
     }
 
     public void setGuidelines(int guidelines) {
@@ -164,7 +169,6 @@ public class CropView extends View {
                 initCropWindow(mBitmapRect);
                 invalidate();
             }
-
         }
     }
 
@@ -324,6 +328,9 @@ public class CropView extends View {
                 mPressedHandle.updateCropWindow(x, y, mBitmapRect, mSnapRadius);
             }
             invalidate();
+            if (null != onBoxChangedListener) {
+                onBoxChangedListener.onChanged(0, 0, 0, 0);
+            }
         }
     }
 

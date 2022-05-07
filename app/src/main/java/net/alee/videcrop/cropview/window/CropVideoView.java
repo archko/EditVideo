@@ -14,6 +14,7 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.thuypham.ptithcm.editvideo.R;
 
 import net.alee.videcrop.cropview.window.edge.Edge;
+import net.alee.videcrop.cropview.window.handle.OnBoxChangedListener;
 
 public class CropVideoView extends FrameLayout {
     private PlayerView mPlayerView;
@@ -25,6 +26,7 @@ public class CropVideoView extends FrameLayout {
     private boolean mFixAspectRatio = false;
     private int mAspectRatioX = 1;
     private int mAspectRatioY = 1;
+    private OnBoxChangedListener onBoxChangedListener;
 
     public CropVideoView(Context context) {
         super(context);
@@ -47,12 +49,24 @@ public class CropVideoView extends FrameLayout {
         init(context);
     }
 
+    public void setOnBoxChangedListener(OnBoxChangedListener onBoxChangedListener) {
+        this.onBoxChangedListener = onBoxChangedListener;
+    }
+
     private void init(Context context) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View v = inflater.inflate(R.layout.view_crop, this, true);
         mPlayerView = v.findViewById(R.id.playerView);
         mCropView = v.findViewById(R.id.cropView);
         mCropView.setInitialAttributeValues(mGuidelines, mFixAspectRatio, mAspectRatioX, mAspectRatioY);
+        mCropView.setOnBoxChangedListener((x1, y1, x2, y2) -> updateRect());
+    }
+
+    private void updateRect() {
+        if (null != onBoxChangedListener) {
+            Rect rect = getCropRect();
+            onBoxChangedListener.onChanged(rect.left, rect.top, rect.right, rect.bottom);
+        }
     }
 
     protected void onSizeChanged(int newWidth, int newHeight, int oldw, int oldh) {
@@ -143,14 +157,4 @@ public class CropVideoView extends FrameLayout {
         mVideoHeight = videoHeight;
         mVideoRotationDegrees = rotationDegrees;
     }
-
-//    @Override
-//    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-//        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-//        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-//        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-//        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-//
-//
-//    }
 }

@@ -59,7 +59,7 @@ class MergeFragment : BaseFragment<ActivityMergeBinding>(R.layout.activity_merge
     }
 
     private fun setupToolbar() {
-        setToolbarTitle(getString(R.string.result))
+        setToolbarTitle(getString(R.string.title_merge_video))
         setLeftBtn(R.drawable.ic_back) {
             goBack()
         }

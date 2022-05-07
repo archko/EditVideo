@@ -26,7 +26,8 @@
 
 
     <string name="result">Result</string>
-    <string name="title_cut_video">Cut</string>
+    <string name="title_merge_video">Merge Video</string>
+    <string name="title_cut_video">Cut Video</string>
 
 
     <string name="dialog_cancel">Cancel</string>

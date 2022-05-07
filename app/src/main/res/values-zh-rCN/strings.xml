@@ -25,6 +25,7 @@
 
 
     <string name="result">处理结果</string>
+    <string name="title_merge_video">合并视频</string>
     <string name="title_cut_video">裁剪视频</string>
 
 

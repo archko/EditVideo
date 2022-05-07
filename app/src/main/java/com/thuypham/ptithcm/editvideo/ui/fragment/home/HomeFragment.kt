@@ -17,7 +17,6 @@ import com.thuypham.ptithcm.editvideo.base.BaseFragment
 import com.thuypham.ptithcm.editvideo.databinding.FragmentHomeBinding
 import com.thuypham.ptithcm.editvideo.extension.getPath
 import com.thuypham.ptithcm.editvideo.extension.gone
-import com.thuypham.ptithcm.editvideo.extension.navigateTo
 import com.thuypham.ptithcm.editvideo.extension.setOnSingleClickListener
 import com.thuypham.ptithcm.editvideo.extension.toTimeAsHHmmSSS
 import com.thuypham.ptithcm.editvideo.model.MediaFile
@@ -25,9 +24,7 @@ import com.thuypham.ptithcm.editvideo.model.Menu
 import com.thuypham.ptithcm.editvideo.model.ResponseHandler
 import com.thuypham.ptithcm.editvideo.ui.activity.ResultActivity
 import com.thuypham.ptithcm.editvideo.ui.dialog.ConfirmDialog
-import com.thuypham.ptithcm.editvideo.ui.fragment.merge.MergeFragment
 import com.thuypham.ptithcm.editvideo.viewmodel.MediaViewModel
-import net.alee.videcrop.VideoCropActivity
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
@@ -61,15 +58,15 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     private var shouldNavigateToResultFragment = false
 
     private fun onMenuClick(menu: Menu) {
+        currentMenuId = menu.id
         if (menu.id == Menu.MENU_MERGE_VIDEO) {
-            navigateTo(R.id.mergeVideo)
+            navigateToResultFragment("merge")
             return
         }
         if (currentMediaFile == null) {
             showSnackBar(R.string.empty_file_msg)
             return
         }
-        currentMenuId = menu.id
         shouldNavigateToResultFragment = true
         when (menu.id) {
             Menu.MENU_SPLIT_VIDEO -> {
@@ -105,11 +102,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                     player?.currentPosition?.toInt()
                         ?.let { it1 -> mediaViewModel.extractOneImage(it1, it) }
                 }*/
-                VideoCropActivity.startIntent(requireActivity(), currentMediaFile?.path, null)
+                //VideoCropActivity.startIntent(requireActivity(), currentMediaFile?.path, null)
+                currentMediaFile?.path?.let { navigateToResultFragment(it) }
             }
             Menu.MENU_MERGE_VIDEO -> {
-                val intent = Intent(requireActivity(), MergeFragment::class.java)
-                startActivity(intent)
             }
             else -> {
 
@@ -245,6 +241,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                 Menu.MENU_REVERSE_VIDEO -> R.id.homeToResult
                 Menu.MENU_CONVERT_TO_GIF -> R.id.homeToResult
                 Menu.MENU_SPLIT_VIDEO -> R.id.homeToResult
+                Menu.MENU_MERGE_VIDEO -> R.id.home_to_Merge
                 else -> R.id.homeToResult
             }
             shouldNavigateToResultFragment = false

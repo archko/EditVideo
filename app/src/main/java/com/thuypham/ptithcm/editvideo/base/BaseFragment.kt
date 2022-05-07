@@ -34,8 +34,8 @@ abstract class BaseFragment<T : ViewDataBinding>(private val layoutId: Int) : Fr
             lifecycleOwner = viewLifecycleOwner
             executePendingBindings()
         }
-        setupLogic()
         setupView()
+        setupLogic()
         setupDataObserver()
     }
 
