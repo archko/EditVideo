@@ -19,8 +19,8 @@ abstract class BaseActivity<T : ViewDataBinding>(private val layoutId: Int) : Ap
         Log.d("thuyyy", "bonCreate")
         binding = DataBindingUtil.setContentView(this, layoutId)
         binding.lifecycleOwner = this
-        setupLogic()
         setupView()
+        setupLogic()
         setupDataObserver()
 
         dialog = ProgressDialog.progressDialog(this)

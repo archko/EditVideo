@@ -1,11 +1,10 @@
 package net.alee.videcrop
 
-import android.Manifest
 import android.animation.TimeInterpolator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.media.MediaMetadataRetriever
 import android.os.Bundle
 import android.text.TextUtils
@@ -17,8 +16,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.google.android.exoplayer2.util.Util
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.model.ResponseHandler
@@ -85,31 +82,6 @@ class VideoCropActivity : AppCompatActivity(), OnProgressUpdateListener, SeekBar
 
         //CropCustom()
         //CropDone()
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            STORAGE_REQUEST -> {
-                if (grantResults.size > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                ) {
-                    initPlayer(inputPath)
-                } else {
-                    Toast.makeText(
-                        this,
-                        "You must grant a write storage permission to use this functionality",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    setResult(RESULT_CANCELED)
-                    finish()
-                }
-            }
-        }
     }
 
     override fun onStart() {
@@ -271,33 +243,19 @@ class VideoCropActivity : AppCompatActivity(), OnProgressUpdateListener, SeekBar
 
     private fun handleMenuVisibility() {
         isAspectMenuShown = !isAspectMenuShown
-        val interpolator: TimeInterpolator
-        interpolator = if (isAspectMenuShown) {
+        val interpolator: TimeInterpolator = if (isAspectMenuShown) {
             DecelerateInterpolator()
         } else {
             AccelerateInterpolator()
         }
-        /*mAspectMenu!!.animate()
-            .translationY( isAspectMenuShown? 0 : Resources.getSystem().displayMetrics.density * 400)
-            .alpha(if (isAspectMenuShown) 1 else 0.toFloat())
+        val translationY: Float =
+            if (isAspectMenuShown) 0f else Resources.getSystem().displayMetrics.density * 400
+        val alpha: Float = if (isAspectMenuShown) 1f else 0f
+        mAspectMenu!!.animate()
+            .translationY(translationY)
+            .alpha(alpha)
             .setInterpolator(interpolator)
-            .start()*/
-    }
-
-    private fun requestStoragePermission() {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                STORAGE_REQUEST
-            )
-        } else {
-            initPlayer(inputPath)
-        }
+            .start()
     }
 
     @SuppressLint("DefaultLocale")

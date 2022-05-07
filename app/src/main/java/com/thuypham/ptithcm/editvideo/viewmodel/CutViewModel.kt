@@ -14,7 +14,7 @@ class CutViewModel(
 
     private val fFmpegHelper by lazy { FFmpegHelper(MainApplication.instance) }
 
-    val cutResponse = MutableLiveData<ResponseHandler<Boolean>>()
+    val cutResponse = MutableLiveData<ResponseHandler<String>>()
     val deleteFileResponse = MutableLiveData<ResponseHandler<Boolean>>()
 
     fun deleteFile(url: String) = viewModelScope.launch {
@@ -34,7 +34,7 @@ class CutViewModel(
     ) = viewModelScope.launch {
         cutResponse.value = ResponseHandler.Loading
         fFmpegHelper.cutVideo(width, height, left, top, filePath, onSuccess = {
-            cutResponse.postValue(ResponseHandler.Success(true))
+            cutResponse.postValue(ResponseHandler.Success(it))
             null
         }, onFail = {
             cutResponse.postValue(ResponseHandler.Failure(extra = it))
