@@ -2,6 +2,7 @@ package net.alee.videcrop
 
 import android.animation.TimeInterpolator
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
@@ -19,8 +20,9 @@ import androidx.appcompat.widget.AppCompatImageView
 import com.google.android.exoplayer2.util.Util
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.model.ResponseHandler
+import com.thuypham.ptithcm.editvideo.ui.activity.ResultActivity
+import com.thuypham.ptithcm.editvideo.ui.dialog.ProgressDialog
 import com.thuypham.ptithcm.editvideo.viewmodel.CutViewModel
-import net.alee.videcrop.VideoCropActivity
 import net.alee.videcrop.cropview.window.CropVideoView
 import net.alee.videcrop.player.VideoPlayer
 import net.alee.videcrop.player.VideoPlayer.OnProgressUpdateListener
@@ -56,6 +58,7 @@ class VideoCropActivity : AppCompatActivity(), OnProgressUpdateListener, SeekBar
     private var isVideoPlaying = false
     private var isAspectMenuShown = false
     private val cutViewModel: CutViewModel by viewModel()
+    private lateinit var dialog: Dialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,11 +80,7 @@ class VideoCropActivity : AppCompatActivity(), OnProgressUpdateListener, SeekBar
         findViews()
         initListeners()
         initPlayer(inputPath)
-        //requestStoragePermission()
-        ////----------/////////////-------///////////
-
-        //CropCustom()
-        //CropDone()
+        dialog = ProgressDialog.progressDialog(this)
     }
 
     override fun onStart() {
@@ -144,40 +143,41 @@ class VideoCropActivity : AppCompatActivity(), OnProgressUpdateListener, SeekBar
     }
 
     private fun initListeners() {
-        mIvPlay!!.setOnClickListener { v: View? -> playPause() }
-        mIvAspectRatio!!.setOnClickListener { v: View? -> handleMenuVisibility() }
-        mTvAspectCustom!!.setOnClickListener { v: View? ->
+        mIvPlay!!.setOnClickListener { v -> playPause() }
+        mIvAspectRatio!!.setOnClickListener { v -> handleMenuVisibility() }
+        mTvAspectCustom!!.setOnClickListener { v ->
             mCropVideoView!!.setFixedAspectRatio(false)
             handleMenuVisibility()
         }
-        mTvAspectSquare!!.setOnClickListener { v: View? ->
+        mTvAspectSquare!!.setOnClickListener { v ->
             mCropVideoView!!.setFixedAspectRatio(true)
             mCropVideoView!!.setAspectRatio(10, 10)
             handleMenuVisibility()
         }
-        mTvAspectPortrait!!.setOnClickListener { v: View? ->
+        mTvAspectPortrait!!.setOnClickListener { v ->
             mCropVideoView!!.setFixedAspectRatio(true)
             mCropVideoView!!.setAspectRatio(8, 16)
             handleMenuVisibility()
         }
-        mTvAspectLandscape!!.setOnClickListener { v: View? ->
+        mTvAspectLandscape!!.setOnClickListener { v ->
             mCropVideoView!!.setFixedAspectRatio(true)
             mCropVideoView!!.setAspectRatio(16, 8)
             handleMenuVisibility()
         }
-        mTvAspect4by3!!.setOnClickListener { v: View? ->
+        mTvAspect4by3!!.setOnClickListener { v ->
             mCropVideoView!!.setFixedAspectRatio(true)
             mCropVideoView!!.setAspectRatio(4, 3)
             handleMenuVisibility()
         }
-        mTvAspect16by9!!.setOnClickListener { v: View? ->
+        mTvAspect16by9!!.setOnClickListener { v ->
             mCropVideoView!!.setFixedAspectRatio(true)
             mCropVideoView!!.setAspectRatio(16, 9)
             handleMenuVisibility()
         }
-        mIvDone!!.setOnClickListener { v: View? -> handleCropStart() }
+        mIvDone!!.setOnClickListener { v -> handleCropStart() }
 
         cutViewModel.cutResponse.observe(this) { response ->
+            hideLoading()
             when (response) {
                 is ResponseHandler.Success -> {
                     mIvDone?.setEnabled(true)
@@ -187,6 +187,7 @@ class VideoCropActivity : AppCompatActivity(), OnProgressUpdateListener, SeekBar
                     mTvCropProgress?.setVisibility(View.INVISIBLE)
                     mTvCropProgress?.setText("0%")
                     Toast.makeText(this@VideoCropActivity, "FINISHED", Toast.LENGTH_SHORT).show()
+                    ResultActivity.start(this@VideoCropActivity, response.data, 0)
                 }
                 is ResponseHandler.Loading -> {
                 }
@@ -198,6 +199,16 @@ class VideoCropActivity : AppCompatActivity(), OnProgressUpdateListener, SeekBar
                 }
             }
         }
+    }
+
+    private fun hideLoading() {
+        if (dialog.isShowing) {
+            dialog.dismiss()
+        }
+    }
+
+    private fun showLoading() {
+        dialog.show()
     }
 
     private fun playPause() {
@@ -269,9 +280,8 @@ class VideoCropActivity : AppCompatActivity(), OnProgressUpdateListener, SeekBar
         duration += "." + durationCrop % 1000
         Log.d(TAG, "Screen Cropping : $startCrop----$durationCrop")
 
-        /* String[] cmd = {
-        "-i", inputPath, "-filter:v", "crop=" + 240 + ":" + 120 + ":" + 100 + ":" + 100, "-c:a", "copy", outputPath
-        }*/
+        showLoading()
+
         cutViewModel.cutVideo(
             cropRect.right - cropRect.left,
             cropRect.bottom - cropRect.top,
@@ -363,16 +373,6 @@ class VideoCropActivity : AppCompatActivity(), OnProgressUpdateListener, SeekBar
             formatter,
             leftThumb
         )
-    }
-
-    fun CropCustom() {
-        mCropVideoView!!.setFixedAspectRatio(true)
-        mCropVideoView!!.setAspectRatio(9, 9)
-        // handleMenuVisibility()
-    }
-
-    fun CropDone() {
-        handleCropStart()
     }
 
     companion object {

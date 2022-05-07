@@ -103,6 +103,18 @@ class FFmpegHelper constructor(
                 "ultrafast",
                 outputPath
             )
+            /*val cmd = arrayOf(
+                "-y",
+                "-ss",
+                start,
+                "-i",
+                inputPath,
+                "-t",
+                duration,
+                "-vf",
+                crop,
+                outputPath
+            )*/
 
             executeCommand(complexCommand, {
                 onSuccess?.invoke(outputPath)
