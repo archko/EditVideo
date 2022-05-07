@@ -27,6 +27,7 @@ import com.thuypham.ptithcm.editvideo.ui.activity.ResultActivity
 import com.thuypham.ptithcm.editvideo.ui.dialog.ConfirmDialog
 import com.thuypham.ptithcm.editvideo.ui.fragment.merge.MergeFragment
 import com.thuypham.ptithcm.editvideo.viewmodel.MediaViewModel
+import net.alee.videcrop.VideoCropActivity
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
@@ -100,10 +101,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             }
             Menu.MENU_CUT_VID -> {
                 player?.pause()
-                currentMediaFile?.path?.let {
+                /*currentMediaFile?.path?.let {
                     player?.currentPosition?.toInt()
                         ?.let { it1 -> mediaViewModel.extractOneImage(it1, it) }
-                }
+                }*/
+                VideoCropActivity.startIntent(requireActivity(), currentMediaFile?.path, null)
             }
             Menu.MENU_MERGE_VIDEO -> {
                 val intent = Intent(requireActivity(), MergeFragment::class.java)

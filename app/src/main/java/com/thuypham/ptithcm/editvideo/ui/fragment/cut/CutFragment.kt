@@ -1,8 +1,6 @@
 package com.thuypham.ptithcm.editvideo.ui.fragment.cut
 
 import android.util.Log
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.base.BaseFragment
 import com.thuypham.ptithcm.editvideo.databinding.FragmentCutBinding
@@ -11,7 +9,6 @@ import com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment
 import com.thuypham.ptithcm.editvideo.viewmodel.CutViewModel
 import com.thuypham.ptithcm.editvideo.viewmodel.ExtractImageViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
-import java.io.File
 
 class CutFragment : BaseFragment<FragmentCutBinding>(R.layout.fragment_cut) {
 
@@ -32,9 +29,6 @@ class CutFragment : BaseFragment<FragmentCutBinding>(R.layout.fragment_cut) {
 
     override fun setupView() {
         setupToolbar()
-        binding.cropImageView.setOnBoxChangedListener {
-            binding.tvCropRect.text = "BOX:[${it.left},${it.top}],[${it.right},${it.bottom}]"
-        }
     }
 
     private fun setupToolbar() {
@@ -76,15 +70,8 @@ class CutFragment : BaseFragment<FragmentCutBinding>(R.layout.fragment_cut) {
                         this::class.java.name,
                         "CutFragment, resultPath:$folderPath, $data"
                     )
-                    if (data.isNullOrEmpty()) {
+                    if (data.isEmpty()) {
                     } else {
-                        activity?.let {
-                            Glide.with(it)
-                                .load(data[0]?.let { File(it.path) })
-                                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                .placeholder(R.drawable.ic_image_placeholder)
-                                .into(binding.cropImageView)
-                        }
                     }
                 }
                 is ResponseHandler.Loading -> {

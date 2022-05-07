@@ -98,8 +98,7 @@ class FFmpegHelper constructor(
                 "-2",
                 "-vf",
                 "crop=$width:$height:$left:$top",
-                "-c copy",
-                "-copyts",
+                "-y",
                 "-preset",
                 "ultrafast",
                 outputPath

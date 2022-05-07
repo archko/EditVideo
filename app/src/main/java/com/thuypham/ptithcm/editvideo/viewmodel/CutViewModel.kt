@@ -29,14 +29,16 @@ class CutViewModel(
         }
     }
 
-    fun cutVideo(url: String) = viewModelScope.launch {
+    fun cutVideo(
+        width: Int, height: Int, left: Int, top: Int, filePath: String
+    ) = viewModelScope.launch {
         cutResponse.value = ResponseHandler.Loading
-        /*fFmpegHelper.executeMergeVideosWithFile(mediaFileList, onSuccess = {
-            deleteFileResponse.postValue(ResponseHandler.Success(it.toString()))
+        fFmpegHelper.cutVideo(width, height, left, top, filePath, onSuccess = {
+            cutResponse.postValue(ResponseHandler.Success(true))
             null
         }, onFail = {
-            deleteFileResponse.postValue(ResponseHandler.Failure(extra = it))
+            cutResponse.postValue(ResponseHandler.Failure(extra = it))
             null
-        })*/
+        })
     }
 }
