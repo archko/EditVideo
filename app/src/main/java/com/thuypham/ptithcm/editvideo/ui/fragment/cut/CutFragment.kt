@@ -4,7 +4,6 @@ import android.animation.TimeInterpolator
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.media.MediaMetadataRetriever
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
@@ -12,6 +11,7 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -24,12 +24,14 @@ import com.thuypham.ptithcm.editvideo.base.BaseFragment
 import com.thuypham.ptithcm.editvideo.databinding.FragmentCutBinding
 import com.thuypham.ptithcm.editvideo.extension.setOnSingleClickListener
 import com.thuypham.ptithcm.editvideo.extension.toTimeAsHHmmSSS
+import com.thuypham.ptithcm.editvideo.model.FFprobeStream
 import com.thuypham.ptithcm.editvideo.model.ResponseHandler
 import com.thuypham.ptithcm.editvideo.ui.activity.ResultActivity
 import com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment
 import com.thuypham.ptithcm.editvideo.viewmodel.CutViewModel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
-import java.io.File
 import java.util.*
 
 class CutFragment : BaseFragment<FragmentCutBinding>(R.layout.fragment_cut) {
@@ -48,6 +50,7 @@ class CutFragment : BaseFragment<FragmentCutBinding>(R.layout.fragment_cut) {
     private var endTime = 0f
 
     private var resultUrl: String? = null
+    private var fFprobeStream: FFprobeStream? = null
 
     private var isAspectMenuShown = false
     private var mTvAspectCustom: TextView? = null
@@ -90,7 +93,7 @@ class CutFragment : BaseFragment<FragmentCutBinding>(R.layout.fragment_cut) {
     override fun setupLogic() {
         super.setupLogic()
         resultUrl = arguments?.getString(HomeFragment.RESULT_PATH)
-        fetchVideoInfo(resultUrl)
+
         binding.cropVideoView.setOnBoxChangedListener { x1, y1, x2, y2 ->
             binding.tvCropRect.text = "box:[$x1,$y1],[${x2},${y2}]"
         }
@@ -209,39 +212,35 @@ class CutFragment : BaseFragment<FragmentCutBinding>(R.layout.fragment_cut) {
         }
     }
 
-    private fun fetchVideoInfo(uri: String?) {
-        val retriever = MediaMetadataRetriever()
-        retriever.setDataSource(File(uri).absolutePath)
-        val videoWidth =
-            Integer.valueOf(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH))
-        val videoHeight =
-            Integer.valueOf(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT))
-        val rotationDegrees =
-            Integer.valueOf(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION))
-        binding.cropVideoView.initBounds(videoWidth, videoHeight, rotationDegrees)
-    }
-
     override fun setupDataObserver() {
         super.setupDataObserver()
-        cutViewModel.cutResponse.observe(viewLifecycleOwner) { response ->
-            hideLoading()
-            when (response) {
-                is ResponseHandler.Success -> {
-                    hideLoading()
-                    ResultActivity.start(requireActivity(), response.data, 0)
-                }
-                is ResponseHandler.Loading -> {
-                    showLoading()
-                }
-                is ResponseHandler.Failure -> {
-                    hideLoading()
-                    showSnackBar("Failed to crop!")
-                }
-                else -> {
-                    hideLoading()
+        lifecycleScope.launch {
+            cutViewModel.mediaInfoResponse.collectLatest { fFprobeStream ->
+                binding.cropVideoView.initBounds(fFprobeStream.width, fFprobeStream.height, 0)
+            }
+        }
+        lifecycleScope.launch {
+            cutViewModel.cutResponse.collectLatest { response ->
+                when (response) {
+                    is ResponseHandler.Success -> {
+                        hideLoading()
+                        ResultActivity.start(requireActivity(), response.data, 0)
+                    }
+                    is ResponseHandler.Loading -> {
+                        showLoading()
+                    }
+                    is ResponseHandler.Failure -> {
+                        hideLoading()
+                        showSnackBar("Failed to crop!")
+                    }
+                    else -> {
+                        hideLoading()
+                    }
                 }
             }
         }
+
+        lifecycleScope.launch { cutViewModel.getVideoInfo(resultUrl) }
     }
 
     override fun onResume() {
@@ -361,13 +360,16 @@ class CutFragment : BaseFragment<FragmentCutBinding>(R.layout.fragment_cut) {
             player?.pause()
             binding.ivPlay.setImageResource(R.drawable.ic_play)
         }
-        cutViewModel.cutVideo(
-            cropRect.right - cropRect.left,
-            cropRect.bottom - cropRect.top,
-            cropRect.left,
-            cropRect.top,
-            resultUrl!!
-        )
+        lifecycleScope.launch {
+            cutViewModel.cutVideo(
+                cropRect.right - cropRect.left,
+                cropRect.bottom - cropRect.top,
+                cropRect.left,
+                cropRect.top,
+                resultUrl!!,
+                fFprobeStream
+            )
+        }
     }
 }
 
