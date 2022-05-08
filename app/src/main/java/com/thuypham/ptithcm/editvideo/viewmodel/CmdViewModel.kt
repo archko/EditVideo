@@ -5,10 +5,9 @@ import android.os.Looper
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.arthenica.ffmpegkit.FFmpegKit
-import com.arthenica.ffmpegkit.FFmpegKitConfig
 import com.arthenica.ffmpegkit.FFmpegSession
+import com.arthenica.ffmpegkit.FFprobeKit
 import com.arthenica.ffmpegkit.FFprobeSession
-import com.arthenica.ffmpegkit.LogRedirectionStrategy
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
@@ -20,7 +19,7 @@ class CmdViewModel() : ViewModel() {
     val ffmpegResponse = MutableLiveData<FFmpegSession>()
     val ffprobeResponse = MutableLiveData<FFprobeSession>()
     val logResponse = MutableLiveData<com.arthenica.ffmpegkit.Log>()
-    val handler = Handler(Looper.getMainLooper())
+    private val handler = Handler(Looper.getMainLooper())
 
     suspend fun runFFmpeg(ffmpegCommand: String?): Unit = callbackFlow<FFmpegSession?> {
         FFmpegKit.executeAsync(
@@ -40,17 +39,14 @@ class CmdViewModel() : ViewModel() {
         }
 
     suspend fun runFFprobe(ffprobeCommand: String?): Unit = callbackFlow<FFprobeSession?> {
-        FFmpegKitConfig.asyncFFprobeExecute(
-            FFprobeSession(
-                FFmpegKitConfig.parseArguments(ffprobeCommand),
-                { session ->
-                    trySend(session)
-                },
-                { log ->
-                    handler.post { logResponse.value = log }
-                },
-                LogRedirectionStrategy.NEVER_PRINT_LOGS
-            )
+        FFprobeKit.executeAsync(
+            ffprobeCommand,
+            { session ->
+                trySend(session)
+            },
+            { log ->
+                handler.post { logResponse.value = log }
+            }
         )
 
         awaitClose { }
