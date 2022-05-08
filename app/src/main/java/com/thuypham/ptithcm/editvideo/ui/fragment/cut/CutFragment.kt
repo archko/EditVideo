@@ -90,7 +90,7 @@ class CutFragment : BaseFragment<FragmentCutBinding>(R.layout.fragment_cut) {
         resultUrl = arguments?.getString(HomeFragment.RESULT_PATH)
         fetchVideoInfo(resultUrl)
         binding.cropVideoView.setOnBoxChangedListener { x1, y1, x2, y2 ->
-            binding.tvCropRect.text = "box:[$x1,$y1],[${x2 - x1},${y2 - y1}]"
+            binding.tvCropRect.text = "box:[$x1,$y1],[${x2},${y2}]"
         }
     }
 
