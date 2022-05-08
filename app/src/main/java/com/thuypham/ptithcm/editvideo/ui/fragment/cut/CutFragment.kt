@@ -214,6 +214,7 @@ class CutFragment : BaseFragment<FragmentCutBinding>(R.layout.fragment_cut) {
     override fun setupDataObserver() {
         super.setupDataObserver()
         cutViewModel.mediaInfoResponse.observe(viewLifecycleOwner) { fFprobeStream ->
+            this@CutFragment.fFprobeStream = fFprobeStream
             binding.cropVideoView.initBounds(fFprobeStream.width, fFprobeStream.height, 0)
         }
 
