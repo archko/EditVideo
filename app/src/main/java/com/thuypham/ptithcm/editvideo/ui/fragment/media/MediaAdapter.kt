@@ -6,13 +6,13 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import coil.load
+import coil.request.CachePolicy
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.databinding.ItemMediaBinding
 import com.thuypham.ptithcm.editvideo.extension.setOnSingleClickListener
 import com.thuypham.ptithcm.editvideo.extension.toTime
 import com.thuypham.ptithcm.editvideo.model.MediaFile
-import java.io.File
 
 class MediaAdapter(
     private val onItemSelected: ((item: MediaFile) -> Unit)? = null,
@@ -35,10 +35,11 @@ class MediaAdapter(
                     ivMedia.setImageResource(R.drawable.ic_audio)
                 } else {
                     item.path?.let {
-                        Glide.with(root.context)
-                            .load(File(it))
-                            .placeholder(R.drawable.ic_image_placeholder)
-                            .into(ivMedia)
+                        ivMedia.load(it) {
+                            crossfade(true)
+                            diskCachePolicy(CachePolicy.DISABLED)
+                            placeholder(R.drawable.ic_image_placeholder)
+                        }
                     }
                 }
 

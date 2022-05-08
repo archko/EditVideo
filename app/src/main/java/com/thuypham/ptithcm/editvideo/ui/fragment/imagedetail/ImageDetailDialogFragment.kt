@@ -8,14 +8,13 @@ import android.view.Gravity
 import android.view.ViewGroup
 import android.view.Window
 import androidx.core.view.isVisible
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
+import coil.load
+import coil.request.CachePolicy
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.base.BaseDialogFragment
 import com.thuypham.ptithcm.editvideo.databinding.FragmentDetailImageBinding
 import com.thuypham.ptithcm.editvideo.extension.setOnSingleClickListener
 import com.thuypham.ptithcm.editvideo.widget.ZoomImageView
-import java.io.File
 
 class ImageDetailDialogFragment(
     private val imagePath: String,
@@ -45,16 +44,16 @@ class ImageDetailDialogFragment(
         binding.apply {
             if (!imagePath.isNullOrEmpty()) {
                 if (imagePath.startsWith("/storage")) {
-                    Glide.with(root.context)
-                        .load(File(imagePath))
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .placeholder(R.drawable.ic_image_placeholder)
-                        .into(ivZoomImage)
+                    ivZoomImage.load(imagePath) {
+                        crossfade(true)
+                        diskCachePolicy(CachePolicy.DISABLED)
+                        placeholder(R.drawable.ic_image_placeholder)
+                    }
                 } else {
-                    Glide.with(root.context)
-                        .load(File(imagePath))
-                        .placeholder(R.drawable.ic_image_placeholder)
-                        .into(ivZoomImage)
+                    ivZoomImage.load(imagePath) {
+                        crossfade(true)
+                        placeholder(R.drawable.ic_image_placeholder)
+                    }
                 }
             }
 

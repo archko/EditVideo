@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
+import coil.load
+import coil.request.CachePolicy
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.databinding.ItemMediaBinding
 import com.thuypham.ptithcm.editvideo.extension.setOnSingleClickListener
@@ -24,16 +24,16 @@ class ImageAdapter(
             binding.apply {
                 if (!item.path.isNullOrEmpty()) {
                     if (item.path!!.startsWith("/storage")) {
-                        Glide.with(root.context)
-                            .load(item.path?.let { File(it) })
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .placeholder(R.drawable.ic_image_placeholder)
-                            .into(ivMedia)
+                        ivMedia.load(item.path?.let { File(it) }) {
+                            crossfade(true)
+                            diskCachePolicy(CachePolicy.DISABLED)
+                            placeholder(R.drawable.ic_image_placeholder)
+                        }
                     } else {
-                        Glide.with(root.context)
-                            .load(item.path)
-                            .placeholder(R.drawable.ic_image_placeholder)
-                            .into(ivMedia)
+                        ivMedia.load(item.path?.let { File(it) }) {
+                            crossfade(true)
+                            placeholder(R.drawable.ic_image_placeholder)
+                        }
                     }
                 }
                 tvName.text = item.displayName

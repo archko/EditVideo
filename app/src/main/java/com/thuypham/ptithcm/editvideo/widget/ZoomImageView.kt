@@ -18,9 +18,7 @@ import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.ScaleGestureDetectorCompat
 import com.thuypham.ptithcm.editvideo.R
-import org.jetbrains.anko.runOnUiThread
 import java.util.*
-
 
 class ZoomImageView @JvmOverloads constructor(
     context: Context,
@@ -138,7 +136,6 @@ class ZoomImageView @JvmOverloads constructor(
     private var singleTapDetected = false
 
     init {
-
         val gestureListener: GestureDetector.OnGestureListener =
             object : SimpleOnGestureListener() {
                 override fun onDoubleTapEvent(e: MotionEvent): Boolean {
@@ -168,29 +165,27 @@ class ZoomImageView @JvmOverloads constructor(
                     listener?.onLongClick()
                 }
             }
-        this.context.runOnUiThread {
-            scaleDetector = ScaleGestureDetector(context, this@ZoomImageView)
-            gestureDetector = GestureDetector(context, gestureListener)
-            ScaleGestureDetectorCompat.setQuickScaleEnabled(scaleDetector, false)
-            startScaleType = scaleType
-            val values = context.obtainStyledAttributes(attrs, R.styleable.ZoomImageView)
-            isZoomable = values.getBoolean(R.styleable.ZoomImageView_zoomImage_zoomable, true)
-            isTranslatable =
-                values.getBoolean(R.styleable.ZoomImageView_zoomImage_translatable, true)
-            animateOnReset =
-                values.getBoolean(R.styleable.ZoomImageView_zoomImage_animateOnReset, true)
-            autoCenter = values.getBoolean(R.styleable.ZoomImageView_zoomImage_autoCenter, true)
-            restrictBounds =
-                values.getBoolean(R.styleable.ZoomImageView_zoomImage_restrictBounds, false)
-            doubleTapToZoom =
-                values.getBoolean(R.styleable.ZoomImageView_zoomImage_doubleTapToZoom, true)
-            minScale = values.getFloat(R.styleable.ZoomImageView_zoomImage_minScale, MIN_SCALE)
-            maxScale = values.getFloat(R.styleable.ZoomImageView_zoomImage_maxScale, MAX_SCALE)
-            doubleTapToZoomScaleFactor =
-                values.getFloat(R.styleable.ZoomImageView_zoomImage_doubleTapToZoomScaleFactor, 2f)
-            values.recycle()
-            verifyScaleRange()
-        }
+        scaleDetector = ScaleGestureDetector(context, this@ZoomImageView)
+        gestureDetector = GestureDetector(context, gestureListener)
+        ScaleGestureDetectorCompat.setQuickScaleEnabled(scaleDetector, false)
+        startScaleType = scaleType
+        val values = context.obtainStyledAttributes(attrs, R.styleable.ZoomImageView)
+        isZoomable = values.getBoolean(R.styleable.ZoomImageView_zoomImage_zoomable, true)
+        isTranslatable =
+            values.getBoolean(R.styleable.ZoomImageView_zoomImage_translatable, true)
+        animateOnReset =
+            values.getBoolean(R.styleable.ZoomImageView_zoomImage_animateOnReset, true)
+        autoCenter = values.getBoolean(R.styleable.ZoomImageView_zoomImage_autoCenter, true)
+        restrictBounds =
+            values.getBoolean(R.styleable.ZoomImageView_zoomImage_restrictBounds, false)
+        doubleTapToZoom =
+            values.getBoolean(R.styleable.ZoomImageView_zoomImage_doubleTapToZoom, true)
+        minScale = values.getFloat(R.styleable.ZoomImageView_zoomImage_minScale, MIN_SCALE)
+        maxScale = values.getFloat(R.styleable.ZoomImageView_zoomImage_maxScale, MAX_SCALE)
+        doubleTapToZoomScaleFactor =
+            values.getFloat(R.styleable.ZoomImageView_zoomImage_doubleTapToZoomScaleFactor, 2f)
+        values.recycle()
+        verifyScaleRange()
     }
 
     private fun verifyScaleRange() {
