@@ -1,5 +1,6 @@
 package com.thuypham.ptithcm.editvideo.di
 
+import com.thuypham.ptithcm.editvideo.viewmodel.CmdViewModel
 import com.thuypham.ptithcm.editvideo.viewmodel.CutViewModel
 import com.thuypham.ptithcm.editvideo.viewmodel.ExtractImageViewModel
 import com.thuypham.ptithcm.editvideo.viewmodel.HomeViewModel
@@ -17,4 +18,5 @@ val viewModelModule = module {
     viewModel { ExtractImageViewModel() }
     viewModel { MergeViewModel(get()) }
     viewModel { CutViewModel() }
+    viewModel { CmdViewModel() }
 }

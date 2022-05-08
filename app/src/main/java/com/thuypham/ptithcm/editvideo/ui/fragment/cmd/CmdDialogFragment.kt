@@ -6,30 +6,32 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.AndroidRuntimeException
 import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.lifecycle.lifecycleScope
 import com.arthenica.ffmpegkit.FFmpegKit
 import com.arthenica.ffmpegkit.FFmpegKitConfig
 import com.arthenica.ffmpegkit.FFprobeKit
-import com.arthenica.ffmpegkit.FFprobeSession
-import com.arthenica.ffmpegkit.LogRedirectionStrategy
 import com.arthenica.ffmpegkit.SessionState
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.base.BaseDialogFragment
 import com.thuypham.ptithcm.editvideo.databinding.FragmentCmdBinding
 import com.thuypham.ptithcm.editvideo.extension.setOnSingleClickListener
 import com.thuypham.ptithcm.editvideo.extension.show
+import com.thuypham.ptithcm.editvideo.viewmodel.CmdViewModel
+import kotlinx.coroutines.launch
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class CmdDialogFragment(
 ) : BaseDialogFragment<FragmentCmdBinding>(R.layout.fragment_cmd) {
 
     override val isFullScreen = true
     private lateinit var handler: Handler
+    private val cmdViewModel: CmdViewModel by viewModel()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
@@ -51,6 +53,7 @@ class CmdDialogFragment(
             cmdFfmpeg.setOnSingleClickListener { runFFmpeg() }
             cmdFfprobe.setOnSingleClickListener { runFFprobe() }
         }
+        setupDataObserver()
     }
 
     private fun setupToolbar() {
@@ -76,32 +79,55 @@ class CmdDialogFragment(
         }
     }
 
+    override fun setupDataObserver() {
+        cmdViewModel.logResponse.observe(viewLifecycleOwner) { log ->
+            handler.post { appendOutput(log.message) }
+        }
+
+        cmdViewModel.ffmpegResponse.observe(viewLifecycleOwner) { session ->
+            val state = session.state
+            val returnCode = session.returnCode
+            Log.d(
+                "TAG",
+                String.format(
+                    "FFmpeg process exited with state %s and rc %s.%s",
+                    FFmpegKitConfig.sessionStateToString(state),
+                    returnCode,
+                    notNull(session.failStackTrace, "\n")
+                )
+            )
+            if (state == SessionState.FAILED || !returnCode.isValueSuccess) {
+                showSnackBar("Command failed. Please check output for the details.")
+            }
+        }
+        cmdViewModel.ffprobeResponse.observe(viewLifecycleOwner) { session ->
+            val state = session.state
+            val returnCode = session.returnCode
+            appendOutput(session.output)
+            Log.d(
+                "TAG",
+                String.format(
+                    "FFprobe process exited with state %s and rc %s.%s",
+                    FFmpegKitConfig.sessionStateToString(state),
+                    returnCode,
+                    notNull(
+                        session.failStackTrace,
+                        "\n"
+                    )
+                )
+            )
+            if (state == SessionState.FAILED || !session.returnCode.isValueSuccess) {
+                showSnackBar("Command failed. Please check output for the details.")
+            }
+        }
+    }
+
     private fun runFFmpeg() {
         clearOutput()
         val ffmpegCommand = String.format("%s", binding.editCmd.text.toString())
         Log.d("TAG", String.format("Current log level is %s.", FFmpegKitConfig.getLogLevel()))
         Log.d("TAG", String.format("FFmpeg process started with arguments:\n'%s'", ffmpegCommand))
-        FFmpegKit.executeAsync(ffmpegCommand,
-            { session ->
-                val state = session.state
-                val returnCode = session.returnCode
-                Log.d(
-                    "TAG",
-                    String.format(
-                        "FFmpeg process exited with state %s and rc %s.%s",
-                        FFmpegKitConfig.sessionStateToString(state),
-                        returnCode,
-                        notNull(session.failStackTrace, "\n")
-                    )
-                )
-                if (state == SessionState.FAILED || !returnCode.isValueSuccess) {
-                    handler.post { showSnackBar("Command failed. Please check output for the details.") }
-                }
-            }, { log ->
-                handler.post { appendOutput(log.message) }
-                throw AndroidRuntimeException("I am test exception thrown by the application")
-            }, null
-        )
+        lifecycleScope.launch { cmdViewModel.runFFmpeg(ffmpegCommand) }
         listFFmpegSessions()
     }
 
@@ -112,30 +138,8 @@ class CmdDialogFragment(
             "TAG",
             String.format("FFprobe process started with arguments:\n'%s'", ffprobeCommand)
         )
-        val session = FFprobeSession(
-            FFmpegKitConfig.parseArguments(ffprobeCommand),
-            { session ->
-                val state = session.state
-                val returnCode = session.returnCode
-                handler.post { appendOutput(session.output) }
-                Log.d(
-                    "TAG",
-                    String.format(
-                        "FFprobe process exited with state %s and rc %s.%s",
-                        FFmpegKitConfig.sessionStateToString(state),
-                        returnCode,
-                        notNull(
-                            session.failStackTrace,
-                            "\n"
-                        )
-                    )
-                )
-                if (state == SessionState.FAILED || !session.returnCode.isValueSuccess) {
-                    handler.post { showSnackBar("Command failed. Please check output for the details.") }
-                }
-            }, null, LogRedirectionStrategy.NEVER_PRINT_LOGS
-        )
-        FFmpegKitConfig.asyncFFprobeExecute(session)
+
+        lifecycleScope.launch { cmdViewModel.runFFprobe(ffprobeCommand) }
         listFFprobeSessions()
     }
 
