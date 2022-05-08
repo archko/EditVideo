@@ -60,21 +60,21 @@ class CutViewModel() : ViewModel() {
      * fetch video info by ffmpeg,use callbackFlow.
      */
     suspend fun getVideoInfo(filePath: String?): Unit = callbackFlow<FFprobeStream?> {
-        val onSuccess = { it: String? ->
-            if (!TextUtils.isEmpty(it)) {
-                val fFprobeStream: FFprobeStream? = parseFFprobeStream(it!!)
-                Log.d("TAG", "ffprobe:$fFprobeStream")
-                trySend(fFprobeStream)
-            } else {
+        fFmpegHelper.getVideoInfo(filePath!!,
+            onSuccess = {
+                if (!TextUtils.isEmpty(it)) {
+                    val fFprobeStream: FFprobeStream? = parseFFprobeStream(it!!)
+                    Log.d("TAG", "ffprobe:$fFprobeStream")
+                    trySend(fFprobeStream)
+                } else {
+                    trySend(getVideoBySDK(filePath))
+                }
+                null
+            },
+            onFail = {
                 trySend(getVideoBySDK(filePath))
-            }
-            null
-        }
-        val onFail = { _: String? ->
-            trySend(getVideoBySDK(filePath))
-            null
-        }
-        fFmpegHelper.getVideoInfo(filePath!!, onSuccess, onFail)
+                null
+            })
 
         //这是一个挂起函数, 当 flow 被关闭的时候 block 中的代码会被执行 可以在这里取消接口的注册等
         awaitClose { }
@@ -95,14 +95,6 @@ class CutViewModel() : ViewModel() {
         fFprobeStream: FFprobeStream?,
     ) = callbackFlow<ResponseHandler<String>> {
         trySend(ResponseHandler.Loading)
-        val onSuccess = { it: String? ->
-            trySend(ResponseHandler.Success<String>(it.toString()))
-            null
-        }
-        val onFail = { it: String? ->
-            trySend(ResponseHandler.Failure(extra = it))
-            null
-        }
         val bitRate = fFprobeStream?.bit_rate
         fFmpegHelper.cutVideo(
             width,
@@ -111,8 +103,14 @@ class CutViewModel() : ViewModel() {
             top,
             filePath,
             bitRate,
-            onSuccess,
-            onFail
+            onSuccess = {
+                trySend(ResponseHandler.Success(it))
+                null
+            },
+            onFail = {
+                trySend(ResponseHandler.Failure(extra = it))
+                null
+            }
         )
         awaitClose { }
     }.flowOn(Dispatchers.IO)
