@@ -29,7 +29,6 @@ import com.thuypham.ptithcm.editvideo.model.ResponseHandler
 import com.thuypham.ptithcm.editvideo.ui.activity.ResultActivity
 import com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment
 import com.thuypham.ptithcm.editvideo.viewmodel.CutViewModel
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
 import java.util.*
@@ -214,28 +213,25 @@ class CutFragment : BaseFragment<FragmentCutBinding>(R.layout.fragment_cut) {
 
     override fun setupDataObserver() {
         super.setupDataObserver()
-        lifecycleScope.launch {
-            cutViewModel.mediaInfoResponse.collectLatest { fFprobeStream ->
-                binding.cropVideoView.initBounds(fFprobeStream.width, fFprobeStream.height, 0)
-            }
+        cutViewModel.mediaInfoResponse.observe(viewLifecycleOwner) { fFprobeStream ->
+            binding.cropVideoView.initBounds(fFprobeStream.width, fFprobeStream.height, 0)
         }
-        lifecycleScope.launch {
-            cutViewModel.cutResponse.collectLatest { response ->
-                when (response) {
-                    is ResponseHandler.Success -> {
-                        hideLoading()
-                        ResultActivity.start(requireActivity(), response.data, 0)
-                    }
-                    is ResponseHandler.Loading -> {
-                        showLoading()
-                    }
-                    is ResponseHandler.Failure -> {
-                        hideLoading()
-                        showSnackBar("Failed to crop!")
-                    }
-                    else -> {
-                        hideLoading()
-                    }
+
+        cutViewModel.cutResponse.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is ResponseHandler.Success -> {
+                    hideLoading()
+                    ResultActivity.start(requireActivity(), response.data, 0)
+                }
+                is ResponseHandler.Loading -> {
+                    showLoading()
+                }
+                is ResponseHandler.Failure -> {
+                    hideLoading()
+                    showSnackBar("Failed to crop!")
+                }
+                else -> {
+                    hideLoading()
                 }
             }
         }
