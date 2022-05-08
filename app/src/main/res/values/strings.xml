@@ -8,7 +8,7 @@
     <string name="menu_split_video">Split video</string>
     <string name="menu_merge_video">Merge video</string>
     <string name="menu_run_cmd">Run Cmd</string>
-    <string name="empty_video_msg">Empty video, please upload a video to edit</string>
+    <string name="empty_video_msg">Empty video, please click to add video to edit</string>
     <string name="upload_video">Upload Video</string>
     <string name="add_video">Add Video</string>
     <string name="merge_video">Merge Video</string>

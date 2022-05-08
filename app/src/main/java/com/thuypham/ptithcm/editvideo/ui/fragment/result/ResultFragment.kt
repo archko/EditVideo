@@ -34,11 +34,11 @@ class ResultFragment : BaseFragment<FragmentResultBinding>(R.layout.fragment_res
     override fun setupLogic() {
         super.setupLogic()
         resultUrl = arguments?.getString(HomeFragment.RESULT_PATH)
+        binding.tvOutputPath.text = resultUrl
     }
 
     override fun setupView() {
         setupToolbar()
-        binding.tvOutputPath.text = resultUrl
     }
 
     override fun setupDataObserver() {

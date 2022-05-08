@@ -2,6 +2,7 @@ package com.thuypham.ptithcm.editvideo.ui.fragment.cut
 
 import android.animation.TimeInterpolator
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import android.content.res.Resources
 import android.media.MediaMetadataRetriever
 import android.text.TextUtils
@@ -15,6 +16,7 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.util.Util
 import com.google.android.material.slider.RangeSlider
 import com.thuypham.ptithcm.editvideo.R
@@ -317,6 +319,29 @@ class CutFragment : BaseFragment<FragmentCutBinding>(R.layout.fragment_cut) {
                 setSlider()
             }
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        when (newConfig.orientation) {
+            Configuration.ORIENTATION_PORTRAIT -> portrait()
+            Configuration.ORIENTATION_LANDSCAPE -> landscape()
+            else -> {
+                portrait()
+            }
+        }
+    }
+
+    private fun portrait() {
+        binding.toolbar.toolbarContainer.visibility = View.VISIBLE
+        binding.clBottomMenu.visibility = View.VISIBLE
+        binding.cropVideoView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH)
+    }
+
+    private fun landscape() {
+        binding.toolbar.toolbarContainer.visibility = View.GONE
+        binding.clBottomMenu.visibility = View.GONE
+        binding.cropVideoView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT)
     }
 
     private fun startCrop() {
