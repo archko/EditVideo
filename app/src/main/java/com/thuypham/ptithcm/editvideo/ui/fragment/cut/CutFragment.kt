@@ -10,7 +10,6 @@ import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.isVisible
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -49,7 +48,6 @@ class CutFragment : BaseFragment<FragmentCutBinding>(R.layout.fragment_cut) {
     private var resultUrl: String? = null
 
     private var isAspectMenuShown = false
-    private var mIvAspectRatio: AppCompatImageView? = null
     private var mTvAspectCustom: TextView? = null
     private var mTvAspectSquare: TextView? = null
     private var mTvAspectPortrait: TextView? = null
@@ -64,7 +62,6 @@ class CutFragment : BaseFragment<FragmentCutBinding>(R.layout.fragment_cut) {
         setupToolbar()
         setupRangeSlider()
 
-        mIvAspectRatio = binding.root.findViewById(R.id.ivAspectRatio)
         mAspectMenu = binding.root.findViewById(R.id.aspectMenu)
         mTvAspectCustom = binding.root.findViewById(R.id.tvAspectCustom)
         mTvAspectSquare = binding.root.findViewById(R.id.tvAspectSquare)
@@ -101,7 +98,7 @@ class CutFragment : BaseFragment<FragmentCutBinding>(R.layout.fragment_cut) {
         binding.ivDone.setOnSingleClickListener {
             startCrop()
         }
-        mIvAspectRatio!!.setOnClickListener { v -> handleMenuVisibility() }
+        binding.ivAspectRatio.setOnClickListener { v -> handleMenuVisibility() }
         mTvAspectCustom!!.setOnClickListener { v ->
             binding.cropVideoView.setFixedAspectRatio(false)
             handleMenuVisibility()
