@@ -28,7 +28,7 @@ import java.util.*
 fun <T> getViewBinding(inflater: LayoutInflater, clazz: Class<T>) =
     clazz.getMethod("inflate", LayoutInflater::class.java)
         .invoke(null, inflater)
-        .convert<T>()
+        ?.convert<T>()
 
 fun Context.getSharePref(): SharedPreferences {
     return getSharedPreferences(packageName, Context.MODE_PRIVATE)
@@ -137,17 +137,6 @@ fun String.getMimeType() =
     }
 
 fun File.toFileInputStream() = FileInputStream(this)
-
-fun Context.getIpAddress(): String {
-    return (applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager?)?.let {
-        val ipInt = it.connectionInfo.ipAddress
-        InetAddress.getByAddress(
-            ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(ipInt).array()
-        )
-            .hostAddress
-    }.orEmpty()
-}
-
 
 fun Context.getPackageInfo(): PackageInfo? {
     return try {

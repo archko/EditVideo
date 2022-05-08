@@ -29,8 +29,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
                 runOnUiThread(Runnable {
                     if (view != null) {
                         val snackBar = Snackbar.make(
-                            view ?: return@Runnable, getString(R.string.external_permission_denied)
-                                ?: return@Runnable, Snackbar.LENGTH_SHORT
+                            view ?: return@Runnable,
+                            getString(R.string.external_permission_denied), Snackbar.LENGTH_SHORT
                         )
                         snackBar.show()
                     }

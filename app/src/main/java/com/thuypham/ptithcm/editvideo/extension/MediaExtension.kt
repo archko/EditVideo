@@ -179,11 +179,13 @@ fun deleteDir(dirPath: String?): Boolean {
     val dir = File(dirPath)
     return if (dir.isDirectory) {
         val files = dir.listFiles()
-        for (i in files.indices) {
-            if (files[i].isDirectory) {
-                deleteDir(files[i].absolutePath)
-            } else {
-                success = success and files[i].delete()
+        if (files != null) {
+            for (i in files.indices) {
+                if (files[i].isDirectory) {
+                    deleteDir(files[i].absolutePath)
+                } else {
+                    success = success and files[i].delete()
+                }
             }
         }
         success = success and dir.delete()

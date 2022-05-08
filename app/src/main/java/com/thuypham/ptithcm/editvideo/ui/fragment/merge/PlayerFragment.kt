@@ -109,7 +109,7 @@ class PlayerFragment(
             .build()
             .also { exoPlayer ->
                 binding.videoView.player = exoPlayer
-                resultUrl?.let { exoPlayer.setMediaItem(MediaItem.fromUri(it)) }
+                resultUrl.let { exoPlayer.setMediaItem(MediaItem.fromUri(it)) }
                 exoPlayer.playWhenReady = playWhenReady
                 exoPlayer.seekTo(currentWindow, playbackPosition)
                 exoPlayer.addListener(playbackStateListener)

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.core.view.isVisible
 import com.google.android.exoplayer2.ExoPlayer
@@ -304,7 +305,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             }
             runnable.let { handler.postDelayed(it, 1000) }
         }
-        handler = Handler()
+        handler = Handler(Looper.getMainLooper())
         handler.postDelayed(runnable, 1000)
     }
 
