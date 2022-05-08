@@ -1,9 +1,9 @@
-package net.alee.videcrop.cropview.window.handle;
+package com.thuypham.ptithcm.editvideo.cropview.window.handle;
 
 import android.graphics.Rect;
 
-import net.alee.videcrop.cropview.window.edge.Edge;
-import net.alee.videcrop.cropview.window.edge.EdgePair;
+import com.thuypham.ptithcm.editvideo.cropview.window.edge.Edge;
+import com.thuypham.ptithcm.editvideo.cropview.window.edge.EdgePair;
 
 class CornerHandleHelper extends HandleHelper {
     CornerHandleHelper(Edge horizontalEdge, Edge verticalEdge) {
@@ -20,6 +20,5 @@ class CornerHandleHelper extends HandleHelper {
             secondaryEdge.snapToRect(imageRect);
             primaryEdge.adjustCoordinate(targetAspectRatio);
         }
-
     }
 }

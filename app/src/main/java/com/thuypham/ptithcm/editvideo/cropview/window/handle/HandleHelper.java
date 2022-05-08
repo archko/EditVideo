@@ -1,10 +1,10 @@
-package net.alee.videcrop.cropview.window.handle;
+package com.thuypham.ptithcm.editvideo.cropview.window.handle;
 
 import android.graphics.Rect;
 
-import net.alee.videcrop.cropview.util.AspectRatioUtil;
-import net.alee.videcrop.cropview.window.edge.Edge;
-import net.alee.videcrop.cropview.window.edge.EdgePair;
+import com.thuypham.ptithcm.editvideo.cropview.util.AspectRatioUtil;
+import com.thuypham.ptithcm.editvideo.cropview.window.edge.Edge;
+import com.thuypham.ptithcm.editvideo.cropview.window.edge.EdgePair;
 
 abstract class HandleHelper {
     private static final float UNFIXED_ASPECT_RATIO_CONSTANT = 1.0F;

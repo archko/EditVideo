@@ -1,4 +1,4 @@
-package net.alee.videcrop.cropview.window.edge;
+package com.thuypham.ptithcm.editvideo.cropview.window.edge;
 
 public class EdgePair {
     public Edge primary;

@@ -1,11 +1,16 @@
 package com.thuypham.ptithcm.editvideo.ui.fragment.cut
 
+import android.animation.TimeInterpolator
 import android.annotation.SuppressLint
-import android.content.res.Configuration
+import android.content.res.Resources
 import android.media.MediaMetadataRetriever
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.DecelerateInterpolator
+import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.isVisible
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -43,11 +48,31 @@ class CutFragment : BaseFragment<FragmentCutBinding>(R.layout.fragment_cut) {
 
     private var resultUrl: String? = null
 
+    private var isAspectMenuShown = false
+    private var mIvAspectRatio: AppCompatImageView? = null
+    private var mTvAspectCustom: TextView? = null
+    private var mTvAspectSquare: TextView? = null
+    private var mTvAspectPortrait: TextView? = null
+    private var mTvAspectLandscape: TextView? = null
+    private var mTvAspect4by3: TextView? = null
+    private var mTvAspect16by9: TextView? = null
+    private var mAspectMenu: View? = null
+
     override fun setupView() {
         formatBuilder = StringBuilder()
         formatter = Formatter(formatBuilder, Locale.getDefault())
         setupToolbar()
         setupRangeSlider()
+
+        mIvAspectRatio = binding.root.findViewById(R.id.ivAspectRatio)
+        mAspectMenu = binding.root.findViewById(R.id.aspectMenu)
+        mTvAspectCustom = binding.root.findViewById(R.id.tvAspectCustom)
+        mTvAspectSquare = binding.root.findViewById(R.id.tvAspectSquare)
+        mTvAspectPortrait = binding.root.findViewById(R.id.tvAspectPortrait)
+        mTvAspectLandscape = binding.root.findViewById(R.id.tvAspectLandscape)
+        mTvAspect4by3 = binding.root.findViewById(R.id.tvAspect4by3)
+        mTvAspect16by9 = binding.root.findViewById(R.id.tvAspect16by9)
+
         setupEvent()
         binding.ivPlay.setOnSingleClickListener { playPause() }
     }
@@ -68,7 +93,7 @@ class CutFragment : BaseFragment<FragmentCutBinding>(R.layout.fragment_cut) {
         resultUrl = arguments?.getString(HomeFragment.RESULT_PATH)
         fetchVideoInfo(resultUrl)
         binding.cropVideoView.setOnBoxChangedListener { x1, y1, x2, y2 ->
-            binding.tvCropRect.text = "box[$x1,$y1],[$x2,$y2]"
+            binding.tvCropRect.text = "box:[$x1,$y1],[${x2 - x1},${y2 - y1}]"
         }
     }
 
@@ -76,6 +101,53 @@ class CutFragment : BaseFragment<FragmentCutBinding>(R.layout.fragment_cut) {
         binding.ivDone.setOnSingleClickListener {
             startCrop()
         }
+        mIvAspectRatio!!.setOnClickListener { v -> handleMenuVisibility() }
+        mTvAspectCustom!!.setOnClickListener { v ->
+            binding.cropVideoView.setFixedAspectRatio(false)
+            handleMenuVisibility()
+        }
+        mTvAspectSquare!!.setOnClickListener { v ->
+            binding.cropVideoView.setFixedAspectRatio(true)
+            binding.cropVideoView.setAspectRatio(10, 10)
+            handleMenuVisibility()
+        }
+        mTvAspectPortrait!!.setOnClickListener { v ->
+            binding.cropVideoView.setFixedAspectRatio(true)
+            binding.cropVideoView.setAspectRatio(8, 16)
+            handleMenuVisibility()
+        }
+        mTvAspectLandscape!!.setOnClickListener { v ->
+            binding.cropVideoView.setFixedAspectRatio(true)
+            binding.cropVideoView.setAspectRatio(16, 8)
+            handleMenuVisibility()
+        }
+        mTvAspect4by3!!.setOnClickListener { v ->
+            binding.cropVideoView.setFixedAspectRatio(true)
+            binding.cropVideoView.setAspectRatio(4, 3)
+            handleMenuVisibility()
+        }
+        mTvAspect16by9!!.setOnClickListener { v ->
+            binding.cropVideoView.setFixedAspectRatio(true)
+            binding.cropVideoView.setAspectRatio(16, 9)
+            handleMenuVisibility()
+        }
+    }
+
+    private fun handleMenuVisibility() {
+        isAspectMenuShown = !isAspectMenuShown
+        val interpolator: TimeInterpolator = if (isAspectMenuShown) {
+            DecelerateInterpolator()
+        } else {
+            AccelerateInterpolator()
+        }
+        val translationY: Float =
+            if (isAspectMenuShown) 0f else Resources.getSystem().displayMetrics.density * 400
+        val alpha: Float = if (isAspectMenuShown) 1f else 0f
+        mAspectMenu!!.animate()
+            .translationY(translationY)
+            .alpha(alpha)
+            .setInterpolator(interpolator)
+            .start()
     }
 
     private fun playPause() {
@@ -244,32 +316,10 @@ class CutFragment : BaseFragment<FragmentCutBinding>(R.layout.fragment_cut) {
             super.onRenderedFirstFrame()
             if (!hasInitPlayer) {
                 hasInitPlayer = true
-                binding.cropVideoView.setFixedAspectRatio(false)
                 binding.ivPlay.setImageResource(R.drawable.ic_pause)
                 setSlider()
             }
         }
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        /*when (newConfig.orientation) {
-            Configuration.ORIENTATION_PORTRAIT -> portrait()
-            Configuration.ORIENTATION_LANDSCAPE -> landscape()
-            else -> {
-                portrait()
-            }
-        }*/
-    }
-
-    private fun portrait() {
-        binding.toolbar.toolbarContainer.visibility = View.VISIBLE
-        //binding.cropVideoView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH
-    }
-
-    private fun landscape() {
-        binding.toolbar.toolbarContainer.visibility = View.GONE
-        //binding.cropVideoView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT
     }
 
     private fun startCrop() {

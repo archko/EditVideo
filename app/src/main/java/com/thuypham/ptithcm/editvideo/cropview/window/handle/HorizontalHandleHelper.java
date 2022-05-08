@@ -1,9 +1,9 @@
-package net.alee.videcrop.cropview.window.handle;
+package com.thuypham.ptithcm.editvideo.cropview.window.handle;
 
 import android.graphics.Rect;
 
-import net.alee.videcrop.cropview.util.AspectRatioUtil;
-import net.alee.videcrop.cropview.window.edge.Edge;
+import com.thuypham.ptithcm.editvideo.cropview.util.AspectRatioUtil;
+import com.thuypham.ptithcm.editvideo.cropview.window.edge.Edge;
 
 class HorizontalHandleHelper extends HandleHelper {
     private Edge mEdge;

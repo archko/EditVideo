@@ -106,11 +106,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             }
             Menu.MENU_CUT_VID -> {
                 player?.pause()
-                /*currentMediaFile?.path?.let {
-                    player?.currentPosition?.toInt()
-                        ?.let { it1 -> mediaViewModel.extractOneImage(it1, it) }
-                }*/
-                //VideoCropActivity.startIntent(requireActivity(), currentMediaFile?.path, null)
                 currentMediaFile?.path?.let { navigateToResultFragment(it) }
             }
             Menu.MENU_MERGE_VIDEO -> {

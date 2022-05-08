@@ -141,10 +141,12 @@ class CmdDialogFragment(
 
     private fun appendOutput(logMessage: String?) {
         binding.tvOutput.append(logMessage)
+        binding.scrollView.scrollBy(0, 1500)
     }
 
     private fun clearOutput() {
         binding.tvOutput.text = ""
+        binding.scrollView.scrollBy(0, 1500)
     }
 
     private fun notNull(string: String?, valuePrefix: String?): String {

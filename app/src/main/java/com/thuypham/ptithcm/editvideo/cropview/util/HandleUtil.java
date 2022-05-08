@@ -1,11 +1,11 @@
-package net.alee.videcrop.cropview.util;
+package com.thuypham.ptithcm.editvideo.cropview.util;
 
 import android.content.Context;
 import android.util.Pair;
 import android.util.TypedValue;
 
-import net.alee.videcrop.cropview.window.CropView;
-import net.alee.videcrop.cropview.window.handle.Handle;
+import com.thuypham.ptithcm.editvideo.cropview.window.CropView;
+import com.thuypham.ptithcm.editvideo.cropview.window.handle.Handle;
 
 public final class HandleUtil {
     private static final int TARGET_RADIUS_DP = 24;

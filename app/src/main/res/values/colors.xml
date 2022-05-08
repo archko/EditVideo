@@ -31,6 +31,4 @@
     <color name="corner">@android:color/white</color>
     <color name="surrounding_area">@color/black_translucent</color>
 
-    <color name="lighter_gray">#eeeeee</color>
-    <color name="txt_color">#3b3b3b</color>
 </resources>

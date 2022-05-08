@@ -1,4 +1,4 @@
-package net.alee.videcrop.cropview.window;
+package com.thuypham.ptithcm.editvideo.cropview.window;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -11,12 +11,12 @@ import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 
-import net.alee.videcrop.cropview.util.AspectRatioUtil;
-import net.alee.videcrop.cropview.util.HandleUtil;
-import net.alee.videcrop.cropview.util.PaintUtil;
-import net.alee.videcrop.cropview.window.edge.Edge;
-import net.alee.videcrop.cropview.window.handle.Handle;
-import net.alee.videcrop.cropview.window.handle.OnBoxChangedListener;
+import com.thuypham.ptithcm.editvideo.cropview.util.AspectRatioUtil;
+import com.thuypham.ptithcm.editvideo.cropview.util.HandleUtil;
+import com.thuypham.ptithcm.editvideo.cropview.util.PaintUtil;
+import com.thuypham.ptithcm.editvideo.cropview.window.edge.Edge;
+import com.thuypham.ptithcm.editvideo.cropview.window.handle.Handle;
+import com.thuypham.ptithcm.editvideo.cropview.window.handle.OnBoxChangedListener;
 
 public class CropView extends View {
     private static final int SNAP_RADIUS_DP = 6;
@@ -155,7 +155,6 @@ public class CropView extends View {
                 initCropWindow(mBitmapRect);
                 invalidate();
             }
-
         }
     }
 
@@ -249,7 +248,9 @@ public class CropView extends View {
             Edge.RIGHT.setCoordinate((float) bitmapRect.right - centerX);
             Edge.BOTTOM.setCoordinate((float) bitmapRect.bottom - cropWidth);
         }
-
+        if (null != onBoxChangedListener) {
+            onBoxChangedListener.onChanged(0, 0, 0, 0);
+        }
     }
 
     public static boolean showGuidelines() {

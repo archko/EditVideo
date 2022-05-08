@@ -2,15 +2,16 @@ package com.thuypham.ptithcm.editvideo.util
 
 import android.content.Context
 import android.os.Environment
+import android.text.TextUtils
 import android.util.Log
 import com.arthenica.ffmpegkit.FFmpegKit
+import com.arthenica.ffmpegkit.FFprobeKit
 import com.arthenica.ffmpegkit.ReturnCode
 import com.thuypham.ptithcm.editvideo.model.MediaFile
 import com.thuypham.ptithcm.editvideo.util.FileHelper.Companion.OUTPUT_FOLDER_NAME
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.*
-
 
 class FFmpegHelper constructor(
     private val context: Context,
@@ -86,37 +87,33 @@ class FFmpegHelper constructor(
 
     suspend fun cutVideo(
         width: Int, height: Int, left: Int, top: Int, filePath: String,
+        bitRate: String?,
         onSuccess: ((outputPath: String) -> Unit?)?,
         onFail: ((String?) -> Unit?)?
     ) {
         withContext(Dispatchers.IO) {
             val outputPath = getOutputVideoPath("cut_video")
-            val complexCommand = arrayOf(
-                "-i",
-                filePath,
-                "-strict",
-                "-2",
-                "-vf",
-                "crop=$width:$height:$left:$top",
-                "-y",
-                "-preset",
-                "ultrafast",
-                outputPath
-            )
-            /*val cmd = arrayOf(
-                "-y",
-                "-ss",
-                start,
-                "-i",
-                inputPath,
-                "-t",
-                duration,
-                "-vf",
-                crop,
-                outputPath
-            )*/
 
-            executeCommand(complexCommand, {
+            val inputs: ArrayList<String> = ArrayList()
+            inputs.apply {
+                add("-i")
+                add(filePath)
+                add("-strict")
+                add("-2")
+                add("-vf")
+                add("crop=$width:$height:$left:$top")
+            }
+
+            if (!TextUtils.isEmpty(bitRate)) {
+                inputs.add("-b:v $bitRate")
+            }
+            inputs.add("-y")
+            inputs.add("-preset")
+            inputs.add("ultrafast")
+            inputs.add(outputPath)
+
+            val str = inputs.joinToString(" ")
+            executeCommandString(str, {
                 onSuccess?.invoke(outputPath)
             }, onFail)
         }
@@ -874,5 +871,55 @@ class FFmpegHelper constructor(
         FFmpegKit.cancel()
     }
 
+    fun getVideoInfo(
+        filePath: String,
+        onSuccess: ((String) -> Unit?)? = null,
+        onFail: ((String?) -> Unit?)? = null,
+    ) {
+        val cmd = "-v error -show_streams -print_format json $filePath"
+        executeFFprobeCommand(cmd, onSuccess, onFail)
+    }
+
+    fun executeFFprobeCommand(
+        command: String,
+        onSuccess: ((String) -> Unit?)? = null,
+        onFail: ((String?) -> Unit?)? = null,
+    ) {
+        try {
+            FFprobeKit.executeAsync(command) { session ->
+                Log.d(TAG, "fileDetails: FMProbe output: ${session?.output}")
+                when {
+                    ReturnCode.isSuccess(session.returnCode) -> {
+                        Log.d(TAG, "onSuccess")
+                        if (null != session && !TextUtils.isEmpty(session.output)) {
+                            session.output.let { onSuccess?.invoke(it) }
+                        } else {
+                            onFail?.invoke("error")
+                        }
+                    }
+                    ReturnCode.isCancel(session.returnCode) -> {
+                        Log.e(TAG, " executeCommand is cancel:${session.failStackTrace}")
+                        onFail?.invoke(session.failStackTrace)
+                    }
+                    session.returnCode != ReturnCode(ReturnCode.CANCEL) ||
+                            session.returnCode != ReturnCode(ReturnCode.SUCCESS) -> {
+                        Log.e(TAG, " executeCommand fail: ${session.failStackTrace}")
+                        val error =
+                            if (session.failStackTrace != null) session.failStackTrace else "Some error occur!"
+                        onFail?.invoke(error)
+                    }
+                    else -> {
+                        Log.e(TAG, " executeCommand fail:${session.failStackTrace}")
+                    }
+                }
+            }
+        } catch (ex: Error) {
+            Log.e(TAG, " executeCommand error:${ex.printStackTrace()}")
+            onFail?.invoke(ex.message ?: "")
+        } catch (ex: Exception) {
+            Log.e(TAG, "execute error: ${ex.printStackTrace()}")
+            onFail?.invoke(ex.message ?: "")
+        }
+    }
 }
 

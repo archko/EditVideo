@@ -1,9 +1,9 @@
-package net.alee.videcrop.cropview.window.edge;
+package com.thuypham.ptithcm.editvideo.cropview.window.edge;
 
 import android.graphics.Rect;
 import android.view.View;
 
-import net.alee.videcrop.cropview.util.AspectRatioUtil;
+import com.thuypham.ptithcm.editvideo.cropview.util.AspectRatioUtil;
 
 public enum Edge {
     LEFT,

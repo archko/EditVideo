@@ -6,13 +6,13 @@
     android:layout_height="match_parent"
     tools:parentTag="android.widget.FrameLayout">
 
-    <com.google.android.exoplayer2.ui.PlayerView
+    <com.google.android.exoplayer2.ui.StyledPlayerView
         android:id="@+id/playerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:use_controller="false" />
 
-    <net.alee.videcrop.cropview.window.CropView
+    <com.thuypham.ptithcm.editvideo.cropview.window.CropView
         android:id="@+id/cropView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

@@ -10,13 +10,12 @@
             android:id="@+id/toolbar"
             layout="@layout/layout_toolbar" />
 
-        <net.alee.videcrop.cropview.window.CropVideoView
+        <com.thuypham.ptithcm.editvideo.cropview.window.CropVideoView
             android:id="@+id/cropVideoView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:background="@color/black"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintBottom_toTopOf="@id/clBottomMenu"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -81,6 +80,7 @@
                 android:maxLines="1"
                 android:textSize="11sp"
                 android:textColor="@color/black"
+                android:layout_marginBottom="3dp"
                 app:layout_constraintBottom_toBottomOf="@id/rangeSlider"
                 app:layout_constraintEnd_toEndOf="@id/rangeSlider"
                 app:layout_constraintStart_toStartOf="@id/rangeSlider"

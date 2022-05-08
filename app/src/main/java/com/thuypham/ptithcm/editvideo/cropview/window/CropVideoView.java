@@ -1,4 +1,4 @@
-package net.alee.videcrop.cropview.window;
+package com.thuypham.ptithcm.editvideo.cropview.window;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -10,14 +10,13 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.ui.StyledPlayerView;
 import com.thuypham.ptithcm.editvideo.R;
-
-import net.alee.videcrop.cropview.window.edge.Edge;
-import net.alee.videcrop.cropview.window.handle.OnBoxChangedListener;
+import com.thuypham.ptithcm.editvideo.cropview.window.edge.Edge;
+import com.thuypham.ptithcm.editvideo.cropview.window.handle.OnBoxChangedListener;
 
 public class CropVideoView extends FrameLayout {
-    private PlayerView mPlayerView;
+    private StyledPlayerView mPlayerView;
     private CropView mCropView;
     private int mVideoWidth;
     private int mVideoHeight;

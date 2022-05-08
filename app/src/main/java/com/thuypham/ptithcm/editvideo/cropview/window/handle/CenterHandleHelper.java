@@ -1,8 +1,8 @@
-package net.alee.videcrop.cropview.window.handle;
+package com.thuypham.ptithcm.editvideo.cropview.window.handle;
 
 import android.graphics.Rect;
 
-import net.alee.videcrop.cropview.window.edge.Edge;
+import com.thuypham.ptithcm.editvideo.cropview.window.edge.Edge;
 
 class CenterHandleHelper extends HandleHelper {
     CenterHandleHelper() {
@@ -38,7 +38,6 @@ class CenterHandleHelper extends HandleHelper {
             offset = Edge.BOTTOM.snapToRect(imageRect);
             Edge.TOP.offset(offset);
         }
-
     }
 
     void updateCropWindow(float x, float y, float targetAspectRatio, Rect imageRect, float snapRadius) {

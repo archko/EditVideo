@@ -1,4 +1,4 @@
-package net.alee.videcrop.cropview.util;
+package com.thuypham.ptithcm.editvideo.cropview.util;
 
 import android.graphics.Rect;
 

@@ -1,8 +1,8 @@
-package net.alee.videcrop.cropview.window.handle;
+package com.thuypham.ptithcm.editvideo.cropview.window.handle;
 
 import android.graphics.Rect;
 
-import net.alee.videcrop.cropview.window.edge.Edge;
+import com.thuypham.ptithcm.editvideo.cropview.window.edge.Edge;
 
 public enum Handle {
     TOP_LEFT(new CornerHandleHelper(Edge.TOP, Edge.LEFT)),

@@ -24,7 +24,7 @@
             app:layout_constraintTop_toBottomOf="@id/toolbar"
             tools:text="BOX[0,100],[1,100]" />
 
-        <net.alee.videcrop.cropview.window.CropVideoView
+        <com.thuypham.ptithcm.editvideo.cropview.window.CropVideoView
             android:id="@+id/cropImageView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

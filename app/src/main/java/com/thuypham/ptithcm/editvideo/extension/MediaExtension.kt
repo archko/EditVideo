@@ -10,7 +10,9 @@ import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.util.Log
+import com.thuypham.ptithcm.editvideo.model.FFprobeStream
 import com.thuypham.ptithcm.editvideo.model.MediaFile
+import org.json.JSONObject
 import java.io.File
 
 fun MediaFile.getPath(context: Context, data: Uri) {
@@ -189,5 +191,27 @@ fun deleteDir(dirPath: String?): Boolean {
     } else {
         success
     }
+}
+
+fun parseFFprobeStream(content: String): FFprobeStream? {
+    val jsonObject = JSONObject(content)
+    val ja = jsonObject.optJSONArray("streams")
+    if (null != ja && ja.length() > 0) {
+        val fFprobeStream = FFprobeStream()
+        val jo = ja.optJSONObject(0)
+        fFprobeStream.width = jo.optInt("width")
+        fFprobeStream.height = jo.optInt("height")
+        fFprobeStream.r_frame_rate = jo.optString("r_frame_rate")
+        fFprobeStream.duration = jo.optString("duration")
+        fFprobeStream.bit_rate = jo.optString("bit_rate")
+        fFprobeStream.nb_frames = jo.optString("nb_frames")
+        fFprobeStream.sample_aspect_ratio = jo.optString("sample_aspect_ratio")
+        fFprobeStream.display_aspect_ratio = jo.optString("display_aspect_ratio")
+        fFprobeStream.codec_name = jo.optString("codec_name")
+        fFprobeStream.codec_type = jo.optString("codec_type")
+        fFprobeStream.level = jo.optInt("level")
+        return fFprobeStream
+    }
+    return null
 }
 
