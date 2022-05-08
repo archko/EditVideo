@@ -33,7 +33,7 @@ class ExtractImageViewModel : ViewModel() {
                     }
                     count++
                 }
-                imagesResponse.postValue(ResponseHandler.Success(listImagePath))
+                emit(ResponseHandler.Success(listImagePath))
             } catch (ex: Exception) {
                 emit(ResponseHandler.Failure(ex, ex.message))
             }

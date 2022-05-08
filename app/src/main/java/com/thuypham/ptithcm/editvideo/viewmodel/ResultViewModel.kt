@@ -17,6 +17,7 @@ class ResultViewModel(
     val deleteFileResponse = MutableLiveData<ResponseHandler<Boolean>>()
 
     suspend fun deleteFile(url: String) = flow {
+        emit(ResponseHandler.Loading)
         val file = File(url)
         if (file.exists()) {
             file.delete()
