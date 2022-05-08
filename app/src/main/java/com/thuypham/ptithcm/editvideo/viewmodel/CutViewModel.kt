@@ -13,8 +13,6 @@ import com.thuypham.ptithcm.editvideo.util.FFmpegHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.json.JSONObject
-import java.io.File
 
 class CutViewModel() : ViewModel() {
 
@@ -22,19 +20,6 @@ class CutViewModel() : ViewModel() {
 
     val cutResponse = MutableLiveData<ResponseHandler<String>>()
     val videoInfoResponse = MutableLiveData<ResponseHandler<FFprobeStream>>()
-    val deleteFileResponse = MutableLiveData<ResponseHandler<Boolean>>()
-
-    fun deleteFile(url: String) = viewModelScope.launch {
-        deleteFileResponse.value = ResponseHandler.Loading
-
-        val file = File(url)
-        file.run {
-            if (exists()) {
-                delete()
-                deleteFileResponse.value = ResponseHandler.Success(true)
-            }
-        }
-    }
 
     fun cutVideo(
         width: Int, height: Int, left: Int, top: Int, filePath: String
