@@ -3,6 +3,7 @@ package com.thuypham.ptithcm.editvideo.ui.fragment.result
 import android.content.res.Configuration
 import android.util.Log
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -18,6 +19,7 @@ import com.thuypham.ptithcm.editvideo.model.ResponseHandler
 import com.thuypham.ptithcm.editvideo.ui.dialog.ConfirmDialog
 import com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment
 import com.thuypham.ptithcm.editvideo.viewmodel.ResultViewModel
+import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class ResultFragment : BaseFragment<FragmentResultBinding>(R.layout.fragment_result) {
@@ -78,7 +80,7 @@ class ResultFragment : BaseFragment<FragmentResultBinding>(R.layout.fragment_res
             cancelMsg = getString(R.string.dialog_cancel),
             isShowCancelMsg = true,
             onConfirmClick = {
-                resultUrl?.let { resultViewModel.deleteFile(it) }
+                resultUrl?.let { lifecycleScope.launch { resultViewModel.deleteFile(it) } }
             },
             onCancelClick = {
             }).show(

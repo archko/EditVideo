@@ -2,11 +2,12 @@ package com.thuypham.ptithcm.editvideo.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.thuypham.ptithcm.editvideo.model.MediaFile
 import com.thuypham.ptithcm.editvideo.model.ResponseHandler
 import com.thuypham.ptithcm.editvideo.util.FileHelper
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import java.io.File
 
 class ResultViewModel(
@@ -15,22 +16,12 @@ class ResultViewModel(
 
     val deleteFileResponse = MutableLiveData<ResponseHandler<Boolean>>()
 
-    fun deleteFile(url: String) = viewModelScope.launch {
-        deleteFileResponse.value = ResponseHandler.Loading
-
+    suspend fun deleteFile(url: String) = flow {
         val file = File(url)
-        file.run {
-            if (exists()) {
-                delete()
-                deleteFileResponse.value = ResponseHandler.Success(true)
-            }
+        if (file.exists()) {
+            file.delete()
+            emit(ResponseHandler.Success(true))
         }
-        /*val flag = fileHelper.deleteFile(url)
-
-        if (flag) {
-            deleteFileResponse.value = ResponseHandler.Success(true)
-        } else {
-            deleteFileResponse.value = ResponseHandler.Failure()
-        }*/
-    }
+    }.flowOn(Dispatchers.IO)
+        .collectLatest { deleteFileResponse.value = it }
 }

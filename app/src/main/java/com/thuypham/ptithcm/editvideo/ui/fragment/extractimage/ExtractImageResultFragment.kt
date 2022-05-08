@@ -1,6 +1,7 @@
 package com.thuypham.ptithcm.editvideo.ui.fragment.extractimage
 
 import android.util.Log
+import androidx.lifecycle.lifecycleScope
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.base.BaseFragment
 import com.thuypham.ptithcm.editvideo.databinding.FragmentExtractImageResultBinding
@@ -13,6 +14,7 @@ import com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment
 import com.thuypham.ptithcm.editvideo.ui.fragment.imagedetail.ImageDetailDialogFragment
 import com.thuypham.ptithcm.editvideo.util.SpacesItemDecoration
 import com.thuypham.ptithcm.editvideo.viewmodel.ExtractImageViewModel
+import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class ExtractImageResultFragment :
@@ -43,7 +45,7 @@ class ExtractImageResultFragment :
     }
 
     private fun getData() {
-        extractImageViewModel.getImageExtracted(folderPath)
+        lifecycleScope.launch { extractImageViewModel.getImageExtracted(folderPath) }
     }
 
     override fun setupView() {
@@ -60,7 +62,7 @@ class ExtractImageResultFragment :
             goBack()
         }
         setSubRightBtn(R.drawable.ic_delete) {
-            extractImageViewModel.deleteImage(folderPath)
+            lifecycleScope.launch { extractImageViewModel.deleteImage(folderPath) }
             null
         }
     }

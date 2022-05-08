@@ -3,6 +3,7 @@ package com.thuypham.ptithcm.editvideo.ui.fragment.merge
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.util.Log
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.base.BaseFragment
@@ -17,6 +18,7 @@ import com.thuypham.ptithcm.editvideo.ui.dialog.ConfirmDialog
 import com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment
 import com.thuypham.ptithcm.editvideo.util.ItemTouchCallback
 import com.thuypham.ptithcm.editvideo.viewmodel.MergeViewModel
+import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 
 class MergeFragment : BaseFragment<FragmentMergeBinding>(R.layout.fragment_merge) {
@@ -131,7 +133,7 @@ class MergeFragment : BaseFragment<FragmentMergeBinding>(R.layout.fragment_merge
             showSnackBar("Please add more video!")
             return
         }
-        mergeViewModel.mergeVideo(mediaFileList)
+        lifecycleScope.launch { mergeViewModel.mergeVideo(mediaFileList) }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

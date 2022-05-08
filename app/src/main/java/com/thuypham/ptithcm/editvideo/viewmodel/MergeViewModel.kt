@@ -2,13 +2,16 @@ package com.thuypham.ptithcm.editvideo.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.thuypham.ptithcm.editvideo.MainApplication
 import com.thuypham.ptithcm.editvideo.model.MediaFile
 import com.thuypham.ptithcm.editvideo.model.ResponseHandler
 import com.thuypham.ptithcm.editvideo.util.FFmpegHelper
 import com.thuypham.ptithcm.editvideo.util.IMediaHelper
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flowOn
 
 class MergeViewModel(
     private val mediaHelper: IMediaHelper,
@@ -18,14 +21,22 @@ class MergeViewModel(
 
     val editVideoResponse = MutableLiveData<ResponseHandler<String>?>()
 
-    fun mergeVideo(mediaFileList: ArrayList<MediaFile>) = viewModelScope.launch {
-        editVideoResponse.value = ResponseHandler.Loading
-        fFmpegHelper.executeMergeVideosWithFile(mediaFileList, onSuccess = {
-            editVideoResponse.postValue(ResponseHandler.Success(it.toString()))
-            null
-        }, onFail = {
-            editVideoResponse.postValue(ResponseHandler.Failure(extra = it))
-            null
-        })
-    }
+    suspend fun mergeVideo(mediaFileList: ArrayList<MediaFile>) =
+        callbackFlow<ResponseHandler<String>?> {
+            trySend(ResponseHandler.Loading)
+            fFmpegHelper.executeMergeVideosWithFile(
+                mediaFileList,
+                onSuccess = {
+                    trySend(ResponseHandler.Success(it.toString()))
+                    null
+                },
+                onFail = {
+                    trySend(ResponseHandler.Failure(extra = it))
+                    null
+                })
+            awaitClose { }
+        }.flowOn(Dispatchers.IO)
+            .collectLatest {
+                editVideoResponse.value = it
+            }
 }
