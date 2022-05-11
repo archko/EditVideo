@@ -1,7 +1,9 @@
 package com.thuypham.ptithcm.editvideo.ui.fragment.extractimage
 
 import android.util.Log
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.base.BaseFragment
 import com.thuypham.ptithcm.editvideo.databinding.FragmentExtractImageResultBinding
@@ -14,6 +16,7 @@ import com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment
 import com.thuypham.ptithcm.editvideo.ui.fragment.imagedetail.ImageDetailDialogFragment
 import com.thuypham.ptithcm.editvideo.util.SpacesItemDecoration
 import com.thuypham.ptithcm.editvideo.viewmodel.ExtractImageViewModel
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -45,7 +48,6 @@ class ExtractImageResultFragment :
     }
 
     private fun getData() {
-        lifecycleScope.launch { extractImageViewModel.getImageExtracted(folderPath) }
     }
 
     override fun setupView() {
@@ -80,33 +82,37 @@ class ExtractImageResultFragment :
 
     override fun setupDataObserver() {
         super.setupDataObserver()
-        extractImageViewModel.imagesResponse.observe(viewLifecycleOwner) { response ->
-            when (response) {
-                is ResponseHandler.Success -> {
-                    hideLoading1()
-                    val data = response.data
-                    Log.d(
-                        this::class.java.name,
-                        "ImageResultFragment, resultPath:$folderPath, $data"
-                    )
-                    if (data.isNullOrEmpty()) {
-                        binding.layoutEmpty.root.show()
-                    } else {
-                        binding.layoutEmpty.root.gone()
-                        imageAdapter.submitList(data)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                extractImageViewModel.getImageExtracted(folderPath).collectLatest { response ->
+                    when (response) {
+                        is ResponseHandler.Success -> {
+                            hideLoading1()
+                            val data = response.data
+                            Log.d(
+                                this::class.java.name,
+                                "ImageResultFragment, resultPath:$folderPath, $data"
+                            )
+                            if (data.isNullOrEmpty()) {
+                                binding.layoutEmpty.root.show()
+                            } else {
+                                binding.layoutEmpty.root.gone()
+                                imageAdapter.submitList(data)
+                            }
+                        }
+                        is ResponseHandler.Loading -> {
+                            if (!binding.swRefreshLayout.isRefreshing) {
+                                showLoading()
+                            }
+                        }
+                        is ResponseHandler.Failure -> {
+                            response.extra?.let { showSnackBar(it) }
+                            hideLoading1()
+                        }
+                        else -> {
+                            hideLoading1()
+                        }
                     }
-                }
-                is ResponseHandler.Loading -> {
-                    if (!binding.swRefreshLayout.isRefreshing) {
-                        showLoading()
-                    }
-                }
-                is ResponseHandler.Failure -> {
-                    response.extra?.let { showSnackBar(it) }
-                    hideLoading1()
-                }
-                else -> {
-                    hideLoading1()
                 }
             }
         }

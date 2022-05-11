@@ -11,7 +11,9 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
 import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -237,7 +239,11 @@ class CutFragment : BaseFragment<FragmentCutBinding>(R.layout.fragment_cut) {
             }
         }
 
-        lifecycleScope.launch { cutViewModel.getVideoInfo(resultUrl) }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                cutViewModel.getVideoInfo(resultUrl)
+            }
+        }
     }
 
     override fun onResume() {

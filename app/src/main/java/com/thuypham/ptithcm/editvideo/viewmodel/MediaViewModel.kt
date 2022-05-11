@@ -8,13 +8,18 @@ import com.thuypham.ptithcm.editvideo.model.MediaFile
 import com.thuypham.ptithcm.editvideo.model.ResponseHandler
 import com.thuypham.ptithcm.editvideo.util.FFmpegHelper
 import com.thuypham.ptithcm.editvideo.util.IMediaHelper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
 class MediaViewModel(
     private val mediaHelper: IMediaHelper,
 ) : ViewModel() {
 
-    private val fFmpegHelper by lazy {  FFmpegHelper(MainApplication.instance)}
+    private val fFmpegHelper by lazy { FFmpegHelper(MainApplication.instance) }
 
     val mediaFiles = MutableLiveData<ResponseHandler<ArrayList<MediaFile>>>()
     val mediaSelected = MutableLiveData<ArrayList<MediaFile>>()
@@ -57,15 +62,24 @@ class MediaViewModel(
         }
     }
 
-    fun splitVideo(startTime: Float, endTime: Float, filePath: String) = viewModelScope.launch {
-        editVideoResponse.value = ResponseHandler.Loading
-        fFmpegHelper.splitVideo(startTime.toInt(), endTime.toInt(), filePath, onSuccess = {
-            editVideoResponse.postValue(ResponseHandler.Success(it))
-            null
-        }, onFail = {
-            editVideoResponse.postValue(ResponseHandler.Failure(extra = it))
-            null
-        })
+    suspend fun splitVideo(startTime: Float, endTime: Float, filePath: String) = callbackFlow {
+        trySend(ResponseHandler.Loading)
+        fFmpegHelper.splitVideo(
+            startTime.toInt(),
+            endTime.toInt(),
+            filePath,
+            onSuccess = {
+                trySend(ResponseHandler.Success(it))
+                null
+            },
+            onFail = {
+                trySend(ResponseHandler.Failure(extra = it))
+                null
+            })
+
+        awaitClose { }
+    }.flowOn(Dispatchers.IO).collectLatest {
+        editVideoResponse.value = it
     }
 
     fun extractAudio(startTime: Float, endTime: Float, filePath: String) = viewModelScope.launch {
@@ -79,15 +93,22 @@ class MediaViewModel(
         })
     }
 
-    fun extractImages(startTime: Float, endTime: Float, filePath: String) = viewModelScope.launch {
-        editVideoResponse.value = ResponseHandler.Loading
-        fFmpegHelper.extractImages(startTime.toInt(), endTime.toInt(), filePath, onSuccess = {
-            editVideoResponse.postValue(ResponseHandler.Success(it))
-            null
-        }, onFail = {
-            editVideoResponse.postValue(ResponseHandler.Failure(extra = it))
-            null
-        })
+    suspend fun extractImages(startTime: Float, endTime: Float, filePath: String) = callbackFlow {
+        trySend(ResponseHandler.Loading)
+        fFmpegHelper.extractImages(
+            startTime.toInt(),
+            endTime.toInt(),
+            filePath,
+            onSuccess = {
+                trySend(ResponseHandler.Success(it))
+                null
+            }, onFail = {
+                trySend(ResponseHandler.Failure(extra = it))
+                null
+            })
+        awaitClose { }
+    }.flowOn(Dispatchers.IO).collectLatest {
+        editVideoResponse.value = it
     }
 
     fun extractOneImage(startTime: Int, filePath: String) = viewModelScope.launch {
@@ -100,9 +121,4 @@ class MediaViewModel(
             null
         })
     }
-
-    fun clearResponse() {
-        editVideoResponse.value = null
-    }
-
 }

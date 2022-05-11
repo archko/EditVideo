@@ -39,7 +39,6 @@ class ExtractImageViewModel : ViewModel() {
             }
         }
     }.flowOn(Dispatchers.IO)
-        .collectLatest { imagesResponse.value = it }
 
     suspend fun deleteImage(folderPath: String?) = flow {
         emit(ResponseHandler.Loading)

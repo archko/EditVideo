@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -27,6 +28,7 @@ import com.thuypham.ptithcm.editvideo.ui.activity.ResultActivity
 import com.thuypham.ptithcm.editvideo.ui.dialog.ConfirmDialog
 import com.thuypham.ptithcm.editvideo.ui.fragment.cmd.CmdDialogFragment
 import com.thuypham.ptithcm.editvideo.viewmodel.MediaViewModel
+import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
@@ -83,18 +85,28 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                     showDialogCutVideoConfirm()
                 } else {
                     player?.stop()
+                    lifecycleScope.launch {
+                        currentMediaFile?.path?.let {
+                            mediaViewModel.splitVideo(
+                                startTime,
+                                endTime,
+                                it
+                            )
+                        }
+                    }
+                }
+            }
+            Menu.MENU_EXTRACT_IMAGES -> {
+                player?.stop()
+                lifecycleScope.launch {
                     currentMediaFile?.path?.let {
-                        mediaViewModel.splitVideo(
+                        mediaViewModel.extractImages(
                             startTime,
                             endTime,
                             it
                         )
                     }
                 }
-            }
-            Menu.MENU_EXTRACT_IMAGES -> {
-                player?.stop()
-                currentMediaFile?.path?.let { mediaViewModel.extractImages(startTime, endTime, it) }
             }
             Menu.MENU_EXTRACT_AUDIO -> {
 

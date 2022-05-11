@@ -101,6 +101,8 @@ dependencies {
     implementation 'org.koin:koin-android-scope:2.1.6'
     implementation 'org.koin:koin-android-viewmodel:2.1.6'
 
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.1"
+
     /* Lottie animation */
     def lottieVersion = "3.4.0"
     implementation "com.airbnb.android:lottie:$lottieVersion"
