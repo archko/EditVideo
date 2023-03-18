@@ -1,6 +1,6 @@
 plugins {
-    id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
+    id "com.android.application"
+    id "org.jetbrains.kotlin.android"
 }
 
 apply plugin: "androidx.navigation.safeargs.kotlin"
@@ -14,14 +14,14 @@ android {
         release {
             v1SigningEnabled true
             v2SigningEnabled true
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
+            keyAlias keystoreProperties["keyAlias"]
+            keyPassword keystoreProperties["keyPassword"]
+            storeFile file(keystoreProperties["storeFile"])
+            storePassword keystoreProperties["storePassword"]
         }
     }
 
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.thuypham.ptithcm.editvideo"
@@ -32,9 +32,9 @@ android {
         multiDexEnabled true
         signingConfig signingConfigs.release
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        ndk.abiFilters 'armeabi-v7a', 'arm64-v8a'
+        ndk.abiFilters "arm64-v8a"
     }
 
     compileOptions {
@@ -51,13 +51,13 @@ android {
             signingConfig signingConfigs.release
             //minifyEnabled true
             jniDebuggable true
-            //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
         release {
             signingConfig signingConfigs.release
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+            //proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
 
@@ -75,42 +75,42 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.8.0'
-    implementation 'androidx.appcompat:appcompat:1.4.2'
-    implementation 'com.google.android.material:material:1.6.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    implementation "androidx.recyclerview:recyclerview:1.3.0-beta01"
+    implementation "androidx.core:core-ktx:1.9.0"
+    implementation "androidx.appcompat:appcompat:1.5.1"
+    implementation "com.google.android.material:material:1.6.1"
+    implementation "androidx.constraintlayout:constraintlayout:2.1.4"
+    testImplementation "junit:junit:4.13.2"
+    //androidTestImplementation "androidx.test.ext:junit:1.1.3"
+    //androidTestImplementation "androidx.test.espresso:espresso-core:3.4.0"
+    implementation "androidx.recyclerview:recyclerview:1.3.0"
 
     /* Navigation */
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.0'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.5.0'
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.5.0"
+    implementation "androidx.navigation:navigation-fragment-ktx:2.5.2"
+    implementation "androidx.navigation:navigation-ui-ktx:2.5.2"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1"
 
     /* ffmpeg */
-    implementation 'com.arthenica:ffmpeg-kit-full:4.5.1-1.LTS'
+    implementation "com.arthenica:ffmpeg-kit-full:4.5.1-1.LTS"
 
     /* Gson */
-    implementation 'com.google.code.gson:gson:2.9.0'
+    implementation "com.google.code.gson:gson:2.8.9"
 
-    implementation 'org.koin:koin-core:2.1.6'
-    implementation 'org.koin:koin-core-ext:2.1.6'
-    implementation 'org.koin:koin-android:2.1.6'
+    implementation "org.koin:koin-core:2.1.6"
+    implementation "org.koin:koin-core-ext:2.1.6"
+    implementation "org.koin:koin-android:2.1.6"
     testImplementation "org.koin:koin-test:2.1.6"
-    implementation 'org.koin:koin-android-scope:2.1.6'
-    implementation 'org.koin:koin-android-viewmodel:2.1.6'
+    implementation "org.koin:koin-android-scope:2.1.6"
+    implementation "org.koin:koin-android-viewmodel:2.1.6"
 
 
     /* Lottie animation */
     implementation "com.airbnb.android:lottie:5.2.0"
 
-    implementation("io.coil-kt:coil:2.1.0")
+    implementation("io.coil-kt:coil:2.2.2")
 
-    implementation 'com.google.android.exoplayer:exoplayer-ui:2.17.1'
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.17.1'
-    implementation 'com.google.android.exoplayer:exoplayer-dash:2.17.1'
+    implementation "com.google.android.exoplayer:exoplayer-ui:2.17.1"
+    implementation "com.google.android.exoplayer:exoplayer-core:2.17.1"
+    implementation "com.google.android.exoplayer:exoplayer-dash:2.17.1"
 
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 }
