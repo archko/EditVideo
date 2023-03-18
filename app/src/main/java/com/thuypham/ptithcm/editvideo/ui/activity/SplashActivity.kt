@@ -12,19 +12,19 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(R.layout.activity_spl
 
     override fun setupView() {
         binding.loadingView.addAnimatorListener(object : Animator.AnimatorListener {
-            override fun onAnimationStart(p0: Animator?) {
+            override fun onAnimationStart(p0: Animator) {
             }
 
-            override fun onAnimationEnd(p0: Animator?) {
+            override fun onAnimationEnd(p0: Animator) {
                 val intent = Intent(this@SplashActivity, MainActivity::class.java)
                 startActivity(intent)
                 finish()
             }
 
-            override fun onAnimationCancel(p0: Animator?) {
+            override fun onAnimationCancel(p0: Animator) {
             }
 
-            override fun onAnimationRepeat(p0: Animator?) {
+            override fun onAnimationRepeat(p0: Animator) {
             }
 
         })

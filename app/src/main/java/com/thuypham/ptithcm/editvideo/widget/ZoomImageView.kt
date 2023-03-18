@@ -160,7 +160,7 @@ class ZoomImageView @JvmOverloads constructor(
                     return true
                 }
 
-                override fun onLongPress(e: MotionEvent?) {
+                override fun onLongPress(e: MotionEvent) {
                     super.onLongPress(e)
                     listener?.onLongClick()
                 }

@@ -5,12 +5,14 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Environment
 import android.provider.Settings
 import android.util.Log
 import android.view.View
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import com.thuypham.ptithcm.editvideo.R
@@ -19,6 +21,7 @@ import com.thuypham.ptithcm.editvideo.databinding.ActivityMainBinding
 
 class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
 
+    private val REQUEST_PERMISSION_CODE = 0x01
     var view: View? = null
 
     override fun setupView() {
@@ -27,9 +30,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
     }
 
     private val requestPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
-            if (isGranted) {
-            } else {
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result: ActivityResult ->
+            if (result.resultCode == RESULT_OK) {
                 runOnUiThread {
                     if (view != null) {
                         /*val snackBar = Snackbar.make(
@@ -45,16 +49,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
                         }
                     }
                 }
+            } else {
+                requestSdcardPermission()
             }
         }
-
-    private fun getVersion(): Int {
-        return try {
-            Build.VERSION.SDK.toInt()
-        } catch (th: Throwable) {
-            3
-        }
-    }
 
     private fun hasStoragePermission(context: Context): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -85,19 +83,24 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
     }
 
     private fun requestSdcardPermission() {
-        if (Build.VERSION_CODES.R <= getVersion()) {
-            requestPermissionLauncher.launch(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
+        if (Build.VERSION_CODES.R <= Build.VERSION.SDK.toInt()) {
+            requestPermissionLauncher.launch(Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION))
         } else {
             if (ActivityCompat.shouldShowRequestPermissionRationale(
                     this,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
                 )
             ) {
-                val permission = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P)
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                else
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                requestPermissionLauncher.launch(permission)
+                if (ActivityCompat.shouldShowRequestPermissionRationale(
+                        this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
+                ) {
+                    ActivityCompat.requestPermissions(
+                        this, arrayOf<String>(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                        REQUEST_PERMISSION_CODE
+                    )
+                }
             }
         }
     }

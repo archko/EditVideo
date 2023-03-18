@@ -188,7 +188,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         )*/
         val intent = Intent(Intent.ACTION_GET_CONTENT)
             .setType("*/*")
-            .putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "video/*", "audio/*"))
+            .putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("*/*"))
             .addCategory(Intent.CATEGORY_OPENABLE)
         startActivityForResult(
             intent,

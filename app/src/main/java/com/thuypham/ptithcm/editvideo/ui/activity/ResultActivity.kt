@@ -90,7 +90,6 @@ class ResultActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_resul
         super.onConfigurationChanged(newConfig)
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         if (hasFocus) {
