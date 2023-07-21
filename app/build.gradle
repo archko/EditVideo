@@ -21,12 +21,12 @@ android {
         }
     }
 
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.thuypham.ptithcm.editvideo"
         minSdk 21
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
@@ -90,7 +90,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1"
 
     /* ffmpeg */
-    implementation "com.arthenica:ffmpeg-kit-full:4.5.1-1.LTS"
+    implementation "com.arthenica:ffmpeg-kit-full:5.1.LTS"
 
     /* Gson */
     implementation "com.google.code.gson:gson:2.8.9"
@@ -108,9 +108,9 @@ dependencies {
 
     implementation("io.coil-kt:coil:2.2.2")
 
-    implementation "com.google.android.exoplayer:exoplayer-ui:2.17.1"
-    implementation "com.google.android.exoplayer:exoplayer-core:2.17.1"
-    implementation "com.google.android.exoplayer:exoplayer-dash:2.17.1"
+    implementation "com.google.android.exoplayer:exoplayer-ui:2.18.7"
+    implementation "com.google.android.exoplayer:exoplayer-core:2.18.7"
+    implementation "com.google.android.exoplayer:exoplayer-dash:2.18.7"
 
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 }
