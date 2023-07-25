@@ -96,6 +96,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                     }
                 }
             }
+
             Menu.MENU_EXTRACT_IMAGES -> {
                 player?.stop()
                 lifecycleScope.launch {
@@ -108,21 +109,27 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                     }
                 }
             }
+
             Menu.MENU_EXTRACT_AUDIO -> {
 
             }
+
             Menu.MENU_REVERSE_VIDEO -> {
 
             }
+
             Menu.MENU_CONVERT_TO_GIF -> {
 
             }
+
             Menu.MENU_CUT_VID -> {
                 player?.pause()
                 currentMediaFile?.path?.let { navigateToResultFragment(it) }
             }
+
             Menu.MENU_MERGE_VIDEO -> {
             }
+
             else -> {
 
             }
@@ -144,6 +151,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         setupRangeSlider()
         binding.layoutEmptyVideo.setOnClickListener {
             selectMedia()
+        }
+        binding.icFullscreen.setOnClickListener {
+            currentMediaFile?.path?.let { it1 ->
+                ResultActivity.start(requireContext(), it1, R.id.homeToPlayFullscreen)
+            }
         }
     }
 
@@ -213,7 +225,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             binding.apply {
                 layoutEmptyVideo.gone()
                 currentMediaFile = MediaFile()
-                currentMediaFile!!.getPath(requireActivity(), data.data!!)
+                currentMediaFile!!.path = currentMediaFile!!.getPath(requireActivity(), data.data!!)
                 setMediaItem()
             }
         }
@@ -234,13 +246,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                     hideLoading()
                     navigateToResultFragment(response.data)
                 }
+
                 is ResponseHandler.Loading -> {
                     showLoading()
                 }
+
                 is ResponseHandler.Failure -> {
                     hideLoading()
                     response.extra?.let { showSnackBar(it) }
                 }
+
                 else -> {
                     hideLoading()
                 }

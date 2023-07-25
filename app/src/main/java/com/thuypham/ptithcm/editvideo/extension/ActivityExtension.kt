@@ -2,6 +2,7 @@ package com.thuypham.ptithcm.editvideo.extension
 
 import android.app.Activity
 import android.content.Intent
+import android.util.DisplayMetrics
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
@@ -34,4 +35,10 @@ fun Activity.shareImageToOtherApp(imagePath: String) {
 
 fun Fragment.shareImageToOtherApp(imagePath: String) {
     requireActivity().shareImageToOtherApp(imagePath)
+}
+
+fun Activity.getScreenWidth(): Int {
+    val displayMetrics = DisplayMetrics()
+    windowManager.defaultDisplay.getMetrics(displayMetrics)
+    return displayMetrics.widthPixels
 }

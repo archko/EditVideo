@@ -103,13 +103,16 @@ class MergeFragment : BaseFragment<FragmentMergeBinding>(R.layout.fragment_merge
 
                     ResultActivity.start(requireContext(), response.data, 0)
                 }
+
                 is ResponseHandler.Loading -> {
                     showLoading()
                 }
+
                 is ResponseHandler.Failure -> {
                     hideLoading()
                     showSnackBar("merge video error!")
                 }
+
                 else -> {
                     hideLoading()
                 }
@@ -141,7 +144,7 @@ class MergeFragment : BaseFragment<FragmentMergeBinding>(R.layout.fragment_merge
         if (requestCode == HomeFragment.REQUEST_SAF_FFMPEG && resultCode == RESULT_OK && data != null && data.data != null) {
             binding.apply {
                 val mediaFile = MediaFile()
-                mediaFile.getPath(requireContext(), data.data!!)
+                mediaFile.path = mediaFile.getPath(requireContext(), data.data!!)
                 val count = mergeAdapter.itemCount
                 mediaFileList.add(mediaFile)
                 mergeAdapter.notifyItemInserted(count)

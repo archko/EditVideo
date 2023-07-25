@@ -15,9 +15,10 @@ import com.thuypham.ptithcm.editvideo.model.MediaFile
 import org.json.JSONObject
 import java.io.File
 
-fun MediaFile.getPath(context: Context, data: Uri) {
+fun MediaFile.getPath(context: Context, data: Uri): String? {
     val path: String? = getFilePathByUri(context, data, this)
     Log.d("path", "path:$path")
+    return path
 }
 
 fun getFilePathByUri(context: Context, uri: Uri, mediaFile: MediaFile): String? {
