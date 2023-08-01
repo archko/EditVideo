@@ -58,4 +58,8 @@
     <string name="_4_3">4:3</string>
     <string name="_16_9">16:9</string>
     <string name="app_folder">SuperFXApp</string>
+
+    <string name="player_tip_3speed">3倍速播放</string>
+    <string name="player_tip_volume">音量%s</string>
+    <string name="player_tip_brightness">亮度%s</string>
 </resources>

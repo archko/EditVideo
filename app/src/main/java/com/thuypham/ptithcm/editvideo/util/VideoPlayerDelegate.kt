@@ -34,8 +34,9 @@ class VideoPlayerDelegate(private var activity: Activity) : View.OnTouchListener
         const val TOUCH_DOWN = 1
         const val TOUCH_LONG_PRESS = 2
         const val TOUCH_MOVE_INIT = 3
-        const val TOUCH_MOVE_VERTICAL = 4
-        const val TOUCH_MOVE_HORIZONTAL = 5
+        const val TOUCH_MOVE_VERTICAL_LEFT = 4
+        const val TOUCH_MOVE_VERTICAL_RIGHT = 5
+        const val TOUCH_MOVE_HORIZONTAL = 6
     }
 
     private var mLastMotionX = 0f
@@ -49,9 +50,22 @@ class VideoPlayerDelegate(private var activity: Activity) : View.OnTouchListener
     private var delegateTouchListener: DelegateTouchListener? = null
 
     private var halfScreenWidth = 1080 / 2
+    private var seekChanged = 0L
+    private var touchSlop = 2
 
     init {
         halfScreenWidth = activity.getScreenWidth() / 2
+        touchSlop = ViewConfiguration.getTouchSlop() / 4
+        if (touchSlop < 2) {
+            touchSlop = 2
+        }
+    }
+
+    /**
+     * 屏幕旋转后需要重新设置
+     */
+    fun updateScreenWidth(width: Int) {
+        halfScreenWidth = width / 2
     }
 
     fun setExoPlayer(mExoPlayer: ExoPlayer?) {
@@ -135,6 +149,7 @@ class VideoPlayerDelegate(private var activity: Activity) : View.OnTouchListener
     private val mLongPressFastRunnable: Runnable = Runnable {
         mExoPlayer?.setPlaybackSpeed(3f)
         touchAction = TOUCH_LONG_PRESS
+        delegateTouchListener?.speed()
     }
 
     private val mLongPressBackRunnable: Runnable = Runnable { mExoPlayer?.setPlaybackSpeed(1f) }
@@ -143,9 +158,10 @@ class VideoPlayerDelegate(private var activity: Activity) : View.OnTouchListener
     override fun onTouch(view: View?, event: MotionEvent): Boolean {
         val x = event.x
         val y = event.y
-        when (event.action) {
+        when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 Log.d(TAG, "View ACTION_DOWN")
+                seekChanged = 0
                 touchAction = TOUCH_DOWN
                 touchTime = SystemClock.uptimeMillis()
                 mLastMotionX = x
@@ -176,37 +192,44 @@ class VideoPlayerDelegate(private var activity: Activity) : View.OnTouchListener
                 Log.d(TAG, "View ACTION_MOVE:$touchAction, xChanged:$xChanged, yChanged:$yChanged")
                 val coef = abs(yChanged / xChanged)
                 if (touchAction == TOUCH_LONG_PRESS) {
-                    //如果已经是长按了,移动取消
+                    //如果已经是长按了,不作处理
                     return true
                 } else {
                     handler.removeCallbacks(mLongPressFastRunnable)
                     handler.removeCallbacks(mLongPressBackRunnable)
 
-                    //如果已经是左右滑动的,就继续,如果是垂直的也是继续,否则先置为TOUCH_MOVE_INIT
+                    //如果已经是左右滑动的,就继续之前的,如果是垂直的也是继续之前的,否则先置为TOUCH_MOVE_INIT
                     if (touchAction == TOUCH_MOVE_HORIZONTAL) {
                         seek(xChanged)
-                    } else if (touchAction == TOUCH_MOVE_VERTICAL) {
-                        updateVolumeOrBrightness(x, yChanged)
+                    } else if (touchAction == TOUCH_MOVE_VERTICAL_LEFT) {
+                        updateBrightness(yChanged)
+                    } else if (touchAction == TOUCH_MOVE_VERTICAL_RIGHT) {
+                        updateVolume(yChanged)
                     } else if (touchAction == TOUCH_MOVE_INIT) {
                         touchAction =
                             if (coef > 1) { //上下滑动
-                                TOUCH_MOVE_VERTICAL
+                                if (x < halfScreenWidth) {
+                                    TOUCH_MOVE_VERTICAL_LEFT
+                                } else {
+                                    TOUCH_MOVE_VERTICAL_RIGHT
+                                }
                             } else {    //左右滑动
                                 TOUCH_MOVE_HORIZONTAL
                             }
 
-                        //刚进入移动,先判断是否移动的距离大于1,如果移动距离不够,防抖动,就不处理.
-                        if (abs(xChanged) >= 1 || abs(yChanged) >= 1
-                        ) {
-                            //只有与上次相同的滑动才是,否则会出现一会进度,一会亮度一会声音
-                            if (touchAction == TOUCH_MOVE_VERTICAL) {
-                                updateVolumeOrBrightness(x, yChanged)
-                            } else if (touchAction == TOUCH_MOVE_HORIZONTAL) {
-                                seek(xChanged)
-                            }
+                        //处理相同的滑动效果,否则会出现一会进度,一会亮度一会声音
+                        if (touchAction == TOUCH_MOVE_VERTICAL_LEFT) {
+                            updateBrightness(yChanged)
+                        } else if (touchAction == TOUCH_MOVE_VERTICAL_RIGHT) {
+                            updateVolume(xChanged)
+                        } else if (touchAction == TOUCH_MOVE_HORIZONTAL) {
+                            seek(xChanged)
                         }
                     } else {
-                        touchAction = TOUCH_MOVE_INIT
+                        //刚进入移动,先判断是否移动的距离大于1,如果移动距离不够,防抖动,就不处理.
+                        if (abs(xChanged) >= touchSlop || abs(yChanged) >= touchSlop) {
+                            touchAction = TOUCH_MOVE_INIT
+                        }
                     }
                 }
                 return true
@@ -218,16 +241,19 @@ class VideoPlayerDelegate(private var activity: Activity) : View.OnTouchListener
                 handler.removeCallbacks(mLongPressFastRunnable)
                 handler.post(mLongPressBackRunnable)
 
-                if (touchAction == TOUCH_MOVE_INIT || touchAction == TOUCH_DOWN) {
+                if (touchAction == TOUCH_MOVE_HORIZONTAL) {
+                    Log.d(TAG, "View ACTION_UP seek end:$seekChanged")
+                    delegateTouchListener?.seekEnd(seekChanged)
+                } else if (touchAction == TOUCH_MOVE_INIT || touchAction == TOUCH_DOWN) {
                     Log.d(TAG, "View ACTION_UP,click")
                     delegateTouchListener?.run {
                         this.click()
                     }
                 } else {
                     Log.d(TAG, "View ACTION_UP long click")
+                    delegateTouchListener?.hideTip()
                 }
                 touchAction = TOUCH_IDLE
-                delegateTouchListener?.hideTip()
                 return true
             }
 
@@ -240,49 +266,53 @@ class VideoPlayerDelegate(private var activity: Activity) : View.OnTouchListener
     }
 
     private fun seek(xChanged: Float) {
-        delegateTouchListener?.seek(xChanged)
+        if (xChanged > 0) {
+            seekChanged += 5000
+        } else {
+            seekChanged -= 5000
+        }
+        delegateTouchListener?.seek(seekChanged)
     }
 
-    private fun updateVolumeOrBrightness(x: Float, yChanged: Float) {
-        //Log.d(TAG, "View volumeOrSeek:$action, xChanged:$xChanged, yChanged:$yChanged")
-        if (x < halfScreenWidth) {
-            //brightness
-            val currentBright = brightness
-            var target = if (yChanged > 0) {
-                currentBright + 0.01
-            } else {
-                currentBright - 0.01
-            }
-
-            if (target > 1) {
-                target = 1.0
-            } else if (target < 0) {
-                target = 0.0
-            }
-
-            setBrightness(target)
-            delegateTouchListener?.brightnessChange(target)
+    private fun updateVolume(yChanged: Float) {
+        val last = getSystemVolume()
+        if (yChanged > 0) {
+            volumeUp()
         } else {
-            //volume
-            val last = getSystemVolume()
-            if (yChanged > 0) {
-                //setVolume(last + 1)
-                volumeUp()
-            } else {
-                //setVolume(last - 1)
-                volumeDown()
-            }
-            val current = getSystemVolume()
-            delegateTouchListener?.volumeChange(last, current)
+            volumeDown()
         }
+        val current = getSystemVolume()
+        Log.d(TAG, "View setVolume.last:$last, current:$current, yChanged:$yChanged")
+        delegateTouchListener?.volumeChange(last, current)
+    }
+
+    private fun updateBrightness(yChanged: Float) {
+        //Log.d(TAG, "View updateBrightness:$action, xChanged:$xChanged, yChanged:$yChanged")
+        val currentBright = brightness
+        var target = if (yChanged > 0) {
+            currentBright + 0.01
+        } else {
+            currentBright - 0.01
+        }
+
+        if (target > 1) {
+            target = 1.0
+        } else if (target < 0) {
+            target = 0.0
+        }
+
+        setBrightness(target)
+        delegateTouchListener?.brightnessChange(target)
     }
 
     interface DelegateTouchListener {
 
         fun click()
+        fun speed()
         fun volumeChange(last: Int, current: Int)
         fun brightnessChange(current: Double)
-        fun seek(change: Float)
+        fun seek(change: Long)
+        fun seekEnd(changed: Long)
         fun hideTip()
     }
 }

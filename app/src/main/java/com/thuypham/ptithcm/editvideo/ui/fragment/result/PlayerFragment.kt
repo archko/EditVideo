@@ -12,6 +12,7 @@ import com.google.android.exoplayer2.util.Util
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.base.BaseFragment
 import com.thuypham.ptithcm.editvideo.databinding.FragmentPlayerBinding
+import com.thuypham.ptithcm.editvideo.extension.getScreenWidth
 import com.thuypham.ptithcm.editvideo.extension.goBack
 import com.thuypham.ptithcm.editvideo.model.ResponseHandler
 import com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment
@@ -60,11 +61,19 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
                 }
             }
 
+            override fun speed() {
+                if (binding.tips.visibility == View.GONE) {
+                    binding.tips.visibility = View.VISIBLE
+                }
+                binding.tips.text = String.format(resources.getString(R.string.player_tip_3speed))
+            }
+
             override fun volumeChange(last: Int, current: Int) {
                 if (binding.tips.visibility == View.GONE) {
                     binding.tips.visibility = View.VISIBLE
                 }
-                binding.tips.text = String.format("音量%s", current)
+                binding.tips.text =
+                    String.format(resources.getString(R.string.player_tip_volume), current)
             }
 
             override fun brightnessChange(current: Double) {
@@ -72,40 +81,47 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
                     binding.tips.visibility = View.VISIBLE
                 }
                 binding.tips.text = String.format(
-                    "亮度%s",
+                    resources.getString(R.string.player_tip_brightness),
                     (100 * current).toInt()
                 )
             }
 
-            override fun seek(change: Float) {
-                isSeeking = true
+            override fun seek(change: Long) {
                 player?.run {
-                    val pos = currentPosition
                     if (binding.tips.visibility == View.GONE) {
                         binding.tips.visibility = View.VISIBLE
                     }
-                    val text: String = if (change > 0) {
-                        seekTo(pos + 5000)
-                        String.format(
-                            "前进=> %s",
-                            Util.getStringForTime(
-                                formatBuilder,
-                                formatter,
-                                (currentPosition.toLong())
-                            )
-                        )
-                    } else {
-                        seekTo(pos - 5000)
-                        String.format(
-                            "后退<= %s",
-                            Util.getStringForTime(
-                                formatBuilder,
-                                formatter,
-                                (currentPosition.toLong())
-                            )
-                        )
+                    var pos = currentPosition + change
+                    if (pos > duration) {
+                        pos = duration
                     }
+                    if (pos < 0) {
+                        pos = 0
+                    }
+                    val text = String.format(
+                        "%s/%s",
+                        Util.getStringForTime(
+                            formatBuilder,
+                            formatter,
+                            pos
+                        ),
+                        Util.getStringForTime(
+                            formatBuilder,
+                            formatter,
+                            duration
+                        )
+                    )
                     binding.tips.text = text
+                }
+            }
+
+            override fun seekEnd(changed: Long) {
+                player?.run {
+                    val pos = currentPosition
+                    seekTo(pos + changed)
+                }
+                if (binding.tips.visibility == View.VISIBLE) {
+                    binding.tips.visibility = View.GONE
                 }
             }
 
@@ -118,6 +134,8 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
 
         })
         binding.touchPlayerView.setOnTouchListener(videoPlayerDelegate)
+
+        initializePlayer()
     }
 
     override fun setupDataObserver() {
@@ -149,23 +167,40 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
 
     override fun onResume() {
         super.onResume()
-        if (Util.SDK_INT <= 23 || player == null) {
-            initializePlayer()
+        if (Util.SDK_INT <= 23) {
+            player?.play()
+            binding.videoView.onResume()
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (Util.SDK_INT > 23) {
+            player?.play()
+            binding.videoView.onResume()
         }
     }
 
     override fun onPause() {
         super.onPause()
         if (Util.SDK_INT <= 23) {
-            releasePlayer()
+            player?.pause()
+            binding.videoView.onPause()
         }
     }
 
     override fun onStop() {
         super.onStop()
         if (Util.SDK_INT > 23) {
-            releasePlayer()
+            player?.pause()
+            binding.videoView.onPause()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        releasePlayer()
+        videoPlayerDelegate?.resetBrightness()
     }
 
     private fun releasePlayer() {
@@ -220,6 +255,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
                 portrait()
             }
         }
+        videoPlayerDelegate?.updateScreenWidth(getScreenWidth())
     }
 
     private fun portrait() {

@@ -48,4 +48,8 @@
     <string name="extract_image_title">导出的图片</string>
 
     <string name="merge_video_tip">合并视频,目前只支持合并同样码率,高宽,参数的视频.如,在上个页面切割的视频</string>
+    
+    <string name="player_tip_3speed">3倍速播放</string>
+    <string name="player_tip_volume">音量%s</string>
+    <string name="player_tip_brightness">亮度%s</string>
 </resources>
