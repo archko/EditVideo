@@ -204,7 +204,9 @@ class VideoPlayerDelegate(private var activity: Activity) : View.OnTouchListener
                     } else if (touchAction == TOUCH_MOVE_VERTICAL_LEFT) {
                         updateBrightness(yChanged)
                     } else if (touchAction == TOUCH_MOVE_VERTICAL_RIGHT) {
-                        updateVolume(yChanged)
+                        if (abs(yChanged) > 1) {
+                            updateVolume(yChanged)
+                        }
                     } else if (touchAction == TOUCH_MOVE_INIT) {
                         touchAction =
                             if (coef > 1) { //上下滑动
