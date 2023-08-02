@@ -5,10 +5,10 @@ import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
+import cn.archko.pdf.common.IntentFile
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.base.BaseFragment
 import com.thuypham.ptithcm.editvideo.databinding.FragmentMergeBinding
-import com.thuypham.ptithcm.editvideo.extension.getPath
 import com.thuypham.ptithcm.editvideo.extension.goBack
 import com.thuypham.ptithcm.editvideo.extension.setOnSingleClickListener
 import com.thuypham.ptithcm.editvideo.model.MediaFile
@@ -144,7 +144,7 @@ class MergeFragment : BaseFragment<FragmentMergeBinding>(R.layout.fragment_merge
         if (requestCode == HomeFragment.REQUEST_SAF_FFMPEG && resultCode == RESULT_OK && data != null && data.data != null) {
             binding.apply {
                 val mediaFile = MediaFile()
-                mediaFile.path = mediaFile.getPath(requireContext(), data.data!!)
+                mediaFile.path = IntentFile.getPath(requireContext(), data.data!!)
                 val count = mergeAdapter.itemCount
                 mediaFileList.add(mediaFile)
                 mergeAdapter.notifyItemInserted(count)

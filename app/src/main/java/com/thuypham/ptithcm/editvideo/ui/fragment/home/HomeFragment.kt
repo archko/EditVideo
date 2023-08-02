@@ -8,6 +8,7 @@ import android.os.Looper
 import android.util.Log
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import cn.archko.pdf.common.IntentFile
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -17,7 +18,6 @@ import com.google.android.material.slider.RangeSlider
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.base.BaseFragment
 import com.thuypham.ptithcm.editvideo.databinding.FragmentHomeBinding
-import com.thuypham.ptithcm.editvideo.extension.getPath
 import com.thuypham.ptithcm.editvideo.extension.gone
 import com.thuypham.ptithcm.editvideo.extension.setOnSingleClickListener
 import com.thuypham.ptithcm.editvideo.extension.toTimeAsHHmmSSS
@@ -225,7 +225,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             binding.apply {
                 layoutEmptyVideo.gone()
                 currentMediaFile = MediaFile()
-                currentMediaFile!!.path = currentMediaFile!!.getPath(requireActivity(), data.data!!)
+                currentMediaFile!!.path = IntentFile.getPath(requireActivity(), data.data!!)
                 setMediaItem()
             }
         }

@@ -1,8 +1,10 @@
 package com.thuypham.ptithcm.editvideo.ui.fragment.result
 
 import android.content.res.Configuration
+import android.net.Uri
 import android.util.Log
 import android.view.View
+import cn.archko.pdf.common.IntentFile
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -41,7 +43,14 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
 
     override fun setupLogic() {
         super.setupLogic()
-        resultUrl = arguments?.getString(HomeFragment.RESULT_PATH)
+        val obj = arguments?.get(HomeFragment.RESULT_PATH)
+        if (obj is Uri) {
+            resultUrl = IntentFile.getFilePathByUri(requireContext(), obj)
+        } else {
+            resultUrl = obj.toString()
+        }
+
+        initializePlayer()
     }
 
     override fun setupView() {
@@ -134,8 +143,6 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
 
         })
         binding.touchPlayerView.setOnTouchListener(videoPlayerDelegate)
-
-        initializePlayer()
     }
 
     override fun setupDataObserver() {
@@ -163,6 +170,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
         setLeftBtn(R.drawable.ic_back) {
             goBack()
         }
+        binding.toolbar.toolbarContainer.setBackgroundResource(R.color.bg_translucent)
     }
 
     override fun onResume() {

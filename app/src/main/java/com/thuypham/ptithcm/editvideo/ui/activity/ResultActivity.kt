@@ -1,14 +1,11 @@
 package com.thuypham.ptithcm.editvideo.ui.activity
 
-import android.annotation.TargetApi
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
-import android.view.WindowManager
 import androidx.core.os.bundleOf
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.base.BaseActivity
@@ -36,7 +33,27 @@ class ResultActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_resul
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (intent == null || TextUtils.isEmpty(intent.getStringExtra(RESULT_PATH))) {
+        if (intent == null) {
+            finish()
+            return
+        }
+
+        if (Intent.ACTION_VIEW === intent.action) {
+            val resultFragment = PlayerFragment()
+            val bundle = bundleOf(
+                RESULT_PATH to intent.data
+            )
+            resultFragment.arguments = bundle
+            supportFragmentManager
+                .beginTransaction()
+                .add(
+                    R.id.container,
+                    resultFragment
+                ).commit()
+            return
+        }
+
+        if (TextUtils.isEmpty(intent.getStringExtra(RESULT_PATH))) {
             finish()
             return
         }
