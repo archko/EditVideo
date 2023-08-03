@@ -289,28 +289,32 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     override fun onStart() {
         super.onStart()
         if (Util.SDK_INT > 23) {
-            initializePlayer()
+            player?.play()
+            binding.videoView.onResume()
         }
     }
 
     override fun onResume() {
         super.onResume()
-        if (Util.SDK_INT <= 23 || player == null) {
-            initializePlayer()
+        if (Util.SDK_INT <= 23) {
+            player?.play()
+            binding.videoView.onResume()
         }
     }
 
     override fun onPause() {
         super.onPause()
         if (Util.SDK_INT <= 23) {
-            releasePlayer()
+            player?.pause()
+            binding.videoView.onPause()
         }
     }
 
     override fun onStop() {
         super.onStop()
         if (Util.SDK_INT > 23) {
-            releasePlayer()
+            player?.pause()
+            binding.videoView.onPause()
         }
     }
 
