@@ -15,16 +15,10 @@ import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.base.BaseFragment
 import com.thuypham.ptithcm.editvideo.databinding.FragmentPlayerBinding
 import com.thuypham.ptithcm.editvideo.extension.getScreenWidth
-import com.thuypham.ptithcm.editvideo.extension.goBack
-import com.thuypham.ptithcm.editvideo.model.ResponseHandler
 import com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment
 import com.thuypham.ptithcm.editvideo.util.VideoPlayerDelegate
-import com.thuypham.ptithcm.editvideo.viewmodel.ResultViewModel
-import org.koin.android.viewmodel.ext.android.viewModel
 
 class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_player) {
-
-    private val resultViewModel: ResultViewModel by viewModel()
 
     private var player: ExoPlayer? = null
     private var playWhenReady = true
@@ -143,27 +137,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
             }
 
         })
-        binding.touchPlayerView.setOnTouchListener(videoPlayerDelegate)
-    }
-
-    override fun setupDataObserver() {
-        super.setupDataObserver()
-        resultViewModel.deleteFileResponse.observe(viewLifecycleOwner) { response ->
-            when (response) {
-                is ResponseHandler.Success -> {
-                    requireActivity().finish()
-                }
-
-                is ResponseHandler.Loading -> {
-                }
-
-                is ResponseHandler.Failure -> {
-                }
-
-                else -> {
-                }
-            }
-        }
+        binding.videoView.setOnTouchListener(videoPlayerDelegate)
     }
 
     private fun setupToolbar() {
