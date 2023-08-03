@@ -8,7 +8,7 @@ import android.os.Looper
 import android.util.Log
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
-import cn.archko.pdf.common.IntentFile
+import com.thuypham.ptithcm.editvideo.extension.IntentFile
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player

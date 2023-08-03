@@ -32,4 +32,5 @@
     <color name="corner">@android:color/white</color>
     <color name="surrounding_area">@color/black_translucent</color>
 
+    <color name="bottom_bar_background">#77000000</color>
 </resources>

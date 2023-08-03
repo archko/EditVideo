@@ -1,4 +1,4 @@
-package cn.archko.pdf.common
+package com.thuypham.ptithcm.editvideo.extension
 
 import android.content.ContentResolver
 import android.content.ContentUris

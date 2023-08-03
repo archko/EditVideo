@@ -4,7 +4,7 @@ import android.content.res.Configuration
 import android.net.Uri
 import android.util.Log
 import android.view.View
-import cn.archko.pdf.common.IntentFile
+import com.thuypham.ptithcm.editvideo.extension.IntentFile
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
