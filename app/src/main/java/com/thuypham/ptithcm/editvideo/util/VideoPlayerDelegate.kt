@@ -264,9 +264,9 @@ class VideoPlayerDelegate(private var activity: Activity) : View.OnTouchListener
 
     private fun seek(xChanged: Float) {
         if (xChanged > 0) {
-            seekChanged += 500
+            seekChanged += 1000
         } else {
-            seekChanged -= 500
+            seekChanged -= 1000
         }
         delegateTouchListener?.seek(seekChanged)
     }
