@@ -107,6 +107,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
                     if (pos < 0) {
                         pos = 0
                     }
+                    seekTo(pos)
                     val text = String.format(
                         "%s/%s",
                         Util.getStringForTime(
@@ -125,10 +126,10 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
             }
 
             override fun seekEnd(changed: Long) {
-                player?.run {
-                    val pos = currentPosition
-                    seekTo(pos + changed)
-                }
+                //player?.run {
+                //    val pos = currentPosition
+                //    seekTo(pos + changed)
+                //}
                 if (binding.tips.visibility == View.VISIBLE) {
                     binding.tips.visibility = View.GONE
                 }
