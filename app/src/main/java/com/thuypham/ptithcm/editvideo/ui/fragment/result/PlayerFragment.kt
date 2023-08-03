@@ -50,11 +50,11 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
             resultUrl = obj.toString()
         }
 
+        setupToolbar()
         initializePlayer()
     }
 
     override fun setupView() {
-        setupToolbar()
         if (null == videoPlayerDelegate) {
             videoPlayerDelegate = activity?.let { VideoPlayerDelegate(it) }
         }
