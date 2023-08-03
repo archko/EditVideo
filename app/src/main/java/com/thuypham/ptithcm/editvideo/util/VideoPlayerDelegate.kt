@@ -83,33 +83,28 @@ class VideoPlayerDelegate(private var activity: Activity) : View.OnTouchListener
         return (audioManager?.getStreamVolume(AudioManager.STREAM_MUSIC)!! / max * 100).toInt()
     }
 
-    private fun setVolume(volume: Int) {
-        val max: Int = audioManager?.getStreamMaxVolume(AudioManager.STREAM_MUSIC) ?: 100
-        val step = 100 / max
-        val current = getSystemVolume()
-        val progress = current * step
-        Log.d(TAG, "View setVolume.max:$max, volume:$volume current:$current, progress:$progress")
-        if (volume > progress) {
-            volumeUp()
-        } else if (volume < progress) {
-            volumeDown()
-        }
-    }
-
     private fun volumeUp() {
-        audioManager?.adjustStreamVolume(
+        audioManager?.run {
+            val vol = getStreamVolume(AudioManager.STREAM_MUSIC)
+            setStreamVolume(AudioManager.STREAM_MUSIC, vol + 1, 0)
+        }
+        /*audioManager?.adjustStreamVolume(
             AudioManager.STREAM_MUSIC,
             AudioManager.ADJUST_RAISE,
             AudioManager.FLAG_PLAY_SOUND
-        )
+        )*/
     }
 
     private fun volumeDown() {
-        audioManager?.adjustStreamVolume(
+        audioManager?.run {
+            val vol = getStreamVolume(AudioManager.STREAM_MUSIC)
+            setStreamVolume(AudioManager.STREAM_MUSIC, vol - 1, 0)
+        }
+        /*audioManager?.adjustStreamVolume(
             AudioManager.STREAM_MUSIC,
             AudioManager.ADJUST_LOWER,
             AudioManager.FLAG_PLAY_SOUND
-        )
+        )*/
     }
 
     private var audioManager: AudioManager? = null
