@@ -169,7 +169,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
     private fun setupToolbar() {
         resultUrl?.let { setToolbarTitle(it) }
         setLeftBtn(R.drawable.ic_back) {
-            goBack()
+            activity?.finish()
         }
         binding.toolbar.toolbarContainer.setBackgroundResource(R.color.bg_translucent)
     }
