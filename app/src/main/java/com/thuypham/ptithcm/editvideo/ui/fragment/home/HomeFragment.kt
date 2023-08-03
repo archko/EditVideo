@@ -323,11 +323,20 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         handler.removeCallbacks(runnable)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        releasePlayer()
+    }
+
     private fun setMediaItem() {
         Log.d(this::class.java.name, "setMediaItem $currentMediaFile")
+
+        releasePlayer()
         mediaItem = currentMediaFile?.path?.let { MediaItem.fromUri(it) }
-        player?.setMediaItem(mediaItem!!)
-        player?.prepare()
+        initializePlayer()
+
+        //player?.setMediaItem(mediaItem!!)
+        //player?.prepare()
         setSlider()
 
         runnable = Runnable {
