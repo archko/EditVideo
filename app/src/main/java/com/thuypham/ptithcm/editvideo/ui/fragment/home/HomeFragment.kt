@@ -8,16 +8,15 @@ import android.os.Looper
 import android.util.Log
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
-import com.thuypham.ptithcm.editvideo.extension.IntentFile
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.util.Util
 import com.google.android.material.slider.RangeSlider
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.base.BaseFragment
 import com.thuypham.ptithcm.editvideo.databinding.FragmentHomeBinding
+import com.thuypham.ptithcm.editvideo.extension.IntentFile
 import com.thuypham.ptithcm.editvideo.extension.gone
 import com.thuypham.ptithcm.editvideo.extension.setOnSingleClickListener
 import com.thuypham.ptithcm.editvideo.extension.toTimeAsHHmmSSS
@@ -28,6 +27,7 @@ import com.thuypham.ptithcm.editvideo.ui.activity.ResultActivity
 import com.thuypham.ptithcm.editvideo.ui.dialog.ConfirmDialog
 import com.thuypham.ptithcm.editvideo.ui.fragment.cmd.CmdDialogFragment
 import com.thuypham.ptithcm.editvideo.viewmodel.MediaViewModel
+import io.flutter.plugins.exoplayer.ExoSourceFactory
 import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 
@@ -371,12 +371,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     }
 
     private fun initializePlayer() {
-        val trackSelector = DefaultTrackSelector(requireContext()).apply {
-            setParameters(buildUponParameters().setMaxVideoSizeSd())
-        }
-        player = ExoPlayer.Builder(requireContext())
-            .setTrackSelector(trackSelector)
-            .build()
+        player = ExoSourceFactory.buildPlayer(requireContext())
             .also { exoPlayer ->
                 binding.videoView.player = exoPlayer
 

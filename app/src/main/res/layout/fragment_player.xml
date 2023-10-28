@@ -53,5 +53,17 @@
             tools:text="音量1"
             tools:visibility="visible" />
 
+        <ImageView
+            android:id="@+id/oriention"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="80dp"
+            android:src="@drawable/exo_ic_rewind"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="visible" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

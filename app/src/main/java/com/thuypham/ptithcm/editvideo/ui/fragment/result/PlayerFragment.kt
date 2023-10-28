@@ -1,22 +1,23 @@
 package com.thuypham.ptithcm.editvideo.ui.fragment.result
 
+import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.net.Uri
 import android.util.Log
 import android.view.View
-import com.thuypham.ptithcm.editvideo.extension.IntentFile
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.util.Util
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.base.BaseFragment
 import com.thuypham.ptithcm.editvideo.databinding.FragmentPlayerBinding
+import com.thuypham.ptithcm.editvideo.extension.IntentFile
 import com.thuypham.ptithcm.editvideo.extension.getScreenWidth
 import com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment
 import com.thuypham.ptithcm.editvideo.util.VideoPlayerDelegate
+import io.flutter.plugins.exoplayer.ExoSourceFactory
 
 class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_player) {
 
@@ -57,10 +58,12 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
             override fun click() {
                 if (binding.toolbar.toolbarContainer.visibility == View.GONE) {
                     binding.toolbar.toolbarContainer.visibility = View.VISIBLE
+                    binding.oriention.visibility = View.VISIBLE
                     binding.videoView.showController()
                 } else {
                     binding.videoView.hideController()
                     binding.toolbar.toolbarContainer.visibility = View.GONE
+                    binding.oriention.visibility = View.GONE
                 }
             }
 
@@ -138,6 +141,10 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
 
         })
         binding.videoView.setOnTouchListener(videoPlayerDelegate)
+
+        binding.oriention.setOnClickListener {
+            setOritation()
+        }
     }
 
     private fun setupToolbar() {
@@ -198,12 +205,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
     }
 
     private fun initializePlayer() {
-        val trackSelector = DefaultTrackSelector(requireContext()).apply {
-            setParameters(buildUponParameters().setMaxVideoSizeSd())
-        }
-        player = ExoPlayer.Builder(requireContext())
-            .setTrackSelector(trackSelector)
-            .build()
+        player = ExoSourceFactory.buildPlayer(requireContext())
             .also { exoPlayer ->
                 binding.videoView.player = exoPlayer
                 resultUrl?.let { exoPlayer.setMediaItem(MediaItem.fromUri(it)) }
@@ -249,5 +251,23 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
     private fun landscape() {
         binding.toolbar.toolbarContainer.visibility = View.GONE
         binding.videoView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT
+    }
+
+    private var prevOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
+    private fun setOritation() {
+        val ori = activity?.requestedOrientation
+        if (ori == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            setOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE)
+        } else {
+            setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+        }
+    }
+
+    fun setOrientation(orientation: Int) {
+        if (orientation != prevOrientation) {
+            activity?.requestedOrientation = orientation
+            prevOrientation = orientation
+        }
     }
 }

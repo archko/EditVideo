@@ -15,7 +15,6 @@ import androidx.appcompat.widget.AppCompatTextView
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.util.Util
 import com.thuypham.ptithcm.editvideo.R
@@ -23,6 +22,7 @@ import com.thuypham.ptithcm.editvideo.base.BaseDialogFragment
 import com.thuypham.ptithcm.editvideo.databinding.FragmentPlayerBinding
 import com.thuypham.ptithcm.editvideo.extension.setOnSingleClickListener
 import com.thuypham.ptithcm.editvideo.extension.show
+import io.flutter.plugins.exoplayer.ExoSourceFactory
 
 class PlayerFragment(
     private val resultUrl: String
@@ -101,12 +101,7 @@ class PlayerFragment(
     }
 
     private fun initializePlayer() {
-        val trackSelector = DefaultTrackSelector(requireContext()).apply {
-            setParameters(buildUponParameters().setMaxVideoSizeSd())
-        }
-        player = ExoPlayer.Builder(requireContext())
-            .setTrackSelector(trackSelector)
-            .build()
+        player = ExoSourceFactory.buildPlayer(requireContext())
             .also { exoPlayer ->
                 binding.videoView.player = exoPlayer
                 resultUrl.let { exoPlayer.setMediaItem(MediaItem.fromUri(it)) }

@@ -34,7 +34,7 @@
             android:name=".ui.activity.ResultActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="true"
-            android:screenOrientation="fullSensor"
+            android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

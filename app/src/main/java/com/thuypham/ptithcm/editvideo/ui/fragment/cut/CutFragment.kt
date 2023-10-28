@@ -17,7 +17,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.util.Util
 import com.google.android.material.slider.RangeSlider
@@ -31,9 +30,11 @@ import com.thuypham.ptithcm.editvideo.model.ResponseHandler
 import com.thuypham.ptithcm.editvideo.ui.activity.ResultActivity
 import com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment
 import com.thuypham.ptithcm.editvideo.viewmodel.CutViewModel
+import io.flutter.plugins.exoplayer.ExoSourceFactory
 import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
-import java.util.*
+import java.util.Formatter
+import java.util.Locale
 
 class CutFragment : BaseFragment<FragmentCutBinding>(R.layout.fragment_cut) {
 
@@ -280,12 +281,7 @@ class CutFragment : BaseFragment<FragmentCutBinding>(R.layout.fragment_cut) {
     }
 
     private fun initializePlayer() {
-        val trackSelector = DefaultTrackSelector(requireContext()).apply {
-            setParameters(buildUponParameters().setMaxVideoSizeSd())
-        }
-        player = ExoPlayer.Builder(requireContext())
-            .setTrackSelector(trackSelector)
-            .build()
+        player = ExoSourceFactory.buildPlayer(requireContext())
             .also { exoPlayer ->
                 binding.cropVideoView.setPlayer(exoPlayer)
                 resultUrl?.let { exoPlayer.setMediaItem(MediaItem.fromUri(it)) }
