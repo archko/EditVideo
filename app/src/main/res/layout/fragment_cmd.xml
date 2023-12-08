@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white">
@@ -16,6 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:breakStrategy="high_quality"
+            android:fontFamily="monospace"
             android:gravity="top|left"
             android:hint="enter command"
             android:inputType="textMultiLine"
@@ -25,27 +27,82 @@
             android:paddingRight="4dp"
             android:text="-ss 00:00 -i /sdcard/DCIM/aa.mp4 -t 60 -c copy -preset ultrafast /sdcard/DCIM/o.mp4"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/cmd_tip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:text="click cut/merge button to change example cmd above.move cursor in the edittext,click input button to select a input file."
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/edit_cmd" />
+
+        <LinearLayout
+            android:id="@+id/layout_preset"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="8dp"
+            android:paddingBottom="2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cmd_tip">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/cmd_cut"
+                style="@style/Theme.EditVideo.Button2"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_weight="1"
+                android:text="Cut" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/cmd_merge"
+                style="@style/Theme.EditVideo.Button2"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_weight="1"
+                android:text="Merge" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/cmd_input"
+                style="@style/Theme.EditVideo.Button2"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_weight="1"
+                android:text="Input" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingHorizontal="16dp"
+            android:paddingHorizontal="8dp"
             android:paddingBottom="2dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/edit_cmd">
+            app:layout_constraintTop_toBottomOf="@id/layout_preset">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/cmd_ffmpeg"
                 style="@style/Theme.EditVideo.Button"
                 android:layout_width="0dp"
-                android:layout_height="44dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
                 android:layout_weight="1"
                 android:text="RUN FFMPEG" />
 
@@ -53,9 +110,9 @@
                 android:id="@+id/cmd_ffprobe"
                 style="@style/Theme.EditVideo.Button"
                 android:layout_width="0dp"
-                android:layout_height="44dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
                 android:layout_weight="1"
                 android:text="RUN FFPROBE" />
 

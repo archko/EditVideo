@@ -1,6 +1,8 @@
 package com.thuypham.ptithcm.editvideo.ui.fragment.cmd
 
+import android.app.Activity
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -20,8 +22,10 @@ import com.arthenica.ffmpegkit.SessionState
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.base.BaseDialogFragment
 import com.thuypham.ptithcm.editvideo.databinding.FragmentCmdBinding
+import com.thuypham.ptithcm.editvideo.extension.IntentFile
 import com.thuypham.ptithcm.editvideo.extension.setOnSingleClickListener
 import com.thuypham.ptithcm.editvideo.extension.show
+import com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment
 import com.thuypham.ptithcm.editvideo.viewmodel.CmdViewModel
 import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -32,6 +36,13 @@ class CmdDialogFragment(
     override val isFullScreen = true
     private lateinit var handler: Handler
     private val cmdViewModel: CmdViewModel by viewModel()
+
+    companion object {
+        const val CMD_CUT =
+            "-ss 00:00 -i /sdcard/DCIM/aa.mp4 -t 60 -c copy -preset ultrafast /sdcard/DCIM/o.mp4"
+        const val CMD_MERGE =
+            "-ss 00:00 -i /sdcard/DCIM/aa.mp4 -i /sdcard/DCIM/aa.aac -vcodec copy -acodec copy /sdcard/DCIM/o.mp4"
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
@@ -52,6 +63,9 @@ class CmdDialogFragment(
         binding.apply {
             cmdFfmpeg.setOnSingleClickListener { runFFmpeg() }
             cmdFfprobe.setOnSingleClickListener { runFFprobe() }
+            cmdCut.setOnSingleClickListener { setCutCmd() }
+            cmdMerge.setOnSingleClickListener { setMergeCmd() }
+            cmdInput.setOnSingleClickListener { selectMedia() }
         }
         setupDataObserver()
     }
@@ -143,6 +157,25 @@ class CmdDialogFragment(
         listFFprobeSessions()
     }
 
+    private fun setCutCmd() {
+        binding.editCmd.setText(CMD_CUT)
+    }
+
+    private fun setMergeCmd() {
+        binding.editCmd.setText(CMD_MERGE)
+    }
+
+    private fun selectMedia() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+            .setType("*/*")
+            .putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("*/*"))
+            .addCategory(Intent.CATEGORY_OPENABLE)
+        startActivityForResult(
+            intent,
+            HomeFragment.REQUEST_SAF_FFMPEG
+        )
+    }
+
     private fun appendOutput(logMessage: String?) {
         binding.tvOutput.append(logMessage)
         binding.scrollView.scrollBy(0, 1500)
@@ -196,5 +229,21 @@ class CmdDialogFragment(
             )
         }
         Log.d("TAG", "Listed FFprobe sessions.")
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == HomeFragment.REQUEST_SAF_FFMPEG && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
+            binding.apply {
+                val path = IntentFile.getPath(requireActivity(), data.data!!)
+                var oriString = editCmd.text.toString()
+                var selection = editCmd.selectionStart
+                if (selection < oriString.length) {
+                    val sb = StringBuilder(oriString)
+                    sb.insert(selection, path)
+                    editCmd.setText(sb)
+                }
+            }
+        }
     }
 }
