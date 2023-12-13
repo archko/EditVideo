@@ -212,7 +212,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
                 exoPlayer.playWhenReady = playWhenReady
                 exoPlayer.seekTo(currentWindow, playbackPosition)
                 exoPlayer.addListener(playbackStateListener)
-                exoPlayer.repeatMode = Player.REPEAT_MODE_ALL
+                //exoPlayer.repeatMode = Player.REPEAT_MODE_ALL
                 exoPlayer.prepare()
                 videoPlayerDelegate?.setExoPlayer(exoPlayer)
             }
@@ -224,7 +224,10 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
                 ExoPlayer.STATE_IDLE -> "ExoPlayer.STATE_IDLE      -"
                 ExoPlayer.STATE_BUFFERING -> "ExoPlayer.STATE_BUFFERING -"
                 ExoPlayer.STATE_READY -> "ExoPlayer.STATE_READY     -"
-                ExoPlayer.STATE_ENDED -> "ExoPlayer.STATE_ENDED     -"
+                ExoPlayer.STATE_ENDED -> {
+                    player?.pause()
+                    "ExoPlayer.STATE_ENDED     -"
+                }
                 else -> "UNKNOWN_STATE             -"
             }
             Log.d(this::class.java.name, "changed state to $stateString")
