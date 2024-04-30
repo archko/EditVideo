@@ -10,13 +10,15 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import androidx.annotation.OptIn
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.util.Util
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.common.util.Util
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.AspectRatioFrameLayout
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.base.BaseDialogFragment
 import com.thuypham.ptithcm.editvideo.databinding.FragmentPlayerBinding
@@ -24,6 +26,7 @@ import com.thuypham.ptithcm.editvideo.extension.setOnSingleClickListener
 import com.thuypham.ptithcm.editvideo.extension.show
 import io.flutter.plugins.exoplayer.ExoSourceFactory
 
+@OptIn(UnstableApi::class)
 class PlayerFragment(
     private val resultUrl: String
 ) : BaseDialogFragment<FragmentPlayerBinding>(R.layout.fragment_player) {

@@ -1,4 +1,4 @@
-package com.thuypham.ptithcm.editvideo.util
+package com.archko.editvideo.ui.activity
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -13,9 +13,9 @@ import android.view.View
 import android.view.ViewConfiguration
 import android.view.Window
 import android.view.WindowManager
-import com.google.android.exoplayer2.ExoPlayer
-import kotlin.math.abs
+import androidx.media3.exoplayer.ExoPlayer
 import com.thuypham.ptithcm.editvideo.extension.getScreenWidth
+import kotlin.math.abs
 
 /**
  *
@@ -52,6 +52,15 @@ class VideoPlayerDelegate(private var activity: Activity) : View.OnTouchListener
     private var halfScreenWidth = 1080 / 2
     private var seekChanged = 0L
     private var touchSlop = 2
+    var isLock = false
+        get() = field //默认实现方式，可省略
+        set(value) { //默认实现方式，可省略
+            field = value //value是setter()方法参数值，field是属性本身
+        }
+
+    fun toggleLock() {
+        isLock = !isLock
+    }
 
     init {
         halfScreenWidth = activity.getScreenWidth() / 2
@@ -161,6 +170,10 @@ class VideoPlayerDelegate(private var activity: Activity) : View.OnTouchListener
                 touchTime = SystemClock.uptimeMillis()
                 mLastMotionX = x
                 mLastMotionY = y
+                if (isLock) {
+                    return true
+                }
+
                 handler.removeCallbacks(mLongPressBackRunnable)
                 handler.postDelayed(
                     mLongPressFastRunnable,
@@ -170,6 +183,9 @@ class VideoPlayerDelegate(private var activity: Activity) : View.OnTouchListener
             }
 
             MotionEvent.ACTION_MOVE -> {
+                if (isLock) {
+                    return true
+                }
                 val xChanged = if (mLastMotionY != -1f) {
                     x - mLastMotionX //值大于0,是从左向右
                 } else {
@@ -236,7 +252,9 @@ class VideoPlayerDelegate(private var activity: Activity) : View.OnTouchListener
                 val delta = SystemClock.uptimeMillis() - touchTime
                 Log.d(TAG, "View ACTION_UP.delta:$delta,action:$touchAction")
                 handler.removeCallbacks(mLongPressFastRunnable)
-                handler.post(mLongPressBackRunnable)
+                if (touchAction == TOUCH_LONG_PRESS) {
+                    handler.post(mLongPressBackRunnable)
+                }
 
                 if (touchAction == TOUCH_MOVE_HORIZONTAL) {
                     Log.d(TAG, "View ACTION_UP seek end:$seekChanged")
@@ -256,6 +274,10 @@ class VideoPlayerDelegate(private var activity: Activity) : View.OnTouchListener
 
             MotionEvent.ACTION_CANCEL -> {
                 delegateTouchListener?.hideTip()
+                handler.removeCallbacks(mLongPressFastRunnable)
+                if (touchAction == TOUCH_LONG_PRESS) {
+                    handler.post(mLongPressBackRunnable)
+                }
             }
         }
 

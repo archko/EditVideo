@@ -5,20 +5,23 @@ import android.content.res.Configuration
 import android.net.Uri
 import android.util.Log
 import android.view.View
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.util.Util
+import androidx.annotation.OptIn
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.common.util.Util
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.AspectRatioFrameLayout
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.base.BaseFragment
 import com.thuypham.ptithcm.editvideo.databinding.FragmentPlayerBinding
 import com.thuypham.ptithcm.editvideo.extension.IntentFile
 import com.thuypham.ptithcm.editvideo.extension.getScreenWidth
 import com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment
-import com.thuypham.ptithcm.editvideo.util.VideoPlayerDelegate
+import com.archko.editvideo.ui.activity.VideoPlayerDelegate
 import io.flutter.plugins.exoplayer.ExoSourceFactory
 
+@OptIn(UnstableApi::class)
 class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_player) {
 
     private var player: ExoPlayer? = null
@@ -59,9 +62,9 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
                 if (binding.toolbar.toolbarContainer.visibility == View.GONE) {
                     binding.toolbar.toolbarContainer.visibility = View.VISIBLE
                     binding.oriention.visibility = View.VISIBLE
-                    binding.videoView.showController()
+                    //binding.videoView.showController()
                 } else {
-                    binding.videoView.hideController()
+                    //binding.videoView.hideController()
                     binding.toolbar.toolbarContainer.visibility = View.GONE
                     binding.oriention.visibility = View.GONE
                 }
@@ -92,6 +95,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
                 )
             }
 
+            @OptIn(UnstableApi::class)
             override fun seek(change: Long) {
                 player?.run {
                     if (binding.tips.visibility == View.GONE) {
@@ -140,7 +144,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
             }
 
         })
-        binding.videoView.setOnTouchListener(videoPlayerDelegate)
+        binding.touchPlayerView.setOnTouchListener(videoPlayerDelegate)
 
         binding.oriention.setOnClickListener {
             setOritation()
@@ -228,6 +232,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
                     player?.pause()
                     "ExoPlayer.STATE_ENDED     -"
                 }
+
                 else -> "UNKNOWN_STATE             -"
             }
             Log.d(this::class.java.name, "changed state to $stateString")

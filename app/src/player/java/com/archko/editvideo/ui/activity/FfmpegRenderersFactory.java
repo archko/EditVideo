@@ -1,20 +1,22 @@
-package com.thuypham.ptithcm.editvideo.util;
+package com.archko.editvideo.ui.activity;
 
 import android.content.Context;
 import android.os.Handler;
 
-import com.google.android.exoplayer2.DefaultRenderersFactory;
-import com.google.android.exoplayer2.Renderer;
-import com.google.android.exoplayer2.audio.AudioRendererEventListener;
-import com.google.android.exoplayer2.audio.AudioSink;
-import com.google.android.exoplayer2.ext.ffmpeg.FfmpegAudioRenderer;
-import com.google.android.exoplayer2.mediacodec.MediaCodecSelector;
-
 import java.util.ArrayList;
+
+import androidx.media3.common.util.UnstableApi;
+import androidx.media3.decoder.ffmpeg.FfmpegAudioRenderer;
+import androidx.media3.exoplayer.DefaultRenderersFactory;
+import androidx.media3.exoplayer.Renderer;
+import androidx.media3.exoplayer.audio.AudioRendererEventListener;
+import androidx.media3.exoplayer.audio.AudioSink;
+import androidx.media3.exoplayer.mediacodec.MediaCodecSelector;
 
 /**
  * @author: archko 2023/6/21 :14:13
  */
+@UnstableApi
 public class FfmpegRenderersFactory extends DefaultRenderersFactory {
 
     public FfmpegRenderersFactory(Context context) {

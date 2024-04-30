@@ -9,16 +9,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
-import com.google.android.exoplayer2.ui.StyledPlayerView;
-import com.google.android.exoplayer2.util.Assertions;
 import com.thuypham.ptithcm.editvideo.R;
 import com.thuypham.ptithcm.editvideo.cropview.window.edge.Edge;
 import com.thuypham.ptithcm.editvideo.cropview.window.handle.OnBoxChangedListener;
 
+import androidx.media3.common.util.Assertions;
+import androidx.media3.common.util.UnstableApi;
+import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.ui.AspectRatioFrameLayout;
+import androidx.media3.ui.PlayerView;
+import kotlin.OptIn;
+
 public class CropVideoView extends FrameLayout {
-    private StyledPlayerView mPlayerView;
+    private PlayerView mPlayerView;
     private CropView mCropView;
     private int mVideoWidth;
     private int mVideoHeight;
@@ -159,7 +162,7 @@ public class CropVideoView extends FrameLayout {
         mVideoRotationDegrees = rotationDegrees;
     }
 
-    public void setResizeMode(@AspectRatioFrameLayout.ResizeMode int resizeMode) {
+    @androidx.annotation.OptIn(markerClass = UnstableApi.class) public void setResizeMode(@AspectRatioFrameLayout.ResizeMode int resizeMode) {
         Assertions.checkStateNotNull(mPlayerView);
         mPlayerView.setResizeMode(resizeMode);
     }

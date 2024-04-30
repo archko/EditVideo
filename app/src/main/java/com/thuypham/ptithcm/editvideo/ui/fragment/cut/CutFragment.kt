@@ -10,15 +10,17 @@ import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
+import androidx.annotation.OptIn
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.util.Util
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.common.util.Util
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.AspectRatioFrameLayout
 import com.google.android.material.slider.RangeSlider
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.base.BaseFragment
@@ -36,6 +38,7 @@ import org.koin.android.viewmodel.ext.android.viewModel
 import java.util.Formatter
 import java.util.Locale
 
+@OptIn(UnstableApi::class)
 class CutFragment : BaseFragment<FragmentCutBinding>(R.layout.fragment_cut) {
 
     private val cutViewModel: CutViewModel by viewModel()

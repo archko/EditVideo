@@ -3,12 +3,14 @@ package com.thuypham.ptithcm.editvideo.ui.fragment.result
 import android.content.res.Configuration
 import android.util.Log
 import android.view.View
+import androidx.annotation.OptIn
 import androidx.lifecycle.lifecycleScope
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.util.Util
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.common.util.Util
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.AspectRatioFrameLayout
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.base.BaseFragment
 import com.thuypham.ptithcm.editvideo.databinding.FragmentResultBinding
@@ -22,6 +24,7 @@ import io.flutter.plugins.exoplayer.ExoSourceFactory
 import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
 
+@OptIn(UnstableApi::class)
 class ResultFragment : BaseFragment<FragmentResultBinding>(R.layout.fragment_result) {
 
     private val resultViewModel: ResultViewModel by viewModel()
