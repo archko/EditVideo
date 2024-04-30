@@ -229,7 +229,7 @@
                 android:focusable="true"
                 android:padding="6dp"
                 android:src="@drawable/ic_play_more"
-                android:visibility="visible"/>
+                android:visibility="gone"/>
 
         </LinearLayout>
 

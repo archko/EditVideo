@@ -62,7 +62,7 @@ open class MExoPlayerActivity : AppCompatActivity() {
     private var videoPlayerDelegate: VideoPlayerDelegate? = null
 
     private var url: String? = null
-    private lateinit var sensorHelper: SensorHelper
+    //private lateinit var sensorHelper: SensorHelper
 
     private lateinit var btnAudio: View
     private lateinit var btnMore: View
@@ -134,7 +134,7 @@ open class MExoPlayerActivity : AppCompatActivity() {
 
         StatusBarHelper.hideSystemUI(this)
 
-        sensorHelper = SensorHelper(this)
+        //sensorHelper = SensorHelper(this)
 
         trackNameProvider = DefaultTrackNameProvider(resources)
 
@@ -214,6 +214,21 @@ open class MExoPlayerActivity : AppCompatActivity() {
             }
         }
 
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                handler.postDelayed(updateSeekAction, 50L)
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                if (seekBar != null) {
+                    mExoPlayer?.seekTo(seekBar.progress.toLong())
+                }
+            }
+
+        })
         /*seekBar.setListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onStartPreview(seekBar: SeekBar?, progress: Int) {
                 if (!isSeeking) {   //第一次按下,记录时间
@@ -375,26 +390,26 @@ open class MExoPlayerActivity : AppCompatActivity() {
     }
 
     private fun postFinish() {
-        val ori = sensorHelper.getOrientation()
-        if (ori == ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE) {
-            btnSpeed.visibility = View.GONE
-            btnMore.visibility = View.GONE
-            sensorHelper.setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
-        } else {
-            finish()
-        }
+        //val ori = sensorHelper.getOrientation()
+        //if (ori == ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE) {
+        //    btnSpeed.visibility = View.GONE
+        //    btnMore.visibility = View.GONE
+        //    sensorHelper.setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+        //} else {
+        finish()
+        //}
     }
 
     private fun setOritation() {
-        val ori = sensorHelper.getOrientation()
+        val ori = requestedOrientation
         if (ori == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-            sensorHelper.setOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE)
-            btnSpeed.visibility = View.VISIBLE
-            btnMore.visibility = View.VISIBLE
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+            //btnSpeed.visibility = View.VISIBLE
+            //btnMore.visibility = View.VISIBLE
         } else {
-            btnSpeed.visibility = View.GONE
-            btnMore.visibility = View.GONE
-            sensorHelper.setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+            //btnSpeed.visibility = View.GONE
+            //btnMore.visibility = View.GONE
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
     }
 
@@ -643,7 +658,7 @@ open class MExoPlayerActivity : AppCompatActivity() {
     private fun updatePlayPauseButton() {
         val shouldShowPauseButton: Boolean = shouldShowPauseButton()
         @DrawableRes val drawableRes =
-            if (shouldShowPauseButton) R.drawable.ic_pause else R.drawable.ic_play
+            if (shouldShowPauseButton) R.drawable.v_pause else R.drawable.v_play
         btnPlay.setImageDrawable(Util.getDrawable(this, resources, drawableRes))
     }
 
