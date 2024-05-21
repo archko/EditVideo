@@ -7,7 +7,7 @@
         android:background="@color/white"
         android:layout_height="match_parent">
 
-        <com.airbnb.lottie.LottieAnimationView
+        <!--<com.airbnb.lottie.LottieAnimationView
             android:id="@+id/loadingView"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -20,7 +20,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth_percent="0.5"
             app:lottie_autoPlay="true"
-            app:lottie_rawRes="@raw/splash_anim" />
+            app:lottie_rawRes="@raw/splash_anim" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

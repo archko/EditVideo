@@ -11,7 +11,7 @@ import com.thuypham.ptithcm.editvideo.databinding.ActivitySplashBinding
 class SplashActivity : BaseActivity<ActivitySplashBinding>(R.layout.activity_splash) {
 
     override fun setupView() {
-        binding.loadingView.addAnimatorListener(object : Animator.AnimatorListener {
+        /*binding.loadingView.addAnimatorListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(p0: Animator) {
             }
 
@@ -27,6 +27,6 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(R.layout.activity_spl
             override fun onAnimationRepeat(p0: Animator) {
             }
 
-        })
+        })*/
     }
 }
