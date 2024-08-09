@@ -7,7 +7,7 @@ import com.thuypham.ptithcm.editvideo.viewmodel.HomeViewModel
 import com.thuypham.ptithcm.editvideo.viewmodel.MediaViewModel
 import com.thuypham.ptithcm.editvideo.viewmodel.MergeViewModel
 import com.thuypham.ptithcm.editvideo.viewmodel.ResultViewModel
-import org.koin.android.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 

@@ -28,7 +28,7 @@ import com.thuypham.ptithcm.editvideo.extension.show
 import com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment
 import com.thuypham.ptithcm.editvideo.viewmodel.CmdViewModel
 import kotlinx.coroutines.launch
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CmdDialogFragment(
 ) : BaseDialogFragment<FragmentCmdBinding>(R.layout.fragment_cmd) {

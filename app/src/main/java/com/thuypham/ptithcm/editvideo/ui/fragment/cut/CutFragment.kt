@@ -34,7 +34,7 @@ import com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment
 import com.thuypham.ptithcm.editvideo.viewmodel.CutViewModel
 import io.flutter.plugins.exoplayer.ExoSourceFactory
 import kotlinx.coroutines.launch
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Formatter
 import java.util.Locale
 

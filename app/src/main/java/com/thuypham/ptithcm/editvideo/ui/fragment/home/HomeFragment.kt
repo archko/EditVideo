@@ -31,7 +31,7 @@ import com.thuypham.ptithcm.editvideo.ui.fragment.cmd.CmdDialogFragment
 import com.thuypham.ptithcm.editvideo.viewmodel.MediaViewModel
 import io.flutter.plugins.exoplayer.ExoSourceFactory
 import kotlinx.coroutines.launch
-import org.koin.android.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 @OptIn(UnstableApi::class)
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
@@ -42,7 +42,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         const val REQUEST_SAF_FFMPEG = 12
     }
 
-    private val mediaViewModel: MediaViewModel by sharedViewModel()
+    private val mediaViewModel: MediaViewModel by activityViewModel()
 
     private val menuAdapter: MenuAdapter by lazy {
         MenuAdapter { menu -> onMenuClick(menu) }

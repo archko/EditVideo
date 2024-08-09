@@ -734,7 +734,7 @@ open class MExoPlayerActivity : AppCompatActivity() {
     }
 
     //=================== play controller end ===================
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         Timber.d("play.onNewIntent:${intent?.data}")
     }

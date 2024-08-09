@@ -18,7 +18,7 @@ import com.thuypham.ptithcm.editvideo.util.SpacesItemDecoration
 import com.thuypham.ptithcm.editvideo.viewmodel.ExtractImageViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ExtractImageResultFragment :
     BaseFragment<FragmentExtractImageResultBinding>(R.layout.fragment_extract_image_result) {

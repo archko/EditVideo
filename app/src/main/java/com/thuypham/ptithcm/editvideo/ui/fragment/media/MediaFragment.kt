@@ -19,7 +19,7 @@ import com.thuypham.ptithcm.editvideo.model.MediaFile
 import com.thuypham.ptithcm.editvideo.model.ResponseHandler
 import com.thuypham.ptithcm.editvideo.util.SpacesItemDecoration
 import com.thuypham.ptithcm.editvideo.viewmodel.MediaViewModel
-import org.koin.android.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class MediaFragment : BaseFragment<FragmentMediaBinding>(R.layout.fragment_media) {
     companion object {
@@ -28,7 +28,7 @@ class MediaFragment : BaseFragment<FragmentMediaBinding>(R.layout.fragment_media
         const val MAX_MEDIA_FILE = 30
     }
 
-    private val mediaViewModel: MediaViewModel by sharedViewModel()
+    private val mediaViewModel: MediaViewModel by activityViewModel()
 
     private var mediaType: Int = MediaFile.MEDIA_TYPE_VIDEO
     private var maxSelectedCount = 1

@@ -19,11 +19,11 @@ import com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment
 import com.thuypham.ptithcm.editvideo.util.ItemTouchCallback
 import com.thuypham.ptithcm.editvideo.viewmodel.MergeViewModel
 import kotlinx.coroutines.launch
-import org.koin.android.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class MergeFragment : BaseFragment<FragmentMergeBinding>(R.layout.fragment_merge) {
 
-    private val mergeViewModel: MergeViewModel by sharedViewModel()
+    private val mergeViewModel: MergeViewModel by activityViewModel()
     private val mediaFileList: ArrayList<MediaFile> = ArrayList()
     private val mergeAdapter: MergeAdapter by lazy {
         MergeAdapter(

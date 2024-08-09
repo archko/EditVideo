@@ -22,7 +22,7 @@ import com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment
 import com.thuypham.ptithcm.editvideo.viewmodel.ResultViewModel
 import io.flutter.plugins.exoplayer.ExoSourceFactory
 import kotlinx.coroutines.launch
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @OptIn(UnstableApi::class)
 class ResultFragment : BaseFragment<FragmentResultBinding>(R.layout.fragment_result) {
