@@ -43,6 +43,11 @@
             android:id="@+id/homeToPlayFullscreen"
             app:destination="@id/cutVideo"
             app:popUpTo="@id/home" />
+
+        <action
+            android:id="@+id/home_play_history"
+            app:destination="@id/playHistory"
+            app:popUpTo="@id/home" />
     </fragment>
 
     <fragment
@@ -67,6 +72,12 @@
         android:id="@+id/extractImages"
         android:name="com.thuypham.ptithcm.editvideo.ui.fragment.extractimage.ExtractImageResultFragment"
         android:label="ExtractImageFragment"
+        tools:layout="@layout/fragment_extract_image_result"></fragment>
+
+    <fragment
+        android:id="@+id/playHistory"
+        android:name="com.thuypham.ptithcm.editvideo.ui.fragment.history.PlayHistoryFragment"
+        android:label="PlayHistoryFragment"
         tools:layout="@layout/fragment_extract_image_result"></fragment>
 
 </navigation>

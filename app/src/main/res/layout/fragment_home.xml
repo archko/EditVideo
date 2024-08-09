@@ -91,11 +91,24 @@
             android:layout_height="0dp"
             android:layout_marginTop="16dp"
             android:text="@string/add_video"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btnOpenVideo"
             app:layout_constraintHeight_percent="0.06"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvDurationEnd"
-            app:layout_constraintWidth_percent="0.8" />
+            app:layout_constraintWidth_percent="0.4" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnOpenVideo"
+            style="@style/Theme.EditVideo.Button"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/open_video"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.06"
+            app:layout_constraintStart_toEndOf="@id/btnUploadVideo"
+            app:layout_constraintTop_toBottomOf="@id/tvDurationEnd"
+            app:layout_constraintWidth_percent="0.4" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/glCenterHor"

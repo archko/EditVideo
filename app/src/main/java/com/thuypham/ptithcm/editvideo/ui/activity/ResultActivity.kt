@@ -12,6 +12,7 @@ import com.thuypham.ptithcm.editvideo.base.BaseActivity
 import com.thuypham.ptithcm.editvideo.databinding.ActivityMainBinding
 import com.thuypham.ptithcm.editvideo.ui.fragment.cut.CutFragment
 import com.thuypham.ptithcm.editvideo.ui.fragment.extractimage.ExtractImageResultFragment
+import com.thuypham.ptithcm.editvideo.ui.fragment.history.PlayHistoryFragment
 import com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment.Companion.RESULT_DESTINATION_ID
 import com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment.Companion.RESULT_PATH
 import com.thuypham.ptithcm.editvideo.ui.fragment.merge.MergeFragment
@@ -91,6 +92,15 @@ class ResultActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_resul
                 ).commit()
         } else if (destinationId == R.id.homeToPlayFullscreen) {
             val resultFragment = PlayerFragment()
+            resultFragment.arguments = bundle
+            supportFragmentManager
+                .beginTransaction()
+                .add(
+                    R.id.container,
+                    resultFragment
+                ).commit()
+        }  else if (destinationId == R.id.home_play_history) {
+            val resultFragment = PlayHistoryFragment()
             resultFragment.arguments = bundle
             supportFragmentManager
                 .beginTransaction()

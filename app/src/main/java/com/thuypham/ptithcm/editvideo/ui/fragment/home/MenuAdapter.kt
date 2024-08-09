@@ -53,6 +53,10 @@ class MenuAdapter(
                     Menu.MENU_RUN_CMD,
                     MainApplication.instance.getString(R.string.menu_run_cmd)
                 ),
+                Menu(
+                    Menu.MENU_PLAY_HISTORY,
+                    MainApplication.instance.getString(R.string.menu_play_history)
+                ),
             )
         }
     }

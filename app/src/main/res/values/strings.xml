@@ -8,9 +8,11 @@
     <string name="menu_split_video">Split video</string>
     <string name="menu_merge_video">Merge video</string>
     <string name="menu_run_cmd">Run Cmd</string>
+    <string name="menu_play_history">History</string>
     <string name="empty_video_msg">Empty video, please click to add video to edit</string>
     <string name="upload_video">Upload Video</string>
     <string name="add_video">Add Video</string>
+    <string name="open_video">Open Video</string>
     <string name="merge_video">Merge Video</string>
     <string name="empty_media">Empty media</string>
 
@@ -41,6 +43,7 @@
     <string name="dialog_split_video_title">Message</string>
     <string name="dialog_split_video_description">Please change the start and end time by changing seekbar!</string>
 
+    <string name="dialog_url_title">Open Video Url</string>
 
     <string name="empty_file_msg">Please upload a video first!</string>
 

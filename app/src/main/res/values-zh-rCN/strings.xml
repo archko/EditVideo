@@ -7,9 +7,11 @@
     <string name="menu_split_video">切割视频</string>
     <string name="menu_merge_video">合并视频</string>
     <string name="menu_run_cmd">运行命令</string>
+    <string name="menu_play_history">播放历史</string>
     <string name="empty_video_msg">没有视频,点击添加视频</string>
     <string name="upload_video">上传视频</string>
     <string name="add_video">添加视频</string>
+    <string name="open_video">打开视频</string>
     <string name="merge_video">合并视频</string>
     <string name="empty_media">无媒体</string>
 
@@ -40,6 +42,7 @@
     <string name="dialog_split_video_title">提示</string>
     <string name="dialog_split_video_description">请先点击进度条选择开始与结束时间!</string>
 
+    <string name="dialog_url_title">打开Url</string>
 
     <string name="empty_file_msg">请先上传视频!</string>
 

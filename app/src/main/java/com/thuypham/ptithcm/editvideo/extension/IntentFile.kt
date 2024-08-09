@@ -19,14 +19,14 @@ object IntentFile {
     @JvmStatic
     fun processIntentAction(intent: Intent, context: Context): String? {
         var path: String? = null
-        if (Intent.ACTION_VIEW == intent.action) {
-            path = getPath(context, intent.data)
-            if (path == null && intent.data != null) {
-                path = intent.data.toString()
-            }
+        if (!TextUtils.isEmpty(intent.getStringExtra("path"))) {
+            path = intent.getStringExtra("path")
         } else {
-            if (!TextUtils.isEmpty(intent.getStringExtra("path"))) {
-                path = intent.getStringExtra("path")
+            if (Intent.ACTION_VIEW == intent.action) {
+                path = getPath(context, intent.data)
+                if (path == null && intent.data != null) {
+                    path = intent.data.toString()
+                }
             }
         }
         return path

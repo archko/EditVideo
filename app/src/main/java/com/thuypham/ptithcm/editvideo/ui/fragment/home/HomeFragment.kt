@@ -14,6 +14,7 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.common.util.Util
 import androidx.media3.exoplayer.ExoPlayer
+import com.archko.editvideo.ui.activity.MExoPlayerActivity
 import com.google.android.material.slider.RangeSlider
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.base.BaseFragment
@@ -27,6 +28,7 @@ import com.thuypham.ptithcm.editvideo.model.Menu
 import com.thuypham.ptithcm.editvideo.model.ResponseHandler
 import com.thuypham.ptithcm.editvideo.ui.activity.ResultActivity
 import com.thuypham.ptithcm.editvideo.ui.dialog.ConfirmDialog
+import com.thuypham.ptithcm.editvideo.ui.dialog.OpenUrlDialog
 import com.thuypham.ptithcm.editvideo.ui.fragment.cmd.CmdDialogFragment
 import com.thuypham.ptithcm.editvideo.viewmodel.MediaViewModel
 import io.flutter.plugins.exoplayer.ExoSourceFactory
@@ -67,6 +69,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     private fun onMenuClick(menu: Menu) {
         currentMenuId = menu.id
         shouldNavigateToResultFragment = true
+        if (menu.id == Menu.MENU_PLAY_HISTORY) {
+            navigateToResultFragment("merge")
+            return
+        }
         if (menu.id == Menu.MENU_MERGE_VIDEO) {
             navigateToResultFragment("merge")
             return
@@ -191,6 +197,24 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         binding.btnUploadVideo.setOnSingleClickListener {
             selectMedia()
         }
+        binding.btnOpenVideo.setOnSingleClickListener {
+            OpenUrlDialog(
+                title = getString(R.string.dialog_url_title),
+                okMsg = getString(R.string.dialog_ok),
+                onConfirmClick = {
+                    println("url:$it")
+
+                    val list = listOf(it)
+                    MExoPlayerActivity.start(requireContext(), list, 0)
+                    /*startActivity(
+                        Intent.createChooser(
+                            Intent(Intent.ACTION_VIEW).setData(Uri.parse(it)),
+                            "Open Url"
+                        ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    )*/
+                },
+            ).show(parentFragmentManager, OpenUrlDialog.TAG)
+        }
     }
 
     private fun selectMedia() {
@@ -202,8 +226,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             )
         )*/
         val intent = Intent(Intent.ACTION_GET_CONTENT)
-            .setType("*/*")
-            .putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("*/*"))
+            .setType("video/*")
+            .putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("video/*"))
             .addCategory(Intent.CATEGORY_OPENABLE)
         startActivityForResult(
             intent,
@@ -276,6 +300,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                 Menu.MENU_CONVERT_TO_GIF -> R.id.homeToResult
                 Menu.MENU_SPLIT_VIDEO -> R.id.homeToResult
                 Menu.MENU_MERGE_VIDEO -> R.id.home_to_Merge
+                Menu.MENU_PLAY_HISTORY -> R.id.home_play_history
                 else -> R.id.homeToResult
             }
             shouldNavigateToResultFragment = false
@@ -408,6 +433,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                     player?.pause()
                     "ExoPlayer.STATE_ENDED     -"
                 }
+
                 else -> "UNKNOWN_STATE             -"
             }
             Log.d(this::class.java.name, "changed state to $stateString")

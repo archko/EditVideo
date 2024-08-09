@@ -5,6 +5,7 @@ import coil.ImageLoader
 import coil.ImageLoaderFactory
 import com.thuypham.ptithcm.editvideo.di.repositoryModule
 import com.thuypham.ptithcm.editvideo.di.viewModelModule
+import com.archko.editvideo.db.Graph
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -24,6 +25,8 @@ class MainApplication : Application(), ImageLoaderFactory {
         super.onCreate()
         instance = this
         initKoin()
+
+        Graph.provide(this)
     }
 
     private fun initKoin() {

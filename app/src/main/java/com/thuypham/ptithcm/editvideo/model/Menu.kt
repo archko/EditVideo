@@ -14,5 +14,6 @@ data class Menu(
         const val MENU_SPLIT_VIDEO = 6
         const val MENU_MERGE_VIDEO = 7
         const val MENU_RUN_CMD = 8
+        const val MENU_PLAY_HISTORY = 9
     }
 }

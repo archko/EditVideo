@@ -1,5 +1,6 @@
 package com.archko.editvideo.ui.activity
 
+import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
@@ -40,7 +41,7 @@ import com.thuypham.ptithcm.editvideo.extension.IntentFile
 import com.thuypham.ptithcm.editvideo.extension.getScreenWidth
 import io.flutter.plugins.exoplayer.ExoSourceFactory
 import timber.log.Timber
-import java.util.*
+import java.util.Locale
 
 /**
  * @author: archko 2023/6/26 :14:14
@@ -366,10 +367,6 @@ open class MExoPlayerActivity : AppCompatActivity() {
             return
         }
 
-        url = intent.data?.let { IntentFile.getFilePathByUri(this, it) }
-
-        Timber.d("play.url:$url")
-
         if (VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             onBackInvokedDispatcher.registerOnBackInvokedCallback(
                 OnBackInvokedDispatcher.PRIORITY_DEFAULT
@@ -385,6 +382,14 @@ open class MExoPlayerActivity : AppCompatActivity() {
                     }
                 })
         }
+
+        processIntent(intent)
+    }
+
+    private fun processIntent(intent: Intent) {
+        url = IntentFile.processIntentAction(intent, this)
+
+        Timber.d("play.url:$url")
 
         initializePlayer()
     }
@@ -456,6 +461,8 @@ open class MExoPlayerActivity : AppCompatActivity() {
         Timber.d("play.prepare.position:$startPosition")
         if (startPosition > 0) {
             mExoPlayer!!.seekTo(startPosition)
+        } else {
+            PlayerHelper.seekTo(mExoPlayer!!, url)
         }
         mediaItem?.let { mExoPlayer!!.setMediaItem(it, startPosition <= 0) }
         showingBuffer = true
@@ -736,7 +743,8 @@ open class MExoPlayerActivity : AppCompatActivity() {
     //=================== play controller end ===================
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        Timber.d("play.onNewIntent:${intent?.data}")
+        Timber.d("play.onNewIntent:${intent.data}")
+        processIntent(intent)
     }
 
     override fun onDestroy() {
@@ -790,6 +798,15 @@ open class MExoPlayerActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
 
+        if (mExoPlayer != null
+            && mExoPlayer!!.playbackState != Player.STATE_ENDED
+            && mExoPlayer!!.playbackState != Player.STATE_IDLE
+        ) {
+            val duration = mExoPlayer!!.duration / 1000
+            val position = mExoPlayer!!.contentPosition / 1000
+            PlayerHelper.storeHistory(url, duration, position)
+        }
+
         if (VERSION.SDK_INT > 23) {
             mExoPlayer?.pause()
             if (styledPlayerView != null) {
@@ -820,5 +837,13 @@ open class MExoPlayerActivity : AppCompatActivity() {
 
         //控制器显示时长,5秒隐藏
         private const val CONTROLS_SHOW_MS = 5000L
+
+        fun start(context: Context, list: List<String>, curr: Int) {
+            val intent = Intent(context, MExoPlayerActivity::class.java)
+            intent.putExtra("path", list[curr])
+            //intent.setAction(Intent.ACTION_VIEW)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(intent)
+        }
     }
 }
