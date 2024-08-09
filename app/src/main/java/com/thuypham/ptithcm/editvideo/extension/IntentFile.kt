@@ -27,6 +27,13 @@ object IntentFile {
                 if (path == null && intent.data != null) {
                     path = intent.data.toString()
                 }
+            } else if (Intent.ACTION_SEND == intent.action) {
+                if (null != intent.clipData && intent.clipData!!.itemCount > 0) {
+                    val uri = intent.clipData!!.getItemAt(0).uri
+                    if (null != uri) {
+                        path = uri.toString()
+                    }
+                }
             }
         }
         return path
