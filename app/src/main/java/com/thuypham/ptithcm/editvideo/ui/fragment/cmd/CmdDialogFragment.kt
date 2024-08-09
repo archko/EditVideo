@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.TextUtils
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -36,8 +37,18 @@ class CmdDialogFragment(
     override val isFullScreen = true
     private lateinit var handler: Handler
     private val cmdViewModel: CmdViewModel by viewModel()
+    private val MODE_CUT = 0
+    private val MODE_MERGE = 1
+    private var mode = MODE_MERGE
+    private var videoPath: String? = null
+    private var audioPath: String? = null
 
     companion object {
+        const val cmd_header = "-ss 00:00"
+        const val cmd_i = " -i "
+        const val cmd_cut_code = " -t 60 -c copy -preset ultrafast"
+        const val cmd_merge_code = " -vcodec copy -acodec copy"
+        const val cmd_out = " /sdcard/DCIM/"
         const val CMD_CUT =
             "-ss 00:00 -i /sdcard/DCIM/aa.mp4 -t 60 -c copy -preset ultrafast /sdcard/DCIM/o.mp4"
         const val CMD_MERGE =
@@ -65,7 +76,8 @@ class CmdDialogFragment(
             cmdFfprobe.setOnSingleClickListener { runFFprobe() }
             cmdCut.setOnSingleClickListener { setCutCmd() }
             cmdMerge.setOnSingleClickListener { setMergeCmd() }
-            cmdInput.setOnSingleClickListener { selectMedia() }
+            cmdInputVideo.setOnSingleClickListener { selectMedia() }
+            cmdInputAudio.setOnSingleClickListener { selectAudio() }
         }
         setupDataObserver()
     }
@@ -158,10 +170,12 @@ class CmdDialogFragment(
     }
 
     private fun setCutCmd() {
+        mode = MODE_CUT
         binding.editCmd.setText(CMD_CUT)
     }
 
     private fun setMergeCmd() {
+        mode = MODE_MERGE
         binding.editCmd.setText(CMD_MERGE)
     }
 
@@ -174,6 +188,63 @@ class CmdDialogFragment(
             intent,
             HomeFragment.REQUEST_SAF_FFMPEG
         )
+    }
+
+    private fun selectAudio() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+            .setType("*/*")
+            .putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("*/*"))
+            .addCategory(Intent.CATEGORY_OPENABLE)
+        startActivityForResult(
+            intent,
+            HomeFragment.REQUEST_SAF_AUDIO
+        )
+    }
+
+    private fun updateModeStatus() {
+        if (mode == MODE_CUT) {
+            if (!TextUtils.isEmpty(videoPath)) {
+                binding.apply {
+                    val sb = StringBuilder(cmd_header)
+                    sb.append(cmd_i)
+                    sb.append("'")
+                    sb.append(videoPath)
+                    sb.append("'")
+                    sb.append(cmd_cut_code)
+                    sb.append(cmd_out)
+                    if (!TextUtils.isEmpty(binding.outputName.editableText)) {
+                        sb.append(binding.outputName.editableText)
+                    } else {
+                        sb.append("o.mp4")
+                    }
+                    editCmd.setText(sb)
+                }
+            }
+        } else {
+            binding.apply {
+                val sb = StringBuilder(cmd_header)
+                sb.append(cmd_i)
+                if (!TextUtils.isEmpty(videoPath)) {
+                    sb.append("'")
+                    sb.append(videoPath)
+                    sb.append("'")
+                }
+                if (!TextUtils.isEmpty(audioPath)) {
+                    sb.append(cmd_i)
+                    sb.append("'")
+                    sb.append(audioPath)
+                    sb.append("'")
+                }
+                sb.append(cmd_merge_code)
+                sb.append(cmd_out)
+                if (!TextUtils.isEmpty(binding.outputName.editableText)) {
+                    sb.append(binding.outputName.editableText)
+                } else {
+                    sb.append("o.mp4")
+                }
+                editCmd.setText(sb)
+            }
+        }
     }
 
     private fun appendOutput(logMessage: String?) {
@@ -234,16 +305,14 @@ class CmdDialogFragment(
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == HomeFragment.REQUEST_SAF_FFMPEG && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
-            binding.apply {
-                val path = IntentFile.getPath(requireActivity(), data.data!!)
-                var oriString = editCmd.text.toString()
-                var selection = editCmd.selectionStart
-                if (selection < oriString.length) {
-                    val sb = StringBuilder(oriString)
-                    sb.insert(selection, path)
-                    editCmd.setText(sb)
-                }
-            }
+            val path = IntentFile.getPath(requireActivity(), data.data!!)
+            videoPath = path
+            updateModeStatus()
+        }
+        if (requestCode == HomeFragment.REQUEST_SAF_AUDIO && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
+            val path = IntentFile.getPath(requireActivity(), data.data!!)
+            audioPath = path
+            updateModeStatus()
         }
     }
 }

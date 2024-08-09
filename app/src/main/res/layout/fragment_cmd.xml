@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="4dp"
-            android:text="click cut/merge button to change example cmd above.move cursor in the edittext,click input button to select a input file."
+            android:text="cut video(select a video)/merge video and audio(select a video and audio)."
             android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -46,42 +46,72 @@
             android:id="@+id/layout_preset"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:paddingHorizontal="8dp"
             android:paddingBottom="2dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cmd_tip">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/cmd_cut"
-                style="@style/Theme.EditVideo.Button2"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"
-                android:layout_weight="1"
-                android:text="Cut" />
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/outputName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="output video name"
+                android:text="out.mp4"
+                android:textColorHint="@color/gray" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/cmd_merge"
-                style="@style/Theme.EditVideo.Button2"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"
-                android:layout_weight="1"
-                android:text="Merge" />
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:orientation="horizontal">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/cmd_input"
-                style="@style/Theme.EditVideo.Button2"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"
-                android:layout_weight="1"
-                android:text="Input" />
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/cmd_merge"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:text="Merge" />
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/cmd_cut"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_weight="1"
+                    android:text="Cut" />
+            </RadioGroup>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/cmd_input_video"
+                    style="@style/Theme.EditVideo.Button2"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_weight="1"
+                    android:text="Select Video" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/cmd_input_audio"
+                    style="@style/Theme.EditVideo.Button2"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_weight="1"
+                    android:text="Select Audio" />
+            </LinearLayout>
 
         </LinearLayout>
 
