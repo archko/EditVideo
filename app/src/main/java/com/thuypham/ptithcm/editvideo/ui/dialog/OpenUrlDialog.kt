@@ -23,8 +23,8 @@ class OpenUrlDialog(
     }
 
     override fun setupView() {
-        dialog?.setCanceledOnTouchOutside(false)
-        dialog?.setCancelable(false)
+        dialog?.setCanceledOnTouchOutside(true)
+        dialog?.setCancelable(true)
         binding.apply {
             container.layoutParams.width = (getScreenWidth() * 0.8).roundToInt()
             btnCancel.setOnClickListener {
@@ -52,7 +52,6 @@ class OpenUrlDialog(
                 btnConfirm.text = it
             }
 
-            btnCancel.isVisible = isShowCancelMsg ?: false
             viewCenterButton.isVisible = isShowCancelMsg ?: false
             cancelMsg?.let {
                 btnCancel.text = it
