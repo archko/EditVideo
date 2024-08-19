@@ -1,11 +1,18 @@
 package com.thuypham.ptithcm.editvideo.ui.fragment.home
 
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.READ_MEDIA_IMAGES
+import android.Manifest.permission.READ_MEDIA_VIDEO
+import android.Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
 import android.annotation.SuppressLint
-import android.app.Activity.RESULT_OK
+import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.OptIn
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -218,6 +225,46 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         }
     }
 
+    private val permissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { _ ->
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+                .setType("video/*")
+                .putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("video/*"))
+                .addCategory(Intent.CATEGORY_OPENABLE)
+            selectLauncher.launch(intent)
+        }
+
+    private fun requestPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            permissionLauncher.launch(
+                arrayOf(
+                    READ_MEDIA_IMAGES,
+                    READ_MEDIA_VIDEO,
+                    READ_MEDIA_VISUAL_USER_SELECTED
+                )
+            )
+        } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
+            permissionLauncher.launch(arrayOf(READ_MEDIA_IMAGES, READ_MEDIA_VIDEO))
+        } else {
+            permissionLauncher.launch(arrayOf(READ_EXTERNAL_STORAGE))
+        }
+    }
+
+    private val selectLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult? ->
+            if (result?.resultCode == Activity.RESULT_OK) {
+                if (result.data != null) {
+                    binding.apply {
+                        layoutEmptyVideo.gone()
+                        currentMediaFile = MediaFile()
+                        currentMediaFile!!.path =
+                            IntentFile.getPath(requireActivity(), result.data!!.data)
+                        setMediaItem()
+                    }
+                }
+            }
+        }
+
     private fun selectMedia() {
         /*navigateTo(
             R.id.media,
@@ -226,14 +273,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                 MediaFragment.MAX_SELECTED_COUNT to 1
             )
         )*/
-        val intent = Intent(Intent.ACTION_GET_CONTENT)
-            .setType("video/*")
-            .putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("video/*"))
-            .addCategory(Intent.CATEGORY_OPENABLE)
-        startActivityForResult(
-            intent,
-            REQUEST_SAF_FFMPEG
-        )
+        requestPermissions()
     }
 
     private fun setupToolbar() {
@@ -244,18 +284,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         binding.apply {
             rvMenu.adapter = menuAdapter
             menuAdapter.submitList(MenuAdapter.listMenu)
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_SAF_FFMPEG && resultCode == RESULT_OK && data != null && data.data != null) {
-            binding.apply {
-                layoutEmptyVideo.gone()
-                currentMediaFile = MediaFile()
-                currentMediaFile!!.path = IntentFile.getPath(requireActivity(), data.data!!)
-                setMediaItem()
-            }
         }
     }
 
