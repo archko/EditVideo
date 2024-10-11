@@ -36,11 +36,13 @@ import com.thuypham.ptithcm.editvideo.model.ResponseHandler
 import com.thuypham.ptithcm.editvideo.ui.activity.ResultActivity
 import com.thuypham.ptithcm.editvideo.ui.dialog.ConfirmDialog
 import com.thuypham.ptithcm.editvideo.ui.dialog.OpenUrlDialog
+import com.thuypham.ptithcm.editvideo.ui.dialog.SeekDialog
 import com.thuypham.ptithcm.editvideo.ui.fragment.cmd.CmdDialogFragment
 import com.thuypham.ptithcm.editvideo.viewmodel.MediaViewModel
 import io.flutter.plugins.exoplayer.ExoSourceFactory
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import timber.log.Timber
 
 @OptIn(UnstableApi::class)
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
@@ -196,8 +198,43 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                     tvDurationEnd.text = endTime.toLong().toTimeAsHHmmSSS()
                     player?.seekTo(startTime.toLong())
                 }
-
             })
+            tvDurationStart.setOnClickListener {
+                SeekDialog(
+                    title = getString(R.string.dialog_seek_from_title),
+                    okMsg = getString(R.string.dialog_ok),
+                    start = startTime / 1000,
+                    onConfirmClick = {
+                        Timber.d("startTime:$it")
+                        if (it > player?.duration!!) {
+                            return@SeekDialog
+                        }
+                        startTime = it
+                        tvDurationStart.text = startTime.toLong().toTimeAsHHmmSSS()
+                        player?.seekTo(startTime.toLong())
+                    },
+                ).show(parentFragmentManager, OpenUrlDialog.TAG)
+            }
+            tvDurationEnd.setOnClickListener {
+                var end = endTime
+                if (end == 0f) {
+                    end = player?.duration?.toFloat()!!
+                }
+                SeekDialog(
+                    title = getString(R.string.dialog_seek_end_title),
+                    okMsg = getString(R.string.dialog_ok),
+                    start = end / 1000,
+                    onConfirmClick = {
+                        Timber.d("endTime:$it")
+                        if (it > player?.duration!!) {
+                            return@SeekDialog
+                        }
+                        endTime = it
+                        tvDurationEnd.text = endTime.toLong().toTimeAsHHmmSSS()
+                        player?.seekTo(endTime.toLong())
+                    },
+                ).show(parentFragmentManager, OpenUrlDialog.TAG)
+            }
         }
     }
 
@@ -210,16 +247,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                 title = getString(R.string.dialog_url_title),
                 okMsg = getString(R.string.dialog_ok),
                 onConfirmClick = {
-                    println("url:$it")
+                    Timber.d("url:$it")
 
                     val list = listOf(it)
                     MExoPlayerActivity.start(requireContext(), list, 0)
-                    /*startActivity(
-                        Intent.createChooser(
-                            Intent(Intent.ACTION_VIEW).setData(Uri.parse(it)),
-                            "Open Url"
-                        ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    )*/
                 },
             ).show(parentFragmentManager, OpenUrlDialog.TAG)
         }

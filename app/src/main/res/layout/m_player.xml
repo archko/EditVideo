@@ -215,7 +215,7 @@
                 android:background="@drawable/selector"
                 android:clickable="true"
                 android:focusable="true"
-                android:src="@drawable/ic_play_fanzhuan"
+                android:src="@drawable/ic_rotate_landscape"
                 android:visibility="visible"/>
 
             <ImageView

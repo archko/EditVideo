@@ -55,4 +55,7 @@
     <string name="player_tip_3speed">3倍速播放</string>
     <string name="player_tip_volume">音量%s</string>
     <string name="player_tip_brightness">亮度%s</string>
+
+    <string name="dialog_seek_from_title">起始</string>
+    <string name="dialog_seek_end_title">结束</string>
 </resources>

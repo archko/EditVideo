@@ -62,7 +62,10 @@
     <string name="_16_9">16:9</string>
     <string name="app_folder">SuperFXApp</string>
 
-    <string name="player_tip_3speed">3倍速播放</string>
-    <string name="player_tip_volume">音量%s</string>
-    <string name="player_tip_brightness">亮度%s</string>
+    <string name="player_tip_3speed">3Speed</string>
+    <string name="player_tip_volume">Volume:%s</string>
+    <string name="player_tip_brightness">Brightness:%s</string>
+
+    <string name="dialog_seek_from_title">Seek From</string>
+    <string name="dialog_seek_end_title">Seek End</string>
 </resources>
