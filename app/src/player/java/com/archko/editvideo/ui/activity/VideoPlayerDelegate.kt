@@ -1,13 +1,12 @@
 package com.archko.editvideo.ui.activity
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.media.AudioManager
 import android.os.Handler
 import android.os.Looper
-import android.os.SystemClock
 import android.util.Log
+import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
@@ -151,6 +150,7 @@ class VideoPlayerDelegate(private var activity: Activity) : View.OnTouchListener
 
     //长按的runnable
     private val mLongPressFastRunnable: Runnable = Runnable {
+        Log.d(TAG, "View TOUCH_LONG_PRESS")
         mExoPlayer?.setPlaybackSpeed(3f)
         touchAction = TOUCH_LONG_PRESS
         delegateTouchListener?.speed()
@@ -158,13 +158,13 @@ class VideoPlayerDelegate(private var activity: Activity) : View.OnTouchListener
 
     private val mLongPressBackRunnable: Runnable = Runnable { mExoPlayer?.setPlaybackSpeed(1f) }
 
-    @SuppressLint("ClickableViewAccessibility")
+    /*@SuppressLint("ClickableViewAccessibility")
     override fun onTouch(view: View?, event: MotionEvent): Boolean {
         val x = event.x
         val y = event.y
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
-                Log.d(TAG, "View ACTION_DOWN")
+                Log.d(TAG, "View ACTION_DOWN:$isLock")
                 seekChanged = 0
                 touchAction = TOUCH_DOWN
                 touchTime = SystemClock.uptimeMillis()
@@ -282,6 +282,109 @@ class VideoPlayerDelegate(private var activity: Activity) : View.OnTouchListener
         }
 
         return false
+    }*/
+
+    private var firstScroll = true
+    private var gestureListener: GestureDetector.SimpleOnGestureListener =
+        object : GestureDetector.SimpleOnGestureListener() {
+            override fun onDown(e: MotionEvent): Boolean {
+                firstScroll = true // 设定是触摸屏幕后第一次scroll的标志
+                Log.i(TAG, "onDown")
+                return false
+            }
+
+            override fun onDoubleTapEvent(e: MotionEvent): Boolean {
+                Log.i(TAG, "onDoubleTapEvent")
+
+                firstScroll = false // 第一次scroll执行完成，修改标志
+
+                return super.onDoubleTapEvent(e)
+            }
+
+            override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+                Log.d(TAG, "View ACTION_UP,click")
+                delegateTouchListener?.run {
+                    this.click()
+                }
+                return super.onSingleTapConfirmed(e)
+            }
+
+            override fun onScroll(
+                e1: MotionEvent?,
+                e2: MotionEvent,
+                distanceX: Float,
+                distanceY: Float
+            ): Boolean {
+                Log.i(TAG, "onScroll:$firstScroll, distanceX:$distanceX, distanceY:$distanceY")
+                val mOldX = e1!!.x
+                if (firstScroll) { // 以触摸屏幕后第一次滑动为标准，避免在屏幕上操作切换混乱
+                    // 横向的距离变化大则调整进度，纵向的变化大则调整音量
+                    if (abs(distanceX.toDouble()) >= abs(distanceY.toDouble())) {
+                        touchAction = TOUCH_MOVE_HORIZONTAL
+                    } else {
+                        if (mOldX > halfScreenWidth) { // 音量
+                            touchAction = TOUCH_MOVE_VERTICAL_RIGHT
+                        } else if (mOldX < halfScreenWidth) { // 亮度
+                            touchAction = TOUCH_MOVE_VERTICAL_LEFT
+                        }
+                    }
+                }
+
+                // 如果每次触摸屏幕后第一次scroll是调节进度，那之后的scroll事件都处理音量进度，直到离开屏幕执行下一次操作
+                if (touchAction == TOUCH_MOVE_HORIZONTAL) {
+                    if (abs(distanceX.toDouble()) > abs(distanceY.toDouble())) { // 横向移动大于纵向移动
+                        seek(-distanceX)
+                    }
+                } else if (touchAction == TOUCH_MOVE_VERTICAL_RIGHT) {
+                    if (abs(distanceY.toDouble()) > abs(distanceX.toDouble())) { // 纵向移动大于横向移动
+                        updateVolume(distanceY)
+                    }
+                } else if (touchAction == TOUCH_MOVE_VERTICAL_LEFT) {
+                    updateBrightness(distanceY)
+                }
+
+                firstScroll = false // 第一次scroll执行完成，修改标志
+                return false
+            }
+
+            override fun onLongPress(e: MotionEvent) {
+                super.onLongPress(e)
+                touchAction = TOUCH_LONG_PRESS
+                handler.removeCallbacks(mLongPressBackRunnable)
+                handler.postDelayed(
+                    mLongPressFastRunnable,
+                    ViewConfiguration.getLongPressTimeout().toLong()
+                )
+            }
+        }
+    private var gestureDetector: GestureDetector = GestureDetector(
+        activity,
+        gestureListener
+    )
+    //gestureDetector.setIsLongpressEnabled(true);
+
+    override fun onTouch(v: View, event: MotionEvent): Boolean {
+        if (event.action == MotionEvent.ACTION_UP) {
+            handler.removeCallbacks(mLongPressFastRunnable)
+            if (touchAction == TOUCH_LONG_PRESS) {
+                handler.post(mLongPressBackRunnable)
+            }
+
+            if (touchAction == TOUCH_MOVE_HORIZONTAL) {
+                Log.d(TAG, "View ACTION_UP seek end:$seekChanged")
+                delegateTouchListener?.seekEnd(seekChanged)
+            } else if (touchAction == TOUCH_MOVE_INIT || touchAction == TOUCH_DOWN) {
+                Log.d(TAG, "View ACTION_UP,click")
+                delegateTouchListener?.run {
+                    this.click()
+                }
+            } else {
+                Log.d(TAG, "View ACTION_UP long click")
+                delegateTouchListener?.hideTip()
+            }
+            touchAction = TOUCH_IDLE
+        }
+        return gestureDetector.onTouchEvent(event)
     }
 
     private fun seek(xChanged: Float) {
@@ -294,6 +397,9 @@ class VideoPlayerDelegate(private var activity: Activity) : View.OnTouchListener
     }
 
     private fun updateVolume(yChanged: Float) {
+        if (yChanged == 0.0f) {
+            return
+        }
         val last = getSystemVolume()
         if (yChanged > 0) {
             volumeUp()
@@ -306,7 +412,10 @@ class VideoPlayerDelegate(private var activity: Activity) : View.OnTouchListener
     }
 
     private fun updateBrightness(yChanged: Float) {
-        //Log.d(TAG, "View updateBrightness:$action, xChanged:$xChanged, yChanged:$yChanged")
+        if (yChanged == 0.0f) {
+            return
+        }
+        //Log.d(TAG, "View updateBrightness:$brightness, yChanged:$yChanged")
         val currentBright = brightness
         var target = if (yChanged > 0) {
             currentBright + 0.01

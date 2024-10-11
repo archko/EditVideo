@@ -8,6 +8,7 @@ import com.thuypham.ptithcm.editvideo.di.viewModelModule
 import com.archko.editvideo.db.Graph
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
+import timber.log.Timber
 
 class MainApplication : Application(), ImageLoaderFactory {
 
@@ -25,6 +26,8 @@ class MainApplication : Application(), ImageLoaderFactory {
         super.onCreate()
         instance = this
         initKoin()
+
+        Timber.plant(Timber.DebugTree())
 
         Graph.provide(this)
     }
