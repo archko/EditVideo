@@ -19,12 +19,6 @@ class MediaAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: VideoProgress) {
             binding.apply {
-                /*if (!item.path.isNullOrEmpty()) {
-                    ivMedia.load(item.path?.let { File(it) }) {
-                        crossfade(true)
-                        placeholder(R.drawable.ic_image_placeholder)
-                    }
-                }*/
                 tvMenu.text = item.path
             }
         }
@@ -38,7 +32,7 @@ class MediaAdapter(
             ItemMediaFileBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ImageViewHolderItem(binding)
             .apply {
-                binding.play.setOnClickListener {
+                binding.tvMenu.setOnClickListener {
                     val progress = currentList[absoluteAdapterPosition]
                     onItemPlay?.invoke(progress)
                 }
