@@ -120,7 +120,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/ivPlay"
                 app:layout_constraintTop_toTopOf="@id/ivAspectRatio"
-                app:srcCompat="@drawable/ic_track_check" />
+                app:srcCompat="@drawable/ic_check" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <include
