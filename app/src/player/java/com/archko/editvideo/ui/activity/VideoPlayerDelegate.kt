@@ -317,7 +317,10 @@ class VideoPlayerDelegate(private var activity: Activity) : View.OnTouchListener
             ): Boolean {
                 Log.i(TAG, "onScroll:$firstScroll, distanceX:$distanceX, distanceY:$distanceY")
                 val mOldX = e1!!.x
-                if (firstScroll) { // 以触摸屏幕后第一次滑动为标准，避免在屏幕上操作切换混乱
+                var ignoreFirst = false
+                if (firstScroll) {
+                    ignoreFirst = true
+                    // 以触摸屏幕后第一次滑动为标准，避免在屏幕上操作切换混乱,第一次会比较大,忽略它
                     // 横向的距离变化大则调整进度，纵向的变化大则调整音量
                     if (abs(distanceX.toDouble()) >= abs(distanceY.toDouble())) {
                         touchAction = TOUCH_MOVE_HORIZONTAL
@@ -332,15 +335,17 @@ class VideoPlayerDelegate(private var activity: Activity) : View.OnTouchListener
 
                 // 如果每次触摸屏幕后第一次scroll是调节进度，那之后的scroll事件都处理音量进度，直到离开屏幕执行下一次操作
                 if (touchAction == TOUCH_MOVE_HORIZONTAL) {
-                    if (abs(distanceX.toDouble()) > abs(distanceY.toDouble())) { // 横向移动大于纵向移动
+                    if (!ignoreFirst && abs(distanceX.toDouble()) > abs(distanceY.toDouble())) { // 横向移动大于纵向移动
                         seek(-distanceX)
                     }
                 } else if (touchAction == TOUCH_MOVE_VERTICAL_RIGHT) {
-                    if (abs(distanceY.toDouble()) > abs(distanceX.toDouble())) { // 纵向移动大于横向移动
+                    if (!ignoreFirst && abs(distanceY.toDouble()) > abs(distanceX.toDouble())) { // 纵向移动大于横向移动
                         updateVolume(distanceY)
                     }
                 } else if (touchAction == TOUCH_MOVE_VERTICAL_LEFT) {
-                    updateBrightness(distanceY)
+                    if (!ignoreFirst) {
+                        updateBrightness(distanceY)
+                    }
                 }
 
                 firstScroll = false // 第一次scroll执行完成，修改标志
