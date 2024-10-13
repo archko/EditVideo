@@ -1,4 +1,4 @@
-package com.archko.editvideo.ui.activity;
+package com.archko.editvideo.utils;
 
 import static java.lang.Math.abs;
 

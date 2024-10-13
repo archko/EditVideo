@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="player_track_video_title">视频信息</string>
+    <string name="player_track_video_track">视频</string>
+    <string name="player_track_video_codec">编码</string>
+    <string name="player_track_video_audio">音频</string>
+    <string name="player_track_video_bitrate">码率</string>
+    <string name="player_track_video_framerate">帧率</string>
+    <string name="player_track_video_filesize">文件大小</string>
+    <string name="player_track_video_language">语言</string>
+    <string name="player_track_video_subtitle">字幕</string>
+    <string name="player_track_video_channel">声道</string>
+    <string name="player_track_video_samplerate">采样率</string>
+    <string name="player_track_video_resolution">分辨率</string>
+    <string name="player_track_video_speed">倍速</string>
+    <string name="player_track_video_original">原画</string>
+
+    <string name="player_track_track_load_subtitle">加载字幕</string>
+    <string name="player_track_track_load">加载</string>
+    <string name="player_track_track_close">关闭</string>
+    <string name="player_track_track_select">选择</string>
+    <string name="player_track_track_audio">音轨</string>
+    <string name="player_track_track_subtitle">字幕</string>
+
+    <string name="player_track_subtitle_download_title">下载字幕</string>
+    <string name="player_track_subtitle_downloading">下载中</string>
+    <string name="player_track_subtitle_no_subtitle">没有可用字幕</string>
+    <string name="player_track_subtitle_not_support_subtitle">不支持的字幕</string>
+
+    <string name="player_speed">倍速</string>
+</resources>

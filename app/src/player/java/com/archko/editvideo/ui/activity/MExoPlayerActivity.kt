@@ -36,6 +36,10 @@ import androidx.media3.ui.CaptionStyleCompat
 import androidx.media3.ui.CaptionStyleCompat.EDGE_TYPE_NONE
 import androidx.media3.ui.DefaultTrackNameProvider
 import androidx.media3.ui.PlayerView
+import com.archko.editvideo.tracks.TrackInformation
+import com.archko.editvideo.tracks.TracksAdapter
+import com.archko.editvideo.tracks.TracksHelper
+import com.archko.editvideo.utils.MediaUtil
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.extension.IntentFile
 import com.thuypham.ptithcm.editvideo.extension.getScreenWidth
@@ -62,13 +66,14 @@ open class MExoPlayerActivity : AppCompatActivity() {
     private var mediaItem: MediaItem? = null
     private var videoPlayerDelegate: VideoPlayerDelegate? = null
 
+    private var tracksHelper = TracksHelper()
     private var url: String? = null
     //private lateinit var sensorHelper: SensorHelper
 
     private lateinit var btnAudio: View
-
+    private lateinit var btnText: View
     //private lateinit var btnMore: View
-    private lateinit var btnSpeed: View
+    private lateinit var btnSpeed: TextView
     private lateinit var bottomBar: View
     private lateinit var titleBar: View
     private lateinit var back: View
@@ -156,15 +161,25 @@ open class MExoPlayerActivity : AppCompatActivity() {
         )
         styledPlayerView.subtitleView?.setStyle(captionStyleCompat)
 
+        btnText = findViewById(R.id.btn_subtitle)
+        btnText.setOnClickListener {
+            tracksHelper.showTextTracks(
+                mExoPlayer,
+                this,
+                btnText,
+                trackNameProvider,
+                null
+            )
+        }
         btnAudio = findViewById(R.id.btn_audio)
-        /*btnAudio.setOnClickListener {
+        btnAudio.setOnClickListener {
             tracksHelper.showAudioTracks(
                 mExoPlayer,
                 this,
                 btnAudio,
                 trackNameProvider
             )
-        }*/
+        }
         /*btnMore = findViewById(R.id.btn_more)
         btnMore.setOnClickListener {
             tracksHelper.showMetaTracks(
@@ -176,7 +191,7 @@ open class MExoPlayerActivity : AppCompatActivity() {
             )
         }*/
         btnSpeed = findViewById(R.id.btn_speed)
-        //btnSpeed.setOnClickListener { showSpeedWindow() }
+        btnSpeed.setOnClickListener { showSpeedWindow() }
 
         bottomBar = findViewById(R.id.bottom_bar)
         titleBar = findViewById(R.id.layout_titlebar)
@@ -231,32 +246,6 @@ open class MExoPlayerActivity : AppCompatActivity() {
             }
 
         })
-        /*seekBar.setListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onStartPreview(seekBar: SeekBar?, progress: Int) {
-                if (!isSeeking) {   //第一次按下,记录时间
-                    seekTime = SystemClock.uptimeMillis()
-                }
-                isSeeking = true
-                if (SystemClock.uptimeMillis() - seekTime > 700L) {
-                    handler.postDelayed(updateSeekAction, 50L)
-                }
-            }
-
-            override fun onStopPreview(seekBar: SeekBar?, progress: Int) {
-                isSeeking = false
-                restoreSeekIncrement()
-                if (seekBar != null) {
-                    mExoPlayer?.seekTo(seekBar.progress.toLong())
-                }
-            }
-
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                if (isSeeking) {
-                    positionView.text =
-                        Util.getStringForTime(formatBuilder, formatter, progress.toLong())
-                }
-            }
-        })*/
 
         btnReplay.setOnClickListener {
             layoutError.visibility = View.GONE
@@ -420,14 +409,14 @@ open class MExoPlayerActivity : AppCompatActivity() {
     }
 
     private fun showSpeedWindow() {
-        /*tracksHelper.showSpeedWindow(this, btnSpeed) { _, speed ->
+        tracksHelper.showSpeedWindow(this, btnSpeed) { _, speed ->
             if (speed.speed == 1.0f) {
                 btnSpeed.text = getString(R.string.player_speed)
             } else {
                 btnSpeed.text = speed.text
             }
             mExoPlayer?.setPlaybackSpeed(speed.speed)
-        }*/
+        }
     }
 
     //=================== init player ===================
