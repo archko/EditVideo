@@ -290,6 +290,7 @@ class VideoPlayerDelegate(private var activity: Activity) : View.OnTouchListener
             override fun onDown(e: MotionEvent): Boolean {
                 firstScroll = true // 设定是触摸屏幕后第一次scroll的标志
                 Log.i(TAG, "onDown")
+                seekChanged = 0
                 return false
             }
 
@@ -315,11 +316,12 @@ class VideoPlayerDelegate(private var activity: Activity) : View.OnTouchListener
                 distanceX: Float,
                 distanceY: Float
             ): Boolean {
+                if (isLock) {
+                    return true
+                }
                 Log.i(TAG, "onScroll:$firstScroll, distanceX:$distanceX, distanceY:$distanceY")
                 val mOldX = e1!!.x
-                var ignoreFirst = false
                 if (firstScroll) {
-                    ignoreFirst = true
                     // 以触摸屏幕后第一次滑动为标准，避免在屏幕上操作切换混乱,第一次会比较大,忽略它
                     // 横向的距离变化大则调整进度，纵向的变化大则调整音量
                     if (abs(distanceX.toDouble()) >= abs(distanceY.toDouble())) {
@@ -335,17 +337,15 @@ class VideoPlayerDelegate(private var activity: Activity) : View.OnTouchListener
 
                 // 如果每次触摸屏幕后第一次scroll是调节进度，那之后的scroll事件都处理音量进度，直到离开屏幕执行下一次操作
                 if (touchAction == TOUCH_MOVE_HORIZONTAL) {
-                    if (!ignoreFirst && abs(distanceX.toDouble()) > abs(distanceY.toDouble())) { // 横向移动大于纵向移动
+                    if (abs(distanceX.toDouble()) > abs(distanceY.toDouble())) { // 横向移动大于纵向移动
                         seek(-distanceX)
                     }
                 } else if (touchAction == TOUCH_MOVE_VERTICAL_RIGHT) {
-                    if (!ignoreFirst && abs(distanceY.toDouble()) > abs(distanceX.toDouble())) { // 纵向移动大于横向移动
+                    if (abs(distanceY.toDouble()) > abs(distanceX.toDouble())) { // 纵向移动大于横向移动
                         updateVolume(distanceY)
                     }
                 } else if (touchAction == TOUCH_MOVE_VERTICAL_LEFT) {
-                    if (!ignoreFirst) {
-                        updateBrightness(distanceY)
-                    }
+                    updateBrightness(distanceY)
                 }
 
                 firstScroll = false // 第一次scroll执行完成，修改标志
@@ -354,6 +354,9 @@ class VideoPlayerDelegate(private var activity: Activity) : View.OnTouchListener
 
             override fun onLongPress(e: MotionEvent) {
                 super.onLongPress(e)
+                if (isLock) {
+                    return
+                }
                 touchAction = TOUCH_LONG_PRESS
                 handler.removeCallbacks(mLongPressBackRunnable)
                 handler.postDelayed(
@@ -366,7 +369,6 @@ class VideoPlayerDelegate(private var activity: Activity) : View.OnTouchListener
         activity,
         gestureListener
     )
-    //gestureDetector.setIsLongpressEnabled(true);
 
     override fun onTouch(v: View, event: MotionEvent): Boolean {
         if (event.action == MotionEvent.ACTION_UP) {
@@ -394,9 +396,9 @@ class VideoPlayerDelegate(private var activity: Activity) : View.OnTouchListener
 
     private fun seek(xChanged: Float) {
         if (xChanged > 0) {
-            seekChanged += 500
+            seekChanged += 1000
         } else {
-            seekChanged -= 500
+            seekChanged -= 1000
         }
         delegateTouchListener?.seek(seekChanged)
     }

@@ -66,8 +66,9 @@ open class MExoPlayerActivity : AppCompatActivity() {
     //private lateinit var sensorHelper: SensorHelper
 
     private lateinit var btnAudio: View
-    private lateinit var btnMore: View
-    private lateinit var btnSpeed: TextView
+
+    //private lateinit var btnMore: View
+    private lateinit var btnSpeed: View
     private lateinit var bottomBar: View
     private lateinit var titleBar: View
     private lateinit var back: View
@@ -164,8 +165,8 @@ open class MExoPlayerActivity : AppCompatActivity() {
                 trackNameProvider
             )
         }*/
-        btnMore = findViewById(R.id.btn_more)
-        /*btnMore.setOnClickListener {
+        /*btnMore = findViewById(R.id.btn_more)
+        btnMore.setOnClickListener {
             tracksHelper.showMetaTracks(
                 mExoPlayer,
                 this,
@@ -472,7 +473,7 @@ open class MExoPlayerActivity : AppCompatActivity() {
     }
 
     private fun setVideoName() {
-        videoName.text = url//MediaUtil.inferName(url.playerData.getVideoName())
+        videoName.text = MediaUtil.inferName(url)
     }
 
     private val playerListener = object : Player.Listener {
