@@ -69,7 +69,7 @@ class ExoTracksViewHolder(
             alltrakcs.addAll(supportInformations)
         } else {
             if (C.TRACK_TYPE_TEXT == trackType) {
-                var selectTrack = TrackInformation(
+                /*var selectTrack = TrackInformation(
                     null,
                     0,
                     0,
@@ -77,7 +77,7 @@ class ExoTracksViewHolder(
                     TrackInformation.TYPE_SELECT_TRACK
                 )
                 alltrakcs.add(selectTrack)
-                /*selectTrack =
+                selectTrack =
                     TrackInformation(
                         null, 0, 0,
                         getString(R.string.player_track_subtitle_download_title),

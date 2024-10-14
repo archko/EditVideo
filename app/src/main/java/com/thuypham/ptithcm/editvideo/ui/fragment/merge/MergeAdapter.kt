@@ -27,7 +27,7 @@ class MergeAdapter(
                 binding.apply {
                     tvMenu.text = data.path
                 }
-                binding.play.setOnSingleClickListener {
+                binding.tvMenu.setOnSingleClickListener {
                     itemListener?.onPlay(data, position)
                 }
                 binding.delete.setOnClickListener {
